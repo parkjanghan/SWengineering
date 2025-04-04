@@ -1,5 +1,11 @@
 package display;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class TotalManage {
-    //게임 전체의 GUI를 설정 및 관리하는 class
+    public static void main(String[] args) {
+        new BackGround(); // GUI 화면 초기 설정
+    }
 }
+
