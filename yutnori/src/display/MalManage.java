@@ -11,7 +11,7 @@ public class MalManage {
     //말의 이미지를 load하고 관리하는 class
     /**
      * 말 이미지 로딩 및 크기 조절 (투명 배경 유지)
-     * @param path  이미지 경로 (예: "/display/img/team_1.png")
+     * @param path  이미지 경로 (예: "/img/team_1.png")
      * @param width 원하는 너비
      * @param height 원하는 높이
      * @return 크기 조절된 ImageIcon
