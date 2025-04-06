@@ -15,4 +15,9 @@ public interface BoardInterface {
     Map<Integer, Node> getNodes();
 
     void setNodes(Map<Integer, Node> nodes);
+
+    void createNode(int key, int x_pos, int y_pos);
+
+    void createConnection(int from_key, int to_key );
+
 }
