@@ -16,7 +16,8 @@ public class Board4 implements BoardInterface
         vs 6번노드에서:
             next = if 도 -> 7,21/ if 개 -> 8/ if 걸 ->9 / if 윷 -> 10
          이렇게 저장해야 하는지? 말 움직이는 logic & 이동할 노드 선택 로직에 따라
-         달라질 듯 합니다.
+         달라질 듯 합니다. + 후자로 하면 추후에 테스트 코드 쓰기도 좀 편해 지기는 합니다....
+         ex) assertthat(node4.nextnode().isEqualto(3,4)).....
 
     */
 
