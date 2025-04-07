@@ -22,6 +22,7 @@ public class Board4 implements BoardInterface
     */
 
     /*칸에 해당하는 노드들 생성
+    -안내서에는 오른쪽 아래가 출발 지점인 것 같은데 노드 위치가 맞는지 확인 부탁드립니다..
     private Node1 = new Node(1, x, y, false, false, false, false);
     //Node1 = 시작점
     //오른쪽 변
@@ -78,6 +79,9 @@ public class Board4 implements BoardInterface
      */
 
     //TODO 각 코너, 중심점에서 addNext하기
+    /*윷놀이 규칙 중에 코너나 중심점에 있으면 지름길로 가야하는 규칙이
+    있는데 이를 적용하는 게 맞을지.. 
+    */
 
     @Override
     public Node getStartPoint() {
@@ -106,12 +110,21 @@ public class Board4 implements BoardInterface
 
     @Override
     public void setNodes(Map<Integer, Node> nodes) {
-
+         this.boardShape = nodes;
     }
 
     @Override
     public void createNode(int key, int x_pos, int y_pos) {
+        boolean isStart = (key == 1);
+        boolean isEnd = (key == 30);
+        boolean isCenter = (key == 29);
+        boolean isCorner = (key == 6 || key == 11 || key == 16);
 
+        Node node = new Node(key, x_pos, y_pos, isStart, isEnd, isCenter, isCorner);
+        boardShape.put(key, node);
+
+        if (isStart) this.startNode = node;
+        if (isEnd) this.endNode = node;
     }
 
     @Override
