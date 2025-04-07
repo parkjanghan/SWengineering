@@ -20,9 +20,15 @@ public class Board4 implements BoardInterface
          ex) assertthat(node4.nextnode().isEqualto(3,4)).....
 
     */
+    
+    /*윷놀이 규칙 중에 코너나 중심점에 있으면 지름길로 가야하는 규칙이 있어서
+    일단 적용해서 createConnection에 넣어 보았습니다..
+    */
 
     /*칸에 해당하는 노드들 생성
-    -안내서에는 오른쪽 아래가 출발 지점인 것 같은데 노드 위치가 맞는지 확인 부탁드립니다..
+    //공지 안내서에는 오른쪽 아래가 출발 지점인 것 같은데 주석 달아놓으신 노드 위치가 맞는지 애매해서
+    확인 한번 부탁드립니다..
+    
     private Node1 = new Node(1, x, y, false, false, false, false);
     //Node1 = 시작점
     //오른쪽 변
@@ -79,9 +85,6 @@ public class Board4 implements BoardInterface
      */
 
     //TODO 각 코너, 중심점에서 addNext하기
-    /*윷놀이 규칙 중에 코너나 중심점에 있으면 지름길로 가야하는 규칙이
-    있는데 이를 적용하는 게 맞을지.. 
-    */
 
     @Override
     public Node getStartPoint() {
@@ -129,6 +132,36 @@ public class Board4 implements BoardInterface
 
     @Override
     public void createConnection(int from_key, int to_key) {
+        Node from = boardShape.get(from_key);
+        Node to = boardShape.get(to_key);
+
+        if (from == null || to == null) return;
+
+        /*윷놀이 규칙에 따라서 특정 노드에 있을 때만 특수하게 저장하는 걸로
+        코드 넣어보았는데 이상하다싶으면 수정해주시면 감사하겠습니다..
+        ex) 6번 노드면 21->22->29->23->24 이 방향으로 가야함
+         */
+        Map<Integer, Integer[]> shortcut = Map.of(
+                6, new Integer[]{21, 22, 29, 23, 24},
+                11, new Integer[]{25, 26, 29, 27, 28},
+                29, new Integer[]{27, 28},
+                16, new Integer[]{17, 18, 19, 20}
+        );
+
+        if (shortcut.containsKey(from_key)) {
+            Integer[] path = shortcut.get(from_key);
+            for (int i = 0; i < path.length; i++) {
+                if (to_key == path[i]) {
+                    from.getNextMap().put(i + 1, to); // i+1->도개걸윷모
+                    return;
+                }
+            }
+        }
+
+        int distance = to_key - from_key;  // 이동한 거리
+        if (distance >= 1 && distance <= 5) {
+            from.getNextMap().put(distance, to); // 이동한 만큼의 노드 저장
+        }
 
     }
 }
