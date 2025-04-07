@@ -82,6 +82,11 @@ public class Node
         return isCorner;
     }
 
+    //next 쓰기 위한 추가
+    public HashMap<Integer, Node> getNextMap() {
+        return next;
+    }
+
     //TODO makeNode: 노드에 좌표값, 다음 노드들 정보, 특이사항 등 추가 or 생성자가 있어서 필요 없을 수도
 
 
