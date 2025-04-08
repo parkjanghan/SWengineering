@@ -138,7 +138,7 @@ public class Board4 implements BoardInterface
         if (from == null || to == null) return;
 
         /*윷놀이 규칙에 따라서 특정 노드에 있을 때만 특수하게 저장하는 걸로
-        코드 넣어보았는데 이상하다싶으면 수정해주시면 감사하겠습니다..
+        코드 넣어보았습니다
         ex) 6번 노드면 21->22->29->23->24 이 방향으로 가야함
          */
         Map<Integer, Integer[]> shortcut = Map.of(
@@ -157,7 +157,9 @@ public class Board4 implements BoardInterface
                 }
             }
         }
-
+        
+        //일반적인 경우 수정 필요..
+        //22->29 같은 경우의 반영이 아직 안됨
         int distance = to_key - from_key;  // 이동한 거리
         if (distance >= 1 && distance <= 5) {
             from.getNextMap().put(distance, to); // 이동한 만큼의 노드 저장
