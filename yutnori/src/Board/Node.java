@@ -28,7 +28,7 @@ public class Node
     private final boolean isCorner; //방향이 갈리는 점인지?
 
 
-    private HashMap<Integer, Node> next = new HashMap<>(); //이동 가능한 노드  ...HashMap으로 변경 어떤지?
+    private Map<Integer, Node> next; //이동 가능한 노드  ...HashMap으로 변경 어떤지?
 
 
     public Node(int id, int x, int y, boolean isStartPoint, boolean isEndPoint, boolean isCenter, boolean isCorner) {
@@ -39,6 +39,7 @@ public class Node
         this.isEndPoint = isEndPoint;
         this.isCenter = isCenter;
         this.isCorner = isCorner;
+        this.next = new HashMap<>();
     }
 
     public int getId() {
@@ -83,11 +84,21 @@ public class Node
     }
 
     //next 쓰기 위한 추가
-    public HashMap<Integer, Node> getNextMap() {
+    public Map<Integer, Node> getNextMap() {
         return next;
     }
 
-    //TODO makeNode: 노드에 좌표값, 다음 노드들 정보, 특이사항 등 추가 or 생성자가 있어서 필요 없을 수도
+    public void setNextMap(Map<Integer, Node> next)
+    {
+        this.next = next;
+    }
+
+    public Node getNextNode(int yut)
+    {
+        return next.get(yut);
+    }
+
+
 
 
 

@@ -16,7 +16,7 @@ public interface BoardInterface {
 
     void setNodes(Map<Integer, Node> nodes);
 
-    void createNode(int key, int x_pos, int y_pos);
+    void createNode(int key, int x_pos, int y_pos, boolean b, boolean b1, boolean b2, boolean b3);
 
     void createConnection(int from_key, int to_key );
 
