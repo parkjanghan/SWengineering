@@ -105,7 +105,7 @@ public class Board4 implements BoardInterface
 
     @Override
     public Map<Integer, Node> getNodes() {
-        return Map.of();
+        return boardShape;
     }
 
     @Override
