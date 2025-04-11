@@ -105,7 +105,7 @@ public class Board4 implements BoardInterface
 
     @Override
     public Map<Integer, Node> getNodes() {
-        return Map.of();
+        return boardShape;
     }
 
     @Override
@@ -131,6 +131,8 @@ public class Board4 implements BoardInterface
     }
 
     private void connectNodes() {
+        
+        
         //변에 있는 노드들 + 코너라면 일반적인 움직임
         for(int i =1 ; i <20; i ++)
         {
