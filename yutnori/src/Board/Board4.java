@@ -255,18 +255,21 @@ public class Board4 implements BoardInterface
                 from.getNextMap().put(1, to); // 도 (1 step)
 
                 //도 개 걸 윷 모모
-                for (int steps = 2; steps <= 5; steps++) {
-                    int nextKey = from_key + steps;
-                    if (nextKey > 20) nextKey -= 20; // Wrap around the main path
-                    Node nextNode = boardShape.get(nextKey);
+                for (int i = 2; i <= 5; i++) {
+                    int next_key = from_key + i;
+                    if (next_key > 20)
+                    {
+                        next_key -= 20;
+                    }
+                    Node nextNode = boardShape.get(next_key);
                     if (nextNode != null) {
-                        from.getNextMap().put(steps, nextNode);
+                        from.getNextMap().put(i, nextNode);
                     }
                 }
                 return;
             }
         }
-        // 대각선 경로로
+        // 대각선 경로로 from_key = 21 22 23 24
         if ((from_key >= 21 && from_key <= 24) || (from_key >= 25 && from_key <= 28)) {
             if (to_key == from_key + 1 ||
                     (from_key == 24 && to_key == 25) ||
@@ -277,12 +280,16 @@ public class Board4 implements BoardInterface
         }
 
         //가운데
-        if (from_key == 29) {
+        /*if (from_key == 29) {
             if (to_key == 27 || to_key == 28) {
                 from.getNextMap().put(1, to); // 도 (1 step)
                 return;
             }
         }
+
+         */
+
+
 
     }
     /*
