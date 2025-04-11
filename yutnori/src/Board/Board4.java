@@ -132,10 +132,6 @@ public class Board4 implements BoardInterface
 
     private void connectNodes() {
         
-        //특수 경우
-        connectShortcut(6, new int[]{21, 22, 29, 23, 24});
-        connectShortcut(11, new int[]{25, 26, 29, 27, 28});
-        connectShortcut(29, new int[]{27, 28});
         
         //변에 있는 노드들 + 코너라면 일반적인 움직임
         for(int i =1 ; i <20; i ++)
@@ -220,12 +216,6 @@ public class Board4 implements BoardInterface
             return;
         }
         from.getNextMap().put(-1, to);
-    }
-
-    private void connectShortcut(int fromKey, int[] targets) {
-        for (int i = 0; i < targets.length; i++) {
-            createConnection(fromKey, targets[i]);
-        }
     }
 
     @Override
