@@ -145,7 +145,7 @@ public class Board4 implements BoardInterface{
         boardShape.get(21).addNext_nodes(1, new ArrayList<>(List.of(29))); //도
         boardShape.get(21).addNext_nodes(2, new ArrayList<>(List.of(23))); //개
         boardShape.get(21).addNext_nodes(3, new ArrayList<>(List.of(24)));//걸
-        boardShape.get(21).addNext_nodes(4, new ArrayList<>(List.of(216)));//윷
+        boardShape.get(21).addNext_nodes(4, new ArrayList<>(List.of(16)));//윷
         boardShape.get(21).addNext_nodes(5, new ArrayList<>(List.of(17)));//모
 
         //23
