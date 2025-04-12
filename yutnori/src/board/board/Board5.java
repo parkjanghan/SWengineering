@@ -130,7 +130,7 @@ public class Board5 implements BoardInterface{
     private void SetConnections() {
 
         //1번 노드
-        boardShape.get(1).addNext_nodes(0, new ArrayList<>(List.of(25,26))); //0은 빽도
+        boardShape.get(1).addNext_nodes(0, new ArrayList<>(List.of(25,27))); //0은 빽도 - 25 or 27??
         boardShape.get(1).addNext_nodes(1, new ArrayList<>(List.of(2))); //도
         boardShape.get(1).addNext_nodes(2, new ArrayList<>(List.of(3))); //개
         boardShape.get(1).addNext_nodes(3, new ArrayList<>(List.of(4)));//걸
