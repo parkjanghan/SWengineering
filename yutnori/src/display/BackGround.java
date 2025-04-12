@@ -14,12 +14,14 @@ public class BackGround extends JPanel{
   private BufferedImage img; //배경에 사용할 이미지 데이터를 저장하는 변수
   private int playerNumber = 2;
   private int pieceNumber = 2;
-  //기본 설정값으로 player 수와 piece 수를 2로 지정
+  private int boardNumber = 4;
+  //기본 설정값으로 player 수와 piece 수를 2로 지정, board는 4(사각형)로 설정
 
   public JButton enter = new JButton(); //게임을 시작할 때 눌러야 할 버튼 생성
 
   public JComboBox playerNumberInput;
   public JComboBox pieceNumberInput;
+  public  JComboBox boardNumberInput;
   //player 수와 piece 수를 선택할 수 있는 드롭다운 메뉴를 위한 컴포넌트 선언
 
   public void setGUI() { //UI 구성 요소들을 초기화하고 패널에 배치하는 메서드
@@ -66,16 +68,20 @@ public class BackGround extends JPanel{
 
     JLabel playerInput = new JLabel("player 수");
     JLabel pieceInput = new JLabel("말의 갯수");
+    JLabel boardInput = new JLabel("보드판 종류");
     buttonPanel.add(playerInput);
     buttonPanel.add(pieceInput);
+    buttonPanel.add(boardInput);
     //드롭다운 메뉴 위에 설명용 라벨 추가
 
     String s1[] = { "2", "3", "4" };
     String s2[] = { "2", "3", "4", "5" };
+    String s3[] = { "4", "5", "6" };
     //콤보박스에 들어갈 선택지 배열 s1: 플레이어 수, s2: 말의 수
 
     playerNumberInput = new JComboBox(s1);
     pieceNumberInput = new JComboBox(s2);
+    boardNumberInput = new JComboBox(s3);
     //콤보박스 생성 및 위 배열을 값으로 설정
 
     playerNumberInput.addItemListener(new ItemListener() {
@@ -101,10 +107,22 @@ public class BackGround extends JPanel{
     });
     //말 콤보박스에도 같은 방식으로 리스너 추가.
 
-
+    /*
+    boardNumberInput.addItemListener(new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        if (e.getSource() == boardNumberInput) {
+          boardNumber = Integer.parseInt((boardNumberInput.getSelectedItem()).toString());
+          System.out.println((boardNumberInput.getSelectedItem()).toString());
+        }
+      }
+    });
+     */
+    //보드판 콤보박스도 리스너 추가 예정
 
     buttonPanel.add(playerNumberInput, BorderLayout.SOUTH);
     buttonPanel.add(pieceNumberInput, BorderLayout.SOUTH);
+    buttonPanel.add(boardNumberInput, BorderLayout.SOUTH);
     //콤보박스를 버튼 패널에 추가
 
     buttonPanel.add(initialString);
