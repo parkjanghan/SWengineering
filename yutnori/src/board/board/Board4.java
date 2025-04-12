@@ -99,8 +99,9 @@ public class Board4 implements BoardInterface{
 
        for(int i=16; i<=20; i++)
        {
-           for(int j =0; j<6;j ++)
+           for(int j =-1; j<6;j ++)
            {
+
                if(i+j>20)
                {
                    setConnection_one_dest(i,j,30); //끝나면
@@ -203,28 +204,28 @@ public class Board4 implements BoardInterface{
 
     }
 
-    private void setSingleConnection(int i) {
-        boardShape.get(i).addNext_nodes(0, new ArrayList<>(List.of(i-1))); //0은 빽도
+    @Override
+    public void setSingleConnection(int i) {
+        boardShape.get(i).addNext_nodes(0, new ArrayList<>(List.of(i-1))); //-1은 빽도
         boardShape.get(i).addNext_nodes(1, new ArrayList<>(List.of(i+1))); //도
         boardShape.get(i).addNext_nodes(2, new ArrayList<>(List.of(i+2)));//개
         boardShape.get(i).addNext_nodes(3, new ArrayList<>(List.of(i+3)));//걸
         boardShape.get(i).addNext_nodes(4, new ArrayList<>(List.of(i+4)));//윷
         boardShape.get(i).addNext_nodes(5, new ArrayList<>(List.of(i+5)));//모
     }
-    private void setConnection_one_dest(int from_key, int yut_result, int to_key)
+
+    @Override
+    public void setConnection_one_dest(int from_key, int yut_result, int to_key)
     {
         boardShape.get(from_key).addNext_nodes(yut_result, new ArrayList<>(List.of(to_key)));
     }
 
     @Override
-    public int getKey() {
-        return 0;
+    public int getKey(int key) {
+        return boardShape.get(key).getKey();
     }
 
-    @Override
-    public void setKey(int key) {
 
-    }
 
     @Override
     public void setNext_nodes(int key, int next_node) {
@@ -239,8 +240,7 @@ public class Board4 implements BoardInterface{
 
         Node node = boardShape.get(key);
         if (node == null) return new ArrayList<>(); // 노드가 존재하지 않을 경우 예외 방지
-        ArrayList<Integer> result = node.getNext_nodes(yut_result);
-        return result;
+        return node.getNext_nodes(yut_result);
     }
 
     @Override
@@ -253,13 +253,5 @@ public class Board4 implements BoardInterface{
 
     }
 
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
 
-    @Override
-    public boolean isFull() {
-        return false;
-    }
 }
