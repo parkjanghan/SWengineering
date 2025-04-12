@@ -180,7 +180,7 @@ public class Board5 implements BoardInterface{
         boardShape.get(6).addNext_nodes(2, new ArrayList<>(List.of(29,8)));
         boardShape.get(6).addNext_nodes(3, new ArrayList<>(List.of(36,9)));
         boardShape.get(6).addNext_nodes(4, new ArrayList<>(List.of(34,10)));
-        boardShape.get(6).addNext_nodes(5, new ArrayList<>(List.of(35,11))); // 중앙까지
+        boardShape.get(6).addNext_nodes(5, new ArrayList<>(List.of(35,11)));
 
         // 11번 노드
         boardShape.get(11).addNext_nodes(0, new ArrayList<>(List.of(10)));//빽도
