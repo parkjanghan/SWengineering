@@ -19,7 +19,7 @@ public class Board5 implements BoardInterface{
 
     private void InitNodes()
     {
-        createNode(1, 500, 500, true, false, false, false);  // Start node
+        createNode(1, 500, 500, true, false, false, false);  // 임시 좌표표
         createNode(2, 450, 500, false, false, false, false);
         createNode(3, 400, 500, false, false, false, false);
         createNode(4, 350, 500, false, false, false, false);
@@ -55,7 +55,7 @@ public class Board5 implements BoardInterface{
         createNode(34, 150, 400, false, false, false, false);
         createNode(35, 100, 400, false, false, false, false);
         createNode(36, 50, 400, false, false, false, false);
-        createNode(37, 500, 500, false, true, false, false);  // Final node
+        createNode(37, 500, 500, false, true, false, false); 
 
     }
 
