@@ -19,7 +19,7 @@ public class Board6 implements BoardInterface{
 
     private void InitNodes()
     {
-        createNode(1, 500, 500, true, false, false, false);
+        createNode(1, 500, 500, true, false, false, false);//임시 좌표
         createNode(2, 450, 500, false, false, false, false);
         createNode(3, 400, 500, false, false, false, false);
         createNode(4, 350, 500, false, false, false, false);
