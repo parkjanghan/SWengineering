@@ -76,7 +76,7 @@ public class BackGround extends JPanel{
 
     String s1[] = { "2", "3", "4" };
     String s2[] = { "2", "3", "4", "5" };
-    String s3[] = { "4", "5", "6" };
+    String s3[] = { "사각형", "오각형", "육각형" };
     //콤보박스에 들어갈 선택지 배열 s1: 플레이어 수, s2: 말의 수
 
     playerNumberInput = new JComboBox(s1);
