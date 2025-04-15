@@ -174,7 +174,6 @@ public class Board5 implements BoardInterface{
             }
         }
         
-        //ex) 11번일때 35번 or 12번 둘 다 가능한지 35번만 가능한지??
         // 6번 노드
         boardShape.get(6).addNext_nodes(0, new ArrayList<>(List.of(5)));  // 빽도
         boardShape.get(6).addNext_nodes(1, new ArrayList<>(List.of(28,7)));
