@@ -1,15 +1,17 @@
 package board.board;
 
+import play.YutResult;
+
 import java.util.*;
 
-public class Board6 implements BoardInterface{
+public class Board6 extends BoardAbstract{
 
-    final Map<Integer, Node> boardShape;
+
 
 
     public Board6()
     {
-        this.boardShape = new HashMap<>();
+
         InitNodes();
         SetConnections();
 
@@ -17,7 +19,7 @@ public class Board6 implements BoardInterface{
     }
 
 
-    private void InitNodes()
+    protected void InitNodes()
     {
         createNode(1, 500, 500, true, false, false, false);//임시 좌표
         createNode(2, 450, 500, false, false, false, false);
@@ -74,15 +76,16 @@ public class Board6 implements BoardInterface{
         boardShape.put(key, node);
     }
 
-    private void SetConnections() {
+
+    protected void SetConnections() {
 
         //1번 노드
-        boardShape.get(1).addNext_nodes(0, new ArrayList<>(List.of(30,32))); //0은 빽도
-        boardShape.get(1).addNext_nodes(1, new ArrayList<>(List.of(2))); //도
-        boardShape.get(1).addNext_nodes(2, new ArrayList<>(List.of(3))); //개
-        boardShape.get(1).addNext_nodes(3, new ArrayList<>(List.of(4)));//걸
-        boardShape.get(1).addNext_nodes(4, new ArrayList<>(List.of(5)));//윷
-        boardShape.get(1).addNext_nodes(5, new ArrayList<>(List.of(6)));//모
+        boardShape.get(1).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(30,32))); //0은 빽도
+        boardShape.get(1).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
+        boardShape.get(1).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
+        boardShape.get(1).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
+        boardShape.get(1).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
+        boardShape.get(1).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//모
 
 
         for(int i = 2; i<=5; i++) //2~5번 노드
@@ -126,182 +129,170 @@ public class Board6 implements BoardInterface{
         }
 
         // 6번 노드
-        boardShape.get(6).addNext_nodes(0, new ArrayList<>(List.of(5)));// 빽도
-        boardShape.get(6).addNext_nodes(1, new ArrayList<>(List.of(33,7)));
-        boardShape.get(6).addNext_nodes(2, new ArrayList<>(List.of(34,8)));
-        boardShape.get(6).addNext_nodes(3, new ArrayList<>(List.of(43,9)));
-        boardShape.get(6).addNext_nodes(4, new ArrayList<>(List.of(41,10)));
-        boardShape.get(6).addNext_nodes(5, new ArrayList<>(List.of(42,11)));
+        boardShape.get(6).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(5)));// 빽도
+        boardShape.get(6).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(33,7)));
+        boardShape.get(6).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(34,8)));
+        boardShape.get(6).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(43,9)));
+        boardShape.get(6).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(41,10)));
+        boardShape.get(6).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(42,11)));
 
-        // 11번 노드
-        boardShape.get(11).addNext_nodes(0, new ArrayList<>(List.of(10)));//빽도
-        boardShape.get(11).addNext_nodes(1, new ArrayList<>(List.of(35,12)));//도
-        boardShape.get(11).addNext_nodes(2, new ArrayList<>(List.of(36,13)));//개
-        boardShape.get(11).addNext_nodes(3, new ArrayList<>(List.of(43,14)));//걸
-        boardShape.get(11).addNext_nodes(4, new ArrayList<>(List.of(41,15)));//윷
-        boardShape.get(11).addNext_nodes(5, new ArrayList<>(List.of(42,16)));//모
+// 11번 노드
+        boardShape.get(11).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(10)));//빽도
+        boardShape.get(11).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(35,12)));//도
+        boardShape.get(11).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(36,13)));//개
+        boardShape.get(11).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(43,14)));//걸
+        boardShape.get(11).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(41,15)));//윷
+        boardShape.get(11).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(42,16)));//모
 
-        //16번
-        boardShape.get(16).addNext_nodes(0, new ArrayList<>(List.of(15))); //빽도
-        boardShape.get(16).addNext_nodes(1, new ArrayList<>(List.of(37,17))); //도
-        boardShape.get(16).addNext_nodes(2, new ArrayList<>(List.of(38,18))); //개
-        boardShape.get(16).addNext_nodes(3, new ArrayList<>(List.of(43,19)));//걸
-        boardShape.get(16).addNext_nodes(4, new ArrayList<>(List.of(41,20)));//윷
-        boardShape.get(16).addNext_nodes(5, new ArrayList<>(List.of(43,21)));//모
+//16번
+        boardShape.get(16).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(15))); //빽도
+        boardShape.get(16).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(37,17))); //도
+        boardShape.get(16).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(38,18))); //개
+        boardShape.get(16).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(43,19)));//걸
+        boardShape.get(16).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(41,20)));//윷
+        boardShape.get(16).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(43,21)));//모
 
-        //21번
-        boardShape.get(21).addNext_nodes(0, new ArrayList<>(List.of(20))); //빽도
-        boardShape.get(21).addNext_nodes(1, new ArrayList<>(List.of(22,39))); //도
-        boardShape.get(21).addNext_nodes(2, new ArrayList<>(List.of(23,40))); //개
-        boardShape.get(21).addNext_nodes(3, new ArrayList<>(List.of(24,43)));//걸
-        boardShape.get(21).addNext_nodes(4, new ArrayList<>(List.of(25,41)));//윷
-        boardShape.get(21).addNext_nodes(5, new ArrayList<>(List.of(26,42)));//모
+//21번
+        boardShape.get(21).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(20))); //빽도
+        boardShape.get(21).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(22,39))); //도
+        boardShape.get(21).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(23,40))); //개
+        boardShape.get(21).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(24,43)));//걸
+        boardShape.get(21).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(25,41)));//윷
+        boardShape.get(21).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(26,42)));//모
 
-        //26번
-        boardShape.get(26).addNext_nodes(0, new ArrayList<>(List.of(25,42))); //빽도-25 or 42??
-        boardShape.get(26).addNext_nodes(1, new ArrayList<>(List.of(27))); //도
-        boardShape.get(26).addNext_nodes(2, new ArrayList<>(List.of(28))); //개
-        boardShape.get(26).addNext_nodes(3, new ArrayList<>(List.of(29)));//걸
-        boardShape.get(26).addNext_nodes(4, new ArrayList<>(List.of(30)));//윷
-        boardShape.get(26).addNext_nodes(5, new ArrayList<>(List.of(44)));//모
+//26번
+        boardShape.get(26).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(25,42))); //빽도-25 or 42??
+        boardShape.get(26).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(27))); //도
+        boardShape.get(26).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(28))); //개
+        boardShape.get(26).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(29)));//걸
+        boardShape.get(26).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(30)));//윷
+        boardShape.get(26).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(44)));//모
 
-        // 33 35 37 39 개걸윷모
+// 33 35 37 39 개걸윷모
         int[] nodeNumbers1 = {33, 35, 37, 39};
         for (int node : nodeNumbers1) {
-            boardShape.get(node).addNext_nodes(2, new ArrayList<>(List.of(43)));  // 개
-            boardShape.get(node).addNext_nodes(3, new ArrayList<>(List.of(41)));  // 걸
-            boardShape.get(node).addNext_nodes(4, new ArrayList<>(List.of(42)));  // 윷
-            boardShape.get(node).addNext_nodes(5, new ArrayList<>(List.of(26)));  // 모
+            boardShape.get(node).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(43)));  // 개
+            boardShape.get(node).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(41)));  // 걸
+            boardShape.get(node).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(42)));  // 윷
+            boardShape.get(node).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(26)));  // 모
         }
 
-        //34 36 38 40 도개걸윷모
+//34 36 38 40 도개걸윷모
         int[] nodeNumbers2 = {33, 35, 37, 39};
         for (int node : nodeNumbers2) {
-            boardShape.get(node).addNext_nodes(1, new ArrayList<>(List.of(43)));  // 도
-            boardShape.get(node).addNext_nodes(2, new ArrayList<>(List.of(41)));  // 개
-            boardShape.get(node).addNext_nodes(3, new ArrayList<>(List.of(42)));  // 걸
-            boardShape.get(node).addNext_nodes(4, new ArrayList<>(List.of(26)));  // 윷
-            boardShape.get(node).addNext_nodes(5, new ArrayList<>(List.of(27)));  // 모
+            boardShape.get(node).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(43)));  // 도
+            boardShape.get(node).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(41)));  // 개
+            boardShape.get(node).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(42)));  // 걸
+            boardShape.get(node).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(26)));  // 윷
+            boardShape.get(node).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(27)));  // 모
         }
 
-        //33번
-        boardShape.get(33).addNext_nodes(0, new ArrayList<>(List.of(6)));  // 빽도
-        boardShape.get(33).addNext_nodes(1, new ArrayList<>(List.of(34))); // 도
 
-        //34번
-        boardShape.get(34).addNext_nodes(0, new ArrayList<>(List.of(33)));  // 빽도
+// 33번 노드
+        boardShape.get(33).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(6)));  // 빽도
+        boardShape.get(33).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(34))); // 도
 
-        //35번
-        boardShape.get(35).addNext_nodes(0, new ArrayList<>(List.of(11)));  // 빽도
-        boardShape.get(35).addNext_nodes(1, new ArrayList<>(List.of(36)));  // 도
+// 34번 노드
+        boardShape.get(34).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(33)));  // 빽도
 
-        //36번
-        boardShape.get(36).addNext_nodes(0, new ArrayList<>(List.of(35)));  // 빽도
+// 35번 노드
+        boardShape.get(35).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(11)));  // 빽도
+        boardShape.get(35).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(36)));  // 도
 
-        //37번
-        boardShape.get(37).addNext_nodes(0, new ArrayList<>(List.of(16)));  // 빽도
-        boardShape.get(37).addNext_nodes(1, new ArrayList<>(List.of(38)));  // 도
+// 36번 노드
+        boardShape.get(36).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(35)));  // 빽도
 
-        //38번
-        boardShape.get(38).addNext_nodes(0, new ArrayList<>(List.of(37)));  // 빽도
+// 37번 노드
+        boardShape.get(37).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(16)));  // 빽도
+        boardShape.get(37).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(38)));  // 도
 
-        //39번
-        boardShape.get(39).addNext_nodes(0, new ArrayList<>(List.of(21)));  // 빽도
-        boardShape.get(39).addNext_nodes(0, new ArrayList<>(List.of(40)));  // 도
+// 38번 노드
+        boardShape.get(38).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(37)));  // 빽도
 
-        //40번
-        boardShape.get(40).addNext_nodes(0, new ArrayList<>(List.of(39)));  // 빽도
+// 39번 노드
+        boardShape.get(39).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(21)));  // 빽도
+        boardShape.get(39).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(40)));  // 도
 
-        //41번
-        boardShape.get(41).addNext_nodes(0, new ArrayList<>(List.of(43)));  // 빽도
-        boardShape.get(41).addNext_nodes(1, new ArrayList<>(List.of(42)));  // 도
-        boardShape.get(41).addNext_nodes(2, new ArrayList<>(List.of(26)));  // 개
-        boardShape.get(41).addNext_nodes(3, new ArrayList<>(List.of(27)));  // 걸
-        boardShape.get(41).addNext_nodes(4, new ArrayList<>(List.of(28)));  // 윷
-        boardShape.get(41).addNext_nodes(5, new ArrayList<>(List.of(29)));  // 모
+// 40번 노드
+        boardShape.get(40).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(39)));  // 빽도
 
-        //42번
-        boardShape.get(42).addNext_nodes(0, new ArrayList<>(List.of(41)));  // 빽도
-        boardShape.get(42).addNext_nodes(1, new ArrayList<>(List.of(26)));  // 도
-        boardShape.get(42).addNext_nodes(2, new ArrayList<>(List.of(27)));  // 개
-        boardShape.get(42).addNext_nodes(3, new ArrayList<>(List.of(28)));  // 걸
-        boardShape.get(42).addNext_nodes(4, new ArrayList<>(List.of(29)));  // 윷
-        boardShape.get(42).addNext_nodes(5, new ArrayList<>(List.of(30)));  // 모
+// 41번 노드
+        boardShape.get(41).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(43)));  // 빽도
+        boardShape.get(41).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(42)));  // 도
+        boardShape.get(41).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(26)));  // 개
+        boardShape.get(41).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(27)));  // 걸
+        boardShape.get(41).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(28)));  // 윷
+        boardShape.get(41).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(29)));  // 모
 
-        //31번
-        boardShape.get(31).addNext_nodes(0, new ArrayList<>(List.of(43)));  // 빽도
-        boardShape.get(31).addNext_nodes(1, new ArrayList<>(List.of(32)));  // 도
-        boardShape.get(31).addNext_nodes(2, new ArrayList<>(List.of(44)));  // 개
-        boardShape.get(31).addNext_nodes(3, new ArrayList<>(List.of(44)));  // 걸
-        boardShape.get(31).addNext_nodes(4, new ArrayList<>(List.of(44)));  // 윷
-        boardShape.get(31).addNext_nodes(5, new ArrayList<>(List.of(44)));  // 모
-        //32번
-        boardShape.get(32).addNext_nodes(0, new ArrayList<>(List.of(31)));  // 빽도
-        boardShape.get(32).addNext_nodes(1, new ArrayList<>(List.of(32)));  // 도
-        boardShape.get(32).addNext_nodes(2, new ArrayList<>(List.of(44)));  // 개
-        boardShape.get(32).addNext_nodes(3, new ArrayList<>(List.of(44)));  // 걸
-        boardShape.get(32).addNext_nodes(4, new ArrayList<>(List.of(44)));  // 윷
-        boardShape.get(32).addNext_nodes(5, new ArrayList<>(List.of(44)));  // 모
+// 42번 노드
+        boardShape.get(42).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(41)));  // 빽도
+        boardShape.get(42).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(26)));  // 도
+        boardShape.get(42).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(27)));  // 개
+        boardShape.get(42).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(28)));  // 걸
+        boardShape.get(42).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(29)));  // 윷
+        boardShape.get(42).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(30)));  // 모
 
+// 31번 노드
+        boardShape.get(31).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(43)));  // 빽도
+        boardShape.get(31).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(32)));  // 도
+        boardShape.get(31).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(44)));  // 개
+        boardShape.get(31).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(44)));  // 걸
+        boardShape.get(31).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(44)));  // 윷
+        boardShape.get(31).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(44)));  // 모
 
-        //43번
-        boardShape.get(43).addNext_nodes(1, new ArrayList<>(List.of(31))); //도
-        boardShape.get(43).addNext_nodes(2, new ArrayList<>(List.of(32))); //개
-        boardShape.get(43).addNext_nodes(3, new ArrayList<>(List.of(44)));//걸
-        boardShape.get(43).addNext_nodes(4, new ArrayList<>(List.of(44)));//윷
-        boardShape.get(43).addNext_nodes(5, new ArrayList<>(List.of(44)));//모
+// 32번 노드
+        boardShape.get(32).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(31)));  // 빽도
+        boardShape.get(32).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(32)));  // 도
+        boardShape.get(32).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(44)));  // 개
+        boardShape.get(32).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(44)));  // 걸
+        boardShape.get(32).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(44)));  // 윷
+        boardShape.get(32).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(44)));  // 모
 
+// 43번 노드
+        boardShape.get(43).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(31))); // 도
+        boardShape.get(43).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(32))); // 개
+        boardShape.get(43).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(44))); // 걸
+        boardShape.get(43).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(44))); // 윷
+        boardShape.get(43).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(44))); // 모
 
 
     }
 
     @Override
     public void setSingleConnection(int i) {
-        boardShape.get(i).addNext_nodes(0, new ArrayList<>(List.of(i-1))); //-1은 빽도
-        boardShape.get(i).addNext_nodes(1, new ArrayList<>(List.of(i+1))); //도
-        boardShape.get(i).addNext_nodes(2, new ArrayList<>(List.of(i+2)));//개
-        boardShape.get(i).addNext_nodes(3, new ArrayList<>(List.of(i+3)));//걸
-        boardShape.get(i).addNext_nodes(4, new ArrayList<>(List.of(i+4)));//윷
-        boardShape.get(i).addNext_nodes(5, new ArrayList<>(List.of(i+5)));//모
+        boardShape.get(i).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(i-1))); //-1은 빽도
+        boardShape.get(i).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(i+1))); //도
+        boardShape.get(i).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(i+2)));//개
+        boardShape.get(i).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(i+3)));//걸
+        boardShape.get(i).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(i+4)));//윷
+        boardShape.get(i).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(i+5)));//모
     }
 
     @Override
     public void setConnection_one_dest(int from_key, int yut_result, int to_key)
     {
-        boardShape.get(from_key).addNext_nodes(yut_result, new ArrayList<>(List.of(to_key)));
+        if (yut_result==-1) {
+            yut_result = 0;
+        }
+        YutResult yutResultEnum = YutResult.values()[yut_result];
+
+        boardShape.get(from_key).addNext_nodes(yutResultEnum, new ArrayList<>(List.of(to_key)));
     }
 
     @Override
-    public int getKey(int key) {
+    public int getKey(int key)
+    {
         return boardShape.get(key).getKey();
     }
 
 
-
     @Override
-    public void setNext_nodes(int key, int next_node) {
-
-    }
-
-
-
-    @Override
-    public ArrayList<Integer> getNext_nodes_board(int key, int yut_result) {
+    public ArrayList<Integer> getNext_nodes_board(int key, YutResult yut_result) {
 
 
         Node node = boardShape.get(key);
         if (node == null) return new ArrayList<>(); // 노드가 존재하지 않을 경우 예외 방지
         return node.getNext_nodes(yut_result);
-    }
-
-    @Override
-    public void addNext_nodes(int key, int next_node) {
-
-    }
-
-    @Override
-    public void removeNext_nodes(int key, int next_node) {
-
     }
 
 
