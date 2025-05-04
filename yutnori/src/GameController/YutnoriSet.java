@@ -58,7 +58,6 @@ public class YutnoriSet {
         this.inGameFlag = NEED_TO_ROLL;  //윷 던지기 저 상태
         this.playerResults = new ArrayList<>();
         this.yutTotal = new YutTotal();
-
     }
 
     public void setPlayer(int numberOfPlayers, int numberOfPieces)
@@ -230,6 +229,7 @@ public class YutnoriSet {
         notifyGameStateChange("말 잡힘", new int[]{playerTurn, destNodeId});
         return true;
     }
+
     //tryStackMal
 //     public boolean tryStackMal(int playerTurn, int destNodeId) {
 //            Player currentPlayer = players.get(playerTurn); // 현재 플레이어
