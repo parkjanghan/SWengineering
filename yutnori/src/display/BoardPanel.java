@@ -1,9 +1,9 @@
 package display;
 
-import Assets.BoardGraph;
-import Assets.BoardGraph4;
 import GameController.YutnoriSet;
 import play.YutResult;
+import assets.BoardGraph;
+import assets.BoardGraph4;
 
 import javax.swing.*;
 import java.awt.*;
