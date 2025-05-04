@@ -31,7 +31,6 @@ public class BoardGraph6 implements BoardGraph {
             corners[i] = new Point(x, y);
         }
 
-        // 노드 번호 초기화
         int nodeId = 1;
 
         // 꼭짓점 포함한 외곽 노드 1~30 생성
@@ -39,7 +38,6 @@ public class BoardGraph6 implements BoardGraph {
             Point from = corners[side];
             Point to = corners[(side + 1) % 6];
 
-            // 마지막 변에서는 꼭짓점 포함 (중복 방지)
             int limit = (side == 5) ? size : size - 1;
 
             for (int j = 0; j < limit; j++) {
@@ -50,7 +48,6 @@ public class BoardGraph6 implements BoardGraph {
             }
         }
 
-        // 외곽 노드 총 30개 생성됨 (1~30)
 
         Point center = new Point(middleX, middleY);
         nodePositions.put(43, center);
@@ -66,12 +63,6 @@ public class BoardGraph6 implements BoardGraph {
         Point node30 = nodePositions.get(30);
         Point node44 = new Point(node30.x -50, node30.y - 50);
         nodePositions.put(44, node44);
-
-        // 노드 좌표 출력
-        for (Map.Entry<Integer, Point> entry : nodePositions.entrySet()) {
-            System.out.printf("Node %d: (%d, %d)%n", entry.getKey(), entry.getValue().x, entry.getValue().y);
-        }
-
 
     }
 
