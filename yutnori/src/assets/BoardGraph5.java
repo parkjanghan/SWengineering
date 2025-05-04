@@ -24,13 +24,14 @@ public class BoardGraph5 implements BoardGraph {
 
         Point[] corners = new Point[5];
         for (int i = 0; i < 5; i++) {
-            double angle = Math.PI / 2 + i * angleStep + offset; // 반시계
+            double angle = Math.PI / 2 + i * angleStep + offset;
             corners[i] = new Point(
                     (int) (middleX + 250 * Math.cos(angle)),
                     (int) (middleY - 250 * Math.sin(angle))
             );
         }
 
+        // 꼭짓점 포함한 외곽 노드 1~25 생성
         int nodeId = 1;
         for (int side = 0; side < 5; side++) {
             Point from = corners[side];
