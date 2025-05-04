@@ -15,7 +15,7 @@ public class BoardGraph6 implements BoardGraph {
     }
 
     public void setupBoardGraph() {
-
+        //수정중
         int size = 6;
         int middleX = 300, middleY = 300;
         int radius = 250;
