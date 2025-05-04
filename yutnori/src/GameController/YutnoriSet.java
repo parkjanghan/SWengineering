@@ -1,13 +1,13 @@
 package GameController;
 
 import board.board.Board4;
-import board.board.Board5;
-import board.board.Board6;
 import board.board.BoardAbstract;
+import board.board.BoardInterface;
 import play.Mal;
 import play.Player;
 import play.YutResult;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Map;
@@ -36,19 +36,19 @@ public class YutnoriSet {
 
 
 
-    public YutnoriSet( int boardType)
+    public YutnoriSet(int boardType)
     {
         if(boardType == 4) {
             this.board = new Board4();
         }
-        else if(boardType == 5)
-        {
-            this.board = new Board5();
-        }
-        else if(boardType ==6)
-        {
-            this.board = new Board6();
-        }
+        // else if(boardType == 5)
+        // {
+        //     this.board = new Board5();
+        // }
+        // else if(boardType ==6)
+        // {
+        //     this.board = new Board6();
+        // }
         else
         {
             throw new IllegalArgumentException("Invalid board type");
@@ -58,6 +58,7 @@ public class YutnoriSet {
         this.inGameFlag = NEED_TO_ROLL;  //윷 던지기 저 상태
         this.playerResults = new ArrayList<>();
         this.yutTotal = new YutTotal();
+        
     }
 
     public void setPlayer(int numberOfPlayers, int numberOfPieces)
@@ -77,6 +78,7 @@ public class YutnoriSet {
     {
 
         YutResult result = yutTotal.rollYut();
+        System.out.println("[YutnoriSet] 🎯 결과: " + result.getName());
         addPlayerResult(result);
 
        // 다시 한 번 던질 수 있나 확인->  그러면 한 번 더 저장
@@ -99,6 +101,7 @@ public class YutnoriSet {
 
     public void rollYutforTest(YutResult input) //테스트 용으로 윷을 지정할 수 있음
     {
+        System.out.println("[YutnoriSet] 🎯 테스트 결과 지정: " + input.getName());
         addPlayerResult(input);
         boolean isExtraTurnAllowed;
         isExtraTurnAllowed = (input==YutResult.YUT || input == YutResult.MO);
@@ -133,8 +136,8 @@ public class YutnoriSet {
                 break;
             }
         }
-    } //rollYut test 구현해야 됨
-/// ////////////말 던지기
+    } 
+
     public int selectOutOfBoardPiece(int playerTurn)
     {
         //어느 player의 턴인지
@@ -229,28 +232,6 @@ public class YutnoriSet {
         notifyGameStateChange("말 잡힘", new int[]{playerTurn, destNodeId});
         return true;
     }
-
-    //tryStackMal
-//     public boolean tryStackMal(int playerTurn, int destNodeId) {
-//            Player currentPlayer = players.get(playerTurn); // 현재 플레이어
-//            Mal selectedMal = null;
-//            ArrayList<Mal> occupyingMal = board.boardShape.get(destNodeId).getOccupyingPieces();
-//        if (occupyingMal.isEmpty())
-//        {
-//            return false; // 선택할 수 있는 말이 없음
-//        }
-//        for (Mal mal : occupyingMal) {
-//            if (mal.getTeam() == playerTurn) {
-//                selectedMal = mal;
-//                break;
-//            }
-//        }
-//     }
-    //미완성인 함수이나 필요 없을 듯합니다
-    // 하나의 노드에는 결국 한 사람의 말만 존재 할 수 있으므로 말들을 스택하는게 아니라
-    //순회하면서 존재하는 모든 말들을 모두 같은 위치로 이동시키거나(탈락)시키는 방법으로
-    //관리하는 것이 더 쉽고 관리가 편할 듯 합니다.
-
 
     public void moveMal(int playerTurn, int selectedMalNumber, int destNodeId, YutResult yutResult)
     {
@@ -368,18 +349,34 @@ public class YutnoriSet {
         this.players = players;
     }
 
-    private void notifyGameStateChange(String property, Object to)
-    {
+    //add observer properties
+
+    private void notifyGameStateChange(String property, Object newValue) {
         if (observable != null) {
-            observable.firePropertyChange(property, null, to);
+            observable.firePropertyChange(property, null, newValue);
         }
     }
-    //add observer properties
-    public void addObserver(PropertyChangeSupport observable) {
-        this.observable = observable;
+
+    public void addObserver(PropertyChangeListener listener) {
+    if (observable == null) {
+        observable = new PropertyChangeSupport(this);
     }
+    observable.addPropertyChangeListener(listener);
+}
     public int getChosenDestNodeId() {
         return chosenDestNodeId;
+    }
+
+    public void startGame(int numberOfPlayers, int numberOfPieces) {
+        setPlayer(numberOfPlayers, numberOfPieces);
+        this.playerTurn = 0;
+        this.inGameFlag = NEED_TO_ROLL;
+        notifyGameStateChange("게임 시작됨", null);
+    }
+
+    public void nextTurn() {
+        this.playerTurn = (this.playerTurn + 1) % players.size();
+        notifyGameStateChange("턴 변경됨", playerTurn);
     }
 
 }
