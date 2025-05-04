@@ -22,6 +22,7 @@ public class BoardGraph5 implements BoardGraph {
         double angleStep = 2 * Math.PI / 5;
         double offset = angleStep * 1;
 
+        // 오각형 꼭짓점 위치 계산
         Point[] corners = new Point[5];
         for (int i = 0; i < 5; i++) {
             double angle = Math.PI / 2 + i * angleStep + offset;
