@@ -1,8 +1,7 @@
 package GameController;
 
-import board.board.Board4;
-import board.board.BoardAbstract;
-import board.board.BoardInterface;
+import board.Board4;
+import board.BoardAbstract;
 import play.Mal;
 import play.Player;
 import play.YutResult;
@@ -10,7 +9,6 @@ import play.YutResult;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class YutnoriSet {
 
@@ -41,14 +39,16 @@ public class YutnoriSet {
         if(boardType == 4) {
             this.board = new Board4();
         }
-        // else if(boardType == 5)
-        // {
-        //     this.board = new Board5();
-        // }
-        // else if(boardType ==6)
-        // {
-        //     this.board = new Board6();
-        // }
+        /*
+         else if(boardType == 5)
+         {
+             this.board = new Board5();
+         }
+         else if(boardType ==6)
+         {
+             this.board = new Board6();
+         }
+         */
         else
         {
             throw new IllegalArgumentException("Invalid board type");

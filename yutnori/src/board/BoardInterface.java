@@ -1,4 +1,4 @@
-package board.board;
+package board;
 
 import play.YutResult;
 

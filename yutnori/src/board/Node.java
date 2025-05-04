@@ -1,4 +1,4 @@
-package board.board;
+package board;
 
 import play.Mal;
 import play.YutResult;
@@ -80,10 +80,12 @@ public class Node {
         this.occupied = true;
         this.numOfOccupyingPieces++;
     }
+
     public void clearOccupyingPieces() {
         this.occupyingPieces.clear();
         this.numOfOccupyingPieces = 0;
     }
+
     public int getNumOfOccupyingPieces()
     {
         return this.occupyingPieces.size();

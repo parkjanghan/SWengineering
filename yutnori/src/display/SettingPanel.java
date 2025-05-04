@@ -28,7 +28,7 @@ public class SettingPanel extends JPanel {
         malLabel.setBounds(300, 230, 150, 30);
         add(malLabel);
 
-        malSelect = new JComboBox<>(new String[] {"2개", "3개", "4개"});
+        malSelect = new JComboBox<>(new String[] {"2개", "3개", "4개", "5개", "6개" });
         malSelect.setBounds(450, 230, 200, 30);
         add(malSelect);
 
