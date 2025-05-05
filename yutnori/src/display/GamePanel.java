@@ -5,6 +5,7 @@ import play.YutResult;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel {
 
@@ -13,7 +14,7 @@ public class GamePanel extends JPanel {
     public GamePanel(YutnoriSet yutnoriSet) {
         setLayout(new BorderLayout());
         this.yutnoriSet = yutnoriSet;
-        this.yutnoriSet.startGame(2, 4); // ✅ 2인용, 말 4개로 초기화 추가
+        this.yutnoriSet.startGame(GameSettings.getPlayerCount(), GameSettings.getMalCount()); // ✅ 2인용, 말 4개로 초기화 추가
 
         // 1. 각 서브 패널에 yutnoriSet 전달
         BoardPanel boardPanel = new BoardPanel(yutnoriSet);
@@ -37,7 +38,14 @@ public class GamePanel extends JPanel {
                     int[] data = (int[]) evt.getNewValue(); // [playerId, malId, destNodeId]
                     boardPanel.updateMalPosition(data); // BoardPanel에 말 위치 반영
                 }
-                case "말 잡힘" -> boardPanel.removeMalAt((int[]) evt.getNewValue());
+                case "말 잡힘" -> {
+                    @SuppressWarnings("unchecked")
+                    ArrayList<Integer> info = (ArrayList<Integer>) evt.getNewValue();
+                    int playerId = info.get(0);
+                    int malId = info.get(1);
+
+                    boardPanel.removeMalAt(new int[] { playerId, malId });
+                }
                 case "턴 변경됨" -> infoPanel.updatePlayerTurn((int) evt.getNewValue());
             }
         });
@@ -58,6 +66,7 @@ public class GamePanel extends JPanel {
                 boardPanel.updateMalPosition(new int[] { playerId, malId, 0 });
             }
         }
+
 
         // 4. 첫 번째 턴 UI 초기화
         infoPanel.updatePlayerTurn(yutnoriSet.getPlayerTurn());

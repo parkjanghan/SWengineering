@@ -2,16 +2,23 @@ package GameController;
 
 import board.Board4;
 import board.Board5;
+import board.Board6;
 import board.BoardAbstract;
 import play.Mal;
 import play.Player;
 import play.YutResult;
 
+import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
 public class YutnoriSet {
+    public static class GameFlag {
+        public static final int NEED_TO_ROLL = 0;
+        public static final int NEED_TO_SELECT = 1;
+        public static final int WAITING = 2;
+    }
 
     public BoardAbstract board;
     private int boardType;
@@ -40,19 +47,13 @@ public class YutnoriSet {
         if(boardType == 4) {
             this.board = new Board4();
         }
-
-        else if(boardType == 5)
-        {
+        else if(boardType == 5) {
             this.board = new Board5();
         }
-        /*
-        else if(boardType ==6)
-        {
+        else if (boardType == 6){
             this.board = new Board6();
         }
-        */
-        else
-        {
+        else {
             throw new IllegalArgumentException("Invalid board type");
         }
 
@@ -199,10 +200,8 @@ public class YutnoriSet {
     public ArrayList<Integer> showMoveableNodeId(int position, YutResult yutResult)
     {
         return board.getNext_nodes_board(position, yutResult);
-    } //아마 수정이 조금 필요 할 수 도 있음 일단 다음 가능 위치가 어디 인지만 작성함0427
-/// ////////말 어디로 이동 해야 할 지 정하기
-///
-///
+    }
+
 
     public void setChosenDestNodeId(int chosenDestNodeId) {
         this.chosenDestNodeId = chosenDestNodeId;
@@ -211,86 +210,111 @@ public class YutnoriSet {
 
 
     // Catch
-    public boolean tryCatchMal(int playerTurn, int destNodeId)
-    {
-        Player currentPlayer = players.get(playerTurn); //현재 플레이어
-
+    public boolean tryCatchMal(int playerTurn, int destNodeId) {
         ArrayList<Mal> occupyingMal = board.boardShape.get(destNodeId).getOccupyingPieces();
-        if(occupyingMal.isEmpty())
-        {
+
+        System.out.println("[tryCatchMal] 대상 노드: " + destNodeId + ", 점유 말 수: " + occupyingMal.size());
+
+        if (occupyingMal.isEmpty()) {
+            System.out.println("[tryCatchMal] 해당 노드에 아무 말도 없음. 잡기 실패.");
             return false;
         }
 
-        for(Mal mal : occupyingMal)
-        {
-            if (mal.getTeam() != playerTurn)
-            {
-                mal.setPosition(0);//판 밖으로 이동
+        boolean caught = false;
 
+        for (Mal mal : occupyingMal) {
+            if (mal.getTeam() != playerTurn) {
+                System.out.println("[tryCatchMal] 🔥 적 말 잡음! 팀: " + mal.getTeam() + ", 말 번호: " + mal.getMalNumber());
+                mal.setPosition(0);
+                mal.setFinished(false);
+                caught = true;
             }
         }
-        board.boardShape.get(destNodeId).clearOccupyingPieces(); //아무 말도 없는 상태로 바꿈
-        setInGameFlag(NEED_TO_ROLL);
 
-        notifyGameStateChange("말 잡힘", new int[]{playerTurn, destNodeId});
-        return true;
+        if (caught) {
+            board.boardShape.get(destNodeId).clearOccupyingPieces();
+
+            ArrayList<Integer> info = new ArrayList<>();
+            info.add(playerTurn);
+            info.add(destNodeId);
+
+            notifyGameStateChange("말 잡힘", info);  // ✅ ArrayList로 전달
+        }
+
+        return caught;
     }
 
-    public void moveMal(int playerTurn, int selectedMalNumber, int destNodeId, YutResult yutResult)
-    {
+
+
+
+
+
+    public boolean moveMal(int playerTurn, int selectedMalNumber, int destNodeId, YutResult yutResult) {
         Player currentPlayer = players.get(playerTurn);
 
-        //trycatchMal 과 tryStackMal이 선행 되어야함
+        // 🥷 이동 전에 적의 말이 있으면 잡기 시도
+        System.out.println("[moveMal] 잡기 시도 시작...");
+        boolean didCatch = tryCatchMal(playerTurn, destNodeId);
+        System.out.println("[moveMal] 잡기 결과: " + didCatch);
+
         Mal selectedMal = currentPlayer.getMalList().get(selectedMalNumber);
         int currentNode = selectedMal.getPosition();
-        playerResults.remove(yutResult);
-        // 선택된 말의 위치 업데이트 + 같은 위치에 스택 되어 있는 말들도 동시에 움직임
-        if(currentNode ==0)
-        {
+        deletePlayerResult(yutResult);
+
+        boolean isEnd = board.boardShape.get(destNodeId).isEndPoint();
+
+        if (currentNode == 0) {
             selectedMal.setPosition(destNodeId);
+            if (isEnd) {
+                selectedMal.setFinished(true);
+                currentPlayer.addScore(1);
+            }
             board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, selectedMal);
-        }
-        else
-        {
-
-            for(Mal mal : board.boardShape.get(currentNode).getOccupyingPieces())
-            {
-                //끝 지점 넘어가면 점수 올라가는 로직도 추가해 줘야함
-                //예를 들어 board4에서 30번 넘어가면 자동으로 30으로 이동하고,
-                //말의 position을 30으로 하고, score 올릴 수 있도록 해야함
-                if(mal.getTeam()==playerTurn) {
+        } else {
+            ArrayList<Mal> movingStack = new ArrayList<>();
+            for (Mal mal : board.boardShape.get(currentNode).getOccupyingPieces()) {
+                if (mal.getTeam() == playerTurn) {
                     mal.setPosition(destNodeId);
-
-                    if (board.boardShape.get(destNodeId).isEndPoint()) {
-                        players.get(playerTurn).addScore(1);
-                        //사용자의 말이 끝에 도달했다면 점수를 올립니다.
-                        //전체 process 로직에서 이를 어떻게 관리 할 지는 gui 연결하며
-                        //해결하는 것이 좋아 보입니다.
+                    if (isEnd) {
                         mal.setFinished(true);
-                        mal.setPosition(destNodeId);
-
-                        board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, selectedMal);
-                    } else {
-
-                        board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, mal);
+                        currentPlayer.addScore(1);
                     }
+                    movingStack.add(mal);
                 }
-
             }
             board.boardShape.get(currentNode).clearOccupyingPieces();
-        }
-
-        //게임 플래그를 다양하게 경우 나눠서
-        if(playerResults.isEmpty()) {
-            setInGameFlag(NEED_TO_ROLL);
-        }
-        else
-        {
-            setInGameFlag(NEED_TO_SELECT);
+            for (Mal mal : movingStack) {
+                board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, mal);
+            }
         }
 
         notifyGameStateChange("말 이동됨", new int[]{playerTurn, selectedMalNumber, destNodeId});
+
+
+        long finishedCount = currentPlayer.getMalList().stream()
+                .filter(Mal::getFinished)
+                .count();
+
+        if (finishedCount == currentPlayer.getMalList().size()) {
+            inGameFlag = GameFlag.WAITING;
+            JOptionPane.showMessageDialog(null,
+                    "🎉 플레이어 " + (playerTurn + 1) + "이(가) 승리했습니다!",
+                    "게임 종료", JOptionPane.INFORMATION_MESSAGE);
+            notifyGameStateChange("게임 종료", new int[]{playerTurn});
+            return false;
+        }
+
+        if (didCatch) {
+            System.out.println("[moveMal] 추가 턴 부여됨 (잡기 성공)");
+            setInGameFlag(NEED_TO_ROLL);
+            return true;
+        } else {
+            setInGameFlag(playerResults.isEmpty() ? NEED_TO_ROLL : NEED_TO_SELECT);
+            System.out.println("[moveMal] 추가 턴 없음. 남은 결과 여부: " + !playerResults.isEmpty());
+            return !playerResults.isEmpty(); // 결과가 남아 있으면 한 번 더
+        }
     }
+
 
     // decisionMaking은 process 보고 결정을 해야 할 듯 합니다
     public void decisionMaking()
@@ -396,5 +420,10 @@ public class YutnoriSet {
             }
         }
         return null; // 플레이어를 찾지 못한 경우
+    }
+
+    public boolean isCurrentPlayerCanThrow() {
+        // "윷을 던져야 하는 상태"일 때만 true
+        return inGameFlag == GameFlag.NEED_TO_ROLL;
     }
 }

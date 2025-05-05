@@ -2,7 +2,7 @@ package display;
 
 public class GameSettings {
     private static int playerCount = 2;
-    private static int malCount = 4;
+    private static int malCount = 2;
     private static int boardShape = 4;
 
     public static void setPlayerCount(int count) {
