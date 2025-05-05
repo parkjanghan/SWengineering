@@ -2,6 +2,7 @@ package display;
 
 import GameController.YutnoriSet;
 import play.YutResult;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,7 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
 
     private final YutnoriSet yutnoriSet;
     private JLabel resultLabel;
+    private List<JButton> allButtons = new ArrayList<>();
 
     public ThrowPanel(YutnoriSet yutnoriSet) {
         setLayout(new BorderLayout());
@@ -26,6 +28,7 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
         // 랜덤 윷 던지기 버튼
         JPanel topPanel = new JPanel(new FlowLayout());
         JButton randomBtn = new JButton("🎲 랜덤 윷 던지기");
+        allButtons.add(randomBtn);
         randomBtn.addActionListener(e -> {
             int currentPlayer = yutnoriSet.getPlayerTurn();
             if (!yutnoriSet.isCurrentPlayerCanThrow()) {
@@ -50,6 +53,7 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
             YutResult result = results[i];
 
             JButton btn = new JButton(name);
+            allButtons.add(btn);
             btn.setFont(new Font("맑은 고딕", Font.PLAIN, 10));
             btn.addActionListener(e -> {
                 System.out.println("[ThrowPanel] 🖐 수동 윷 결과 선택: " + result.getName());
@@ -87,6 +91,7 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
             return;
         }
 
+
         StringBuilder sb = new StringBuilder("남은 결과: ");
         for (YutResult r : results) {
             sb.append(r.getName()).append(" ");
@@ -94,4 +99,11 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
 
         resultLabel.setText(sb.toString().trim());
     }
+
+    public void enableAllButtons(boolean enable) {
+        for (JButton btn : allButtons) {
+            btn.setEnabled(enable);
+        }
+    }
+
 }

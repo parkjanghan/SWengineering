@@ -91,14 +91,16 @@ public class YutnoriSet {
 
         if (!isExtraTurnAllowed) //inGameFlag에 따라서 rollYut을 한 번 더 수행해야함
         {
+            notifyGameStateChange("윷 던지기 결과", result);
             inGameFlag = NEED_TO_SELECT;
         }
         else // isExtraTurnAllowed == true
         {
+            notifyGameStateChange("모/윷이 나옴", result);
             inGameFlag = NEED_TO_ROLL;
         }
 
-        notifyGameStateChange("윷 던지기 결과", result);
+        //notifyGameStateChange("윷 던지기 결과", result);
 
     }
 
@@ -112,13 +114,15 @@ public class YutnoriSet {
 
         if (!isExtraTurnAllowed) //inGameFlag에 따라서 rollYut을 한 번 더 수행해야함
         {
+            notifyGameStateChange("윷 던지기 결과", input);
             inGameFlag = NEED_TO_SELECT;
         }
         else // isExtraTurnAllowed == true
         {
+            notifyGameStateChange("모/윷이 나옴", input);
             inGameFlag = NEED_TO_ROLL;
         }
-        notifyGameStateChange("윷 던지기 결과", input);
+        //notifyGameStateChange("윷 던지기 결과", input);
 
     }
 

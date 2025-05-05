@@ -33,10 +33,19 @@ public class GamePanel extends JPanel {
         // 3. 옵저버 등록 (게임 로직에서 UI 상태 갱신받기)
         yutnoriSet.addObserver(evt -> {
             switch (evt.getPropertyName()) {
-                case "윷 던지기 결과" -> throwPanel.showYutResult((YutResult) evt.getNewValue());
+                case "모/윷이 나옴" -> {
+                    throwPanel.showYutResult((YutResult) evt.getNewValue());
+                    throwPanel.enableAllButtons(true);
+                }
+                case "윷 던지기 결과" -> {
+                    throwPanel.showYutResult((YutResult) evt.getNewValue());
+                    boardPanel.enableMalButtonsForPlayer(yutnoriSet.getPlayerTurn());
+                    throwPanel.enableAllButtons(false);
+                }
                 case "말 이동됨" -> {
                     int[] data = (int[]) evt.getNewValue(); // [playerId, malId, destNodeId]
                     boardPanel.updateMalPosition(data); // BoardPanel에 말 위치 반영
+
                 }
                 case "말 잡힘" -> {
                     @SuppressWarnings("unchecked")
@@ -45,8 +54,14 @@ public class GamePanel extends JPanel {
                     int malId = info.get(1);
 
                     boardPanel.removeMalAt(new int[] { playerId, malId });
+                    boardPanel.enableMalButtonsForPlayer(yutnoriSet.getPlayerTurn());
+                    throwPanel.enableAllButtons(true);
                 }
-                case "턴 변경됨" -> infoPanel.updatePlayerTurn((int) evt.getNewValue());
+                case "턴 변경됨" -> {
+                    infoPanel.updatePlayerTurn((int) evt.getNewValue());
+                    throwPanel.enableAllButtons(true);
+                    boardPanel.disableAllMalButtons();
+                }
             }
         });
 

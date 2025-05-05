@@ -157,6 +157,22 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
         });
     }
 
+    public void disableAllMalButtons() {
+        for (MalButton btn : malButtons) {
+            btn.setEnabled(false);
+        }
+    }
+
+    public void enableMalButtonsForPlayer(int playerId) {
+        for (MalButton btn : malButtons) {
+            if (btn.getPlayerId() == playerId) {
+                btn.setEnabled(true);
+            } else {
+                btn.setEnabled(false);
+            }
+        }
+    }
+
     private void handleMalClick(int playerId, int malId, int currentNode) {
         if (playerId != yutnoriSet.getPlayerTurn()) {
             JOptionPane.showMessageDialog(this, "지금은 플레이어 " + (yutnoriSet.getPlayerTurn() + 1) + "의 턴입니다.");
