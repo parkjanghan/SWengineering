@@ -17,7 +17,7 @@ public class BoardGraph5 implements BoardGraph {
     public void setupBoardGraph() {
         
         int size = 6;
-        int middleX = 300, middleY = 300;
+        int middleX = 400, middleY = 300;
         double angleStep = 2 * Math.PI / 5;
         double offset = angleStep * 1;
 
@@ -61,6 +61,11 @@ public class BoardGraph5 implements BoardGraph {
         Point node37 = new Point(node25.x -50, node25.y - 50);
         nodePositions.put(37, node37);
 
+        // 출발 전 대기 노드
+        Point node1 = nodePositions.get(1);
+        int startX = node1.x;
+        int startY = node1.y;
+        nodePositions.put(0, new Point(startX - 60, startY));
 
 
     }
