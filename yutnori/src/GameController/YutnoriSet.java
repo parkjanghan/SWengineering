@@ -140,6 +140,7 @@ public class YutnoriSet {
 
     public int selectOutOfBoardPiece(int playerTurn)
     {
+        //말의 위치가 0번 노드에 있어야함
         //어느 player의 턴인지
         Player player = players.get(playerTurn);
         //player의 말들 리스트
@@ -166,13 +167,13 @@ public class YutnoriSet {
 
     public ArrayList<Mal> showMoveableMalOutOfBoard(ArrayList<Mal> malList)
     {
-        ArrayList<Mal> moveableOutoOfBoardMal = new ArrayList<>();
+        ArrayList<Mal> moveableOutOfBoardMal = new ArrayList<>();
         for (Mal mal : malList) {
             if (mal.getPosition() == 0) {
-                moveableOutoOfBoardMal.add(mal);
+                moveableOutOfBoardMal.add(mal);
             }
         }
-        return moveableOutoOfBoardMal;
+        return moveableOutOfBoardMal;
     }
 
 
@@ -379,4 +380,19 @@ public class YutnoriSet {
         notifyGameStateChange("턴 변경됨", playerTurn);
     }
 
+
+    public void addPlayer() {
+        Player newPlayer = new Player(players.size()); // 새로운 플레이어 생성 (ID는 현재 플레이어 수)
+        players.add(newPlayer); // 플레이어 리스트에 추가
+        notifyGameStateChange("새로운 플레이어 추가됨", newPlayer); // 상태 변경 알림
+    }
+
+    public Object getPlayer(int playerId) {
+        for (Player player : players) {
+            if (player.getTeam() == playerId) {
+                return player;
+            }
+        }
+        return null; // 플레이어를 찾지 못한 경우
+    }
 }

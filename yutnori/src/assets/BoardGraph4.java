@@ -62,7 +62,7 @@ public class BoardGraph4 implements BoardGraph {
         for (int i = 1; i < 20; i++) {
             edges.add(new int[]{i, i + 1});
         }
-        edges.add(new int[]{20, 30}); // 30: 결승점
+        edges.add(new int[]{20, 1}); // 30: 결승점
 
         // ✅ 지름길 경로
         edges.add(new int[]{6, 21});

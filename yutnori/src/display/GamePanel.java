@@ -54,8 +54,8 @@ public class GamePanel extends JPanel {
         for (int playerId = 0; playerId < yutnoriSet.getPlayers().size(); playerId++) {
             for (int malId = 0; malId < yutnoriSet.getPlayers().get(playerId).getMalList().size(); malId++) {
                 // 항상 존재하는 노드 ID로 초기화 (예: 노드 1)
-                yutnoriSet.getPlayers().get(playerId).getMalList().get(malId).setPosition(1);
-                boardPanel.updateMalPosition(new int[] { playerId, malId, 1 });
+                yutnoriSet.getPlayers().get(playerId).getMalList().get(malId).setPosition(0);
+                boardPanel.updateMalPosition(new int[] { playerId, malId, 0 });
             }
         }
 

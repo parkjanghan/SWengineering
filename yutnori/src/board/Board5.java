@@ -21,7 +21,8 @@ public class Board5 extends BoardAbstract{
 
     protected void InitNodes()
     {
-        createNode(1, 500, 500, true, false, false, false);  // 임시 좌표
+        createNode(0, 600, 600, true, false, false, false); //시작 노드
+        createNode(1, 500, 500, false, false, false, false);  // 임시 좌표
         createNode(2, 450, 500, false, false, false, false);
         createNode(3, 400, 500, false, false, false, false);
         createNode(4, 350, 500, false, false, false, false);
@@ -132,14 +133,21 @@ public class Board5 extends BoardAbstract{
 
     protected void SetConnections() {
 
+        //0번 노드
+        boardShape.get(0).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(25,27))); //0은 빽도 - 25 or 27??
+        boardShape.get(0).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
+        boardShape.get(0).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
+        boardShape.get(0).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
+        boardShape.get(0).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
+        boardShape.get(0).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//모
+
         //1번 노드
         boardShape.get(1).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(25,27))); //0은 빽도 - 25 or 27??
-        boardShape.get(1).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
-        boardShape.get(1).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
-        boardShape.get(1).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
-        boardShape.get(1).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
-        boardShape.get(1).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//모
-
+        boardShape.get(1).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(37))); //도
+        boardShape.get(1).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(37))); //개
+        boardShape.get(1).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(37)));//걸
+        boardShape.get(1).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(37)));//윷
+        boardShape.get(1).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(37)));//모
 
         for(int i = 2; i<=5; i++) //2~5번 노드
         {
@@ -178,7 +186,7 @@ public class Board5 extends BoardAbstract{
         }
         
         // 6번 노드
-        // 6번 노드
+
         boardShape.get(6).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(5)));
         boardShape.get(6).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(28, 7)));
         boardShape.get(6).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(29, 8)));
@@ -208,7 +216,7 @@ public class Board5 extends BoardAbstract{
         boardShape.get(21).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(23)));
         boardShape.get(21).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(24)));
         boardShape.get(21).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(25)));
-        boardShape.get(21).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(37)));
+        boardShape.get(21).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(1)));
 
 // 28번 노드
         boardShape.get(28).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(6)));
@@ -277,14 +285,14 @@ public class Board5 extends BoardAbstract{
 // 26번 노드
         boardShape.get(26).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(36)));
         boardShape.get(26).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(27)));
-        boardShape.get(26).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(37)));
+        boardShape.get(26).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(1)));
         boardShape.get(26).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(37)));
         boardShape.get(26).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(37)));
         boardShape.get(26).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(37)));
 
 // 27번 노드
         boardShape.get(27).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(26)));
-        boardShape.get(27).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(37)));
+        boardShape.get(27).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(1)));
         boardShape.get(27).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(37)));
         boardShape.get(27).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(37)));
         boardShape.get(27).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(37)));
@@ -293,7 +301,7 @@ public class Board5 extends BoardAbstract{
 // 36번 노드
         boardShape.get(36).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(26)));
         boardShape.get(36).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(27)));
-        boardShape.get(36).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(37)));
+        boardShape.get(36).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(1)));
         boardShape.get(36).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(37)));
         boardShape.get(36).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(37)));
 

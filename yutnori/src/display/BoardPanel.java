@@ -185,6 +185,6 @@ public class BoardPanel extends JPanel {
     // 말 버튼 클릭 시 이벤트 처리
     // 나중에 외부로 빼야함
 
-    
+
 
 }

@@ -59,15 +59,15 @@ public class BoardGraph6 implements BoardGraph {
         addDiagonalNodes(21, 39, 40);
         addDiagonalNodes(26, 42, 41);
 
-        // 30번과 연결되는 노드 44번
+        // 30번과 연결되는 노드 1번
         Point node30 = nodePositions.get(30);
-        Point node44 = new Point(node30.x -50, node30.y - 50);
-        nodePositions.put(44, node44);
+        Point node1 = new Point(node30.x -50, node30.y - 50);
+        nodePositions.put(1, node1);
 
         // 출발 전 대기 노드
-        Point node1 = nodePositions.get(1);
-        int startX = node1.x;
-        int startY = node1.y;
+        Point node0 = nodePositions.get(0);
+        int startX = node0.x;
+        int startY = node0.y;
         nodePositions.put(0, new Point(startX - 60, startY));
 
 
@@ -121,7 +121,7 @@ public class BoardGraph6 implements BoardGraph {
         edges.add(new int[]{41, 42});
         edges.add(new int[]{42, 26});
 
-        edges.add(new int[]{30, 44});
+        edges.add(new int[]{30, 1});
 
 
 
