@@ -17,7 +17,7 @@ public class BoardGraph6 implements BoardGraph {
     public void setupBoardGraph() {
         
         int size = 6;
-        int middleX = 300, middleY = 300;
+        int middleX = 400, middleY = 300;
         int radius = 250;
         double angleStep = 2 * Math.PI / 6; // 육각형이니까 60도 간격
         double offset = Math.PI / 2;
@@ -63,6 +63,13 @@ public class BoardGraph6 implements BoardGraph {
         Point node30 = nodePositions.get(30);
         Point node44 = new Point(node30.x -50, node30.y - 50);
         nodePositions.put(44, node44);
+
+        // 출발 전 대기 노드
+        Point node1 = nodePositions.get(1);
+        int startX = node1.x;
+        int startY = node1.y;
+        nodePositions.put(0, new Point(startX - 60, startY));
+
 
     }
 
