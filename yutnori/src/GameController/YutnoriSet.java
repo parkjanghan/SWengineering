@@ -2,6 +2,7 @@ package GameController;
 
 import board.Board4;
 import board.Board5;
+import board.Board6;
 import board.BoardAbstract;
 import play.Mal;
 import play.Player;
@@ -37,23 +38,23 @@ public class YutnoriSet {
 
     public YutnoriSet(int boardType)
     {
-        if(boardType == 4) {
-            this.board = new Board4();
+//        if(boardType == 4) {
+//            this.board = new Board4();
+//        }
+
+        // if(boardType == 5)
+        {
+           // this.board = new Board5();
         }
 
-        else if(boardType == 5)
-        {
-            this.board = new Board5();
-        }
-        /*
-        else if(boardType ==6)
+        //else if(boardType ==6)
         {
             this.board = new Board6();
         }
-        */
-        else
+
+        //else
         {
-            throw new IllegalArgumentException("Invalid board type");
+           //throw new IllegalArgumentException("Invalid board type");
         }
 
         this.playerTurn = 0;   // 0번 사용자(첫 사용자)의 턴으로
@@ -396,5 +397,10 @@ public class YutnoriSet {
             }
         }
         return null; // 플레이어를 찾지 못한 경우
+    }
+
+    public void clearPlayerResults() {
+        playerResults.clear();
+        notifyGameStateChange("결과 초기화", null);
     }
 }

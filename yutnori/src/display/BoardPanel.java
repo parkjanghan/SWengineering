@@ -3,6 +3,7 @@ package display;
 import GameController.YutnoriSet;
 import assets.BoardGraph4;
 import assets.BoardGraph5;
+import assets.BoardGraph6;
 import play.YutResult;
 import assets.BoardGraph;
 
@@ -25,7 +26,7 @@ public class BoardPanel extends JPanel {
     private final List<MalButton> malButtons = new ArrayList<>();
 
     public BoardPanel(YutnoriSet yutnoriSet) {
-        this.boardGraph = new BoardGraph4();
+        this.boardGraph = new BoardGraph6();
         this.yutnoriSet = yutnoriSet;
         setLayout(null);
         setBackground(new Color(240, 240, 240));
@@ -181,6 +182,72 @@ public class BoardPanel extends JPanel {
         repaint();
     }
 
+    public void enablePieceSelection(int currentTurn) {
+        for (MalButton malBtn : malButtons) {
+            if (malBtn.getPlayerId() == currentTurn) {
+                malBtn.setEnabled(true);
+                malBtn.addActionListener(e -> handleMalClick(currentTurn, malBtn.getMalId(), 0));
+            }
+        }
+    }
+
+    public void highlightOutOfBoardPiece(int currentTurn, int outOfBoardMalId) {
+        for (MalButton malBtn : malButtons) {
+            if (malBtn.getPlayerId() == currentTurn && malBtn.getMalId() == outOfBoardMalId) {
+                malBtn.setEnabled(true);
+                malBtn.setBackground(Color.YELLOW); // 강조 색상
+                malBtn.addActionListener(e -> handleMalClick(currentTurn, outOfBoardMalId, 0));
+            }
+        }
+    }
+
+    public void highlightPossibleMoves(ArrayList<Integer> possibleMoves) {
+        for (int nodeId : possibleMoves) {
+            NodeButton btn = nodeButtons.get(nodeId);
+            if (btn != null) {
+                btn.setHighlighted(true);
+                btn.setEnabled(true); // 클릭 가능하도록 활성화
+            }
+        }
+    }
+
+    public int getSelectedMalId() {
+        return selectedMalId;
+    }
+
+    public void clearSelection() {
+        selectedPlayerId = -1;
+        selectedMalId = -1;
+
+        for (NodeButton btn : nodeButtons.values()) {
+            btn.setHighlighted(false);
+            btn.setEnabled(false); // 다시 클릭 불가
+            for (ActionListener l : btn.getActionListeners()) {
+                btn.removeActionListener(l);
+            }
+        }
+
+        repaint();
+    }
+
+    public void clearBoard() {
+        for (MalButton malBtn : malButtons) {
+            remove(malBtn);
+        }
+        malButtons.clear();
+        malPositions.clear();
+        highlightedNodes.clear();
+
+        for (NodeButton btn : nodeButtons.values()) {
+            btn.setHighlighted(false);
+            btn.setEnabled(false); // 다시 클릭 불가
+            for (ActionListener l : btn.getActionListeners()) {
+                btn.removeActionListener(l);
+            }
+        }
+
+        repaint();
+    }
 
 
     // 말 버튼 클릭 시 이벤트 처리
