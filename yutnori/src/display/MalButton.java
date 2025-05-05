@@ -23,6 +23,7 @@ public class MalButton extends JButton {
         setSize(20, 20);
     }
 
+
     public int getPlayerId() {
         return playerId;
     }

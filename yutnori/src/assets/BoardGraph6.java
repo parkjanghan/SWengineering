@@ -65,13 +65,7 @@ public class BoardGraph6 implements BoardGraph {
 //
 
         // 출발 전 대기 노드
-
-        int startX = node30.x;
-        int startY = node30.y;
-        Point node0 = new Point(node30.x -60, node30.y - 60);
-        nodePositions.put(0, node0);
-
-
+        nodePositions.put(0, new Point(middleX + 240, middleY));
     }
 
     private void addDiagonalNodes(int corner, int mid1Id, int mid2Id) {

@@ -6,6 +6,7 @@ import assets.BoardGraph5;
 import assets.BoardGraph6;
 import play.YutResult;
 import assets.BoardGraph;
+import play.Mal;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,9 +25,13 @@ public class BoardPanel extends JPanel {
     private Set<Integer> highlightedNodes = new HashSet<>();
     private final Map<Integer, NodeButton> nodeButtons = new HashMap<>();
     private final List<MalButton> malButtons = new ArrayList<>();
+    // 노드별 (playerId -> malId 리스트)
+    private final Map<Integer, Map<Integer, List<Integer>>> nodeMalMap = new HashMap<>();
+    // 노드에 겹친 말 수 표시용 라벨
+    private final Map<Integer, JLabel> nodeCountLabels = new HashMap<>();
 
     public BoardPanel(YutnoriSet yutnoriSet) {
-        this.boardGraph = new BoardGraph6();
+        this.boardGraph = new BoardGraph4();
         this.yutnoriSet = yutnoriSet;
         setLayout(null);
         setBackground(new Color(240, 240, 240));
@@ -40,6 +45,16 @@ public class BoardPanel extends JPanel {
             add(btn);
             nodeButtons.put(nodeId, btn);
         }
+    }
+
+
+    public void addInitialMalButton(int playerId, int malId, Point initialPos) {
+        MalButton malBtn = new MalButton(playerId, malId, playerColors.get(playerId));
+        malBtn.setLocation(initialPos.x - 10, initialPos.y - 10); // 중심 기준 위치 조정
+        malBtn.addActionListener(e -> handleMalClick(playerId, malId, 0)); // nodeId = 0 기준으로 시작
+        add(malBtn);
+        setComponentZOrder(malBtn, 0);
+        malButtons.add(malBtn);
     }
 
     @Override
@@ -96,30 +111,82 @@ public class BoardPanel extends JPanel {
         int nodeId = data[2];
 
         Point pos = boardGraph.getNodePositions().get(nodeId);
-        if (pos == null)
-            return;
+        if (pos == null) return;
 
+        // 기존 버튼 제거
         removeMalButton(playerId, malId);
 
+        // 대표 말 버튼 생성
         MalButton malBtn = new MalButton(playerId, malId, playerColors.get(playerId));
         malBtn.setLocation(pos.x - 10, pos.y - 10);
+        malBtn.setNodeId(nodeId);
         malBtn.addActionListener(e -> handleMalClick(playerId, malId, nodeId));
-
         add(malBtn);
-        setComponentZOrder(malBtn, 0); // ✅ 항상 최상단으로
-
+        setComponentZOrder(malBtn, 0);
         malButtons.add(malBtn);
+
+        // ✅ 정확한 말 개수 계산: 실제 보드 정보 기반
+        List<Mal> occupyingMals = yutnoriSet.getBoard().boardShape.get(nodeId).getOccupyingPieces();
+
+        int totalCount = 0;
+        for (Mal mal : occupyingMals) {
+            totalCount += 1; // 대표 말
+            totalCount += mal.getStackedMal().size(); // 그룹된 말 수 포함
+        }
+
+        // ✅ 라벨 표시
+        if (totalCount >= 1) {
+            JLabel label = nodeCountLabels.computeIfAbsent(nodeId, id -> {
+                JLabel l = new JLabel();
+                l.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+                l.setForeground(Color.BLACK);
+                add(l);
+                return l;
+            });
+            label.setText(totalCount + " ");
+            label.setBounds(pos.x - 20, pos.y - 20, 30, 20);
+            label.setVisible(true);
+        } else {
+            JLabel label = nodeCountLabels.get(nodeId);
+            if (label != null) label.setVisible(false);
+        }
+
+        repaint();
     }
+
+
 
     private void removeMalButton(int playerId, int malId) {
-        malButtons.removeIf(btn -> {
+        MalButton removed = null;
+        for (MalButton btn : malButtons) {
             if (btn.getPlayerId() == playerId && btn.getMalId() == malId) {
+                removed = btn;
                 remove(btn);
-                return true;
+                break;
             }
-            return false;
-        });
+        }
+        if (removed != null) {
+            malButtons.remove(removed);
+            int nodeId = removed.getNodeId();
+
+            // 라벨 갱신
+            long remaining = malButtons.stream()
+                    .filter(m -> m.getNodeId() == nodeId && m.getPlayerId() == playerId)
+                    .count();
+
+            JLabel label = nodeCountLabels.get(nodeId);
+            if (label != null) {
+                if (remaining >= 1) {
+                    label.setText(remaining + ".");
+                    label.setVisible(true);
+                } else {
+                    label.setVisible(false);
+                }
+            }
+        }
     }
+
+
 
     private void handleMalClick(int playerId, int malId, int currentNode) {
         this.selectedPlayerId = playerId;
@@ -156,17 +223,42 @@ public class BoardPanel extends JPanel {
     }
 
     private void handleNodeClick(int nodeId, YutResult result) {
-        // 🎯 이동 처리
+        int currentNode = -1;
+        for (MalButton btn : malButtons) {
+            if (btn.getPlayerId() == selectedPlayerId && btn.getMalId() == selectedMalId) {
+                currentNode = btn.getNodeId();
+                break;
+            }
+        }
+
+        // 말 잡기 시도
         yutnoriSet.tryCatchMal(selectedPlayerId, nodeId);
-        yutnoriSet.moveMal(selectedPlayerId, selectedMalId, nodeId, result);
+
+        if (currentNode == 0) {
+            // ✅ 노드 0번이면 선택된 말 하나만 이동
+            yutnoriSet.moveMal(selectedPlayerId, selectedMalId, nodeId, result);
+            updateMalPosition(new int[]{selectedPlayerId, selectedMalId, nodeId});
+        } else {
+            // ✅ 그 외의 경우: 그룹 말 전부 이동
+            List<MalButton> group = new ArrayList<>();
+            for (MalButton btn : malButtons) {
+                if (btn.getPlayerId() == selectedPlayerId && btn.getNodeId() == currentNode) {
+                    group.add(btn);
+                }
+            }
+
+            for (MalButton btn : group) {
+                int malId = btn.getMalId();
+                yutnoriSet.moveMal(selectedPlayerId, malId, nodeId, result);
+                updateMalPosition(new int[]{selectedPlayerId, malId, nodeId});
+            }
+        }
+
         yutnoriSet.deletePlayerResult(result);
 
-        updateMalPosition(new int[] { selectedPlayerId, selectedMalId, nodeId });
-
-        // 🧹 노드 상태 초기화
         for (NodeButton btn : nodeButtons.values()) {
             btn.setHighlighted(false);
-            btn.setEnabled(false); // 🔒 다시 클릭 불가
+            btn.setEnabled(false);
             for (ActionListener l : btn.getActionListeners()) {
                 btn.removeActionListener(l);
             }
@@ -174,81 +266,31 @@ public class BoardPanel extends JPanel {
 
         repaint();
     }
+
+
 
     public void removeMalAt(int[] data) {
         int playerId = data[0];
-        int malId = data[1];
-        malPositions.remove(playerId * 10 + malId);
-        repaint();
-    }
+        int nodeId = data[1];
 
-    public void enablePieceSelection(int currentTurn) {
-        for (MalButton malBtn : malButtons) {
-            if (malBtn.getPlayerId() == currentTurn) {
-                malBtn.setEnabled(true);
-                malBtn.addActionListener(e -> handleMalClick(currentTurn, malBtn.getMalId(), 0));
+        malButtons.removeIf(btn -> {
+            if (btn.getPlayerId() == playerId && btn.getNodeId() == nodeId) {
+                remove(btn);
+                return true;
             }
-        }
-    }
+            return false;
+        });
 
-    public void highlightOutOfBoardPiece(int currentTurn, int outOfBoardMalId) {
-        for (MalButton malBtn : malButtons) {
-            if (malBtn.getPlayerId() == currentTurn && malBtn.getMalId() == outOfBoardMalId) {
-                malBtn.setEnabled(true);
-                malBtn.setBackground(Color.YELLOW); // 강조 색상
-                malBtn.addActionListener(e -> handleMalClick(currentTurn, outOfBoardMalId, 0));
-            }
-        }
-    }
-
-    public void highlightPossibleMoves(ArrayList<Integer> possibleMoves) {
-        for (int nodeId : possibleMoves) {
-            NodeButton btn = nodeButtons.get(nodeId);
-            if (btn != null) {
-                btn.setHighlighted(true);
-                btn.setEnabled(true); // 클릭 가능하도록 활성화
-            }
-        }
-    }
-
-    public int getSelectedMalId() {
-        return selectedMalId;
-    }
-
-    public void clearSelection() {
-        selectedPlayerId = -1;
-        selectedMalId = -1;
-
-        for (NodeButton btn : nodeButtons.values()) {
-            btn.setHighlighted(false);
-            btn.setEnabled(false); // 다시 클릭 불가
-            for (ActionListener l : btn.getActionListeners()) {
-                btn.removeActionListener(l);
-            }
-        }
+        JLabel label = nodeCountLabels.get(nodeId);
+        if (label != null) label.setVisible(false);
 
         repaint();
     }
 
-    public void clearBoard() {
-        for (MalButton malBtn : malButtons) {
-            remove(malBtn);
-        }
-        malButtons.clear();
-        malPositions.clear();
-        highlightedNodes.clear();
 
-        for (NodeButton btn : nodeButtons.values()) {
-            btn.setHighlighted(false);
-            btn.setEnabled(false); // 다시 클릭 불가
-            for (ActionListener l : btn.getActionListeners()) {
-                btn.removeActionListener(l);
-            }
-        }
-
-        repaint();
+    public BoardGraph getBoardGraph() {
+        return this.boardGraph;
     }
-
 
     // 말 버튼 클릭 시 이벤트 처리
     // 나중에 외부로 빼야함

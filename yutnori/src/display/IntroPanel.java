@@ -32,7 +32,7 @@ public class IntroPanel extends JPanel {
         startBtn.addActionListener(e -> {
             // 게임 세팅값으로 YutnoriSet 초기화
             YutnoriSet yutnoriSet = new YutnoriSet(GameSettings.getBoardShape()); // 보드 타입 4
-            yutnoriSet.setPlayer(GameSettings.getPlayerCount(), GameSettings.getMalCount());
+            //yutnoriSet.setPlayer(GameSettings.getPlayerCount(), GameSettings.getMalCount());
         
             // GamePanel에 YutnoriSet 주입
             GamePanel gamePanel = new GamePanel(yutnoriSet);

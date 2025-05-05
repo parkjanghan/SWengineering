@@ -76,11 +76,13 @@ public class ThrowPanel extends JPanel {
         resultLabel.setText(sb.toString().trim());
     }
 
+    /*
     public void reset() {
         System.out.println("[ThrowPanel] 🔄 reset() 호출됨");
         resultLabel.setText("결과: ");
         yutnoriSet.clearPlayerResults(); // 결과 초기화
     }
+    */
 
     public void enableRollButton(boolean b) {
         System.out.println("[ThrowPanel] 윷 던지기 버튼 활성화: " + b);
@@ -104,9 +106,12 @@ public class ThrowPanel extends JPanel {
         return null; // 결과가 없을 경우
     }
 
+    /*
     public void clearYutResultSelection() {
         System.out.println("[ThrowPanel] 🔄 clearYutResultSelection() 호출됨");
         resultLabel.setText("결과: ");
         yutnoriSet.clearPlayerResults(); // 결과 초기화
     }
+
+     */
 }

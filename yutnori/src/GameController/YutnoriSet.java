@@ -38,23 +38,22 @@ public class YutnoriSet {
 
     public YutnoriSet(int boardType)
     {
-//        if(boardType == 4) {
-//            this.board = new Board4();
-//        }
-
-        // if(boardType == 5)
-        {
-           // this.board = new Board5();
+        if(boardType == 4) {
+            this.board = new Board4();
         }
 
-        //else if(boardType ==6)
+        else if(boardType == 5)
+        {
+            this.board = new Board5();
+        }
+
+        else if(boardType ==6)
         {
             this.board = new Board6();
         }
-
-        //else
+        else
         {
-           //throw new IllegalArgumentException("Invalid board type");
+            throw new IllegalArgumentException("Invalid board type");
         }
 
         this.playerTurn = 0;   // 0번 사용자(첫 사용자)의 턴으로
@@ -237,61 +236,47 @@ public class YutnoriSet {
         return true;
     }
 
-    public void moveMal(int playerTurn, int selectedMalNumber, int destNodeId, YutResult yutResult)
-    {
+    public void moveMal(int playerTurn, int selectedMalNumber, int destNodeId, YutResult yutResult) {
         Player currentPlayer = players.get(playerTurn);
-
-        //trycatchMal 과 tryStackMal이 선행 되어야함
         Mal selectedMal = currentPlayer.getMalList().get(selectedMalNumber);
         int currentNode = selectedMal.getPosition();
+
         playerResults.remove(yutResult);
-        // 선택된 말의 위치 업데이트 + 같은 위치에 스택 되어 있는 말들도 동시에 움직임
-        if(currentNode ==0)
-        {
+
+        if (currentNode == 0) {
             selectedMal.setPosition(destNodeId);
             board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, selectedMal);
-        }
-        else
-        {
+        } else {
+            ArrayList<Mal> currentMals = board.boardShape.get(currentNode).getOccupyingPieces();
 
-            for(Mal mal : board.boardShape.get(currentNode).getOccupyingPieces())
-            {
-                //끝 지점 넘어가면 점수 올라가는 로직도 추가해 줘야함
-                //예를 들어 board4에서 30번 넘어가면 자동으로 30으로 이동하고,
-                //말의 position을 30으로 하고, score 올릴 수 있도록 해야함
-                if(mal.getTeam()==playerTurn) {
+            for (Mal mal : currentMals) {
+                if (mal.getTeam() == playerTurn) {
                     mal.setPosition(destNodeId);
-
-                    if (board.boardShape.get(destNodeId).isEndPoint()) {
-                        players.get(playerTurn).addScore(1);
-                        //사용자의 말이 끝에 도달했다면 점수를 올립니다.
-                        //전체 process 로직에서 이를 어떻게 관리 할 지는 gui 연결하며
-                        //해결하는 것이 좋아 보입니다.
-                        mal.setFinished(true);
-                        mal.setPosition(destNodeId);
-
-                        board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, selectedMal);
-                    } else {
-
-                        board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, mal);
+                    if (!mal.equals(selectedMal)) {
+                        selectedMal.stackMal(mal); // ✅ 그룹화
                     }
                 }
-
             }
+
+            // clear old node
             board.boardShape.get(currentNode).clearOccupyingPieces();
+
+            // 도착지 등록
+            board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, selectedMal);
+
+            // 점수 체크
+            if (board.boardShape.get(destNodeId).isEndPoint()) {
+                selectedMal.setFinished(true);
+                currentPlayer.addScore(1);
+            }
         }
 
-        //게임 플래그를 다양하게 경우 나눠서
-        if(playerResults.isEmpty()) {
-            setInGameFlag(NEED_TO_ROLL);
-        }
-        else
-        {
-            setInGameFlag(NEED_TO_SELECT);
-        }
+        inGameFlag = playerResults.isEmpty() ? NEED_TO_ROLL : NEED_TO_SELECT;
 
         notifyGameStateChange("말 이동됨", new int[]{playerTurn, selectedMalNumber, destNodeId});
     }
+
+
 
     // decisionMaking은 process 보고 결정을 해야 할 듯 합니다
     public void decisionMaking()
@@ -397,10 +382,5 @@ public class YutnoriSet {
             }
         }
         return null; // 플레이어를 찾지 못한 경우
-    }
-
-    public void clearPlayerResults() {
-        playerResults.clear();
-        notifyGameStateChange("결과 초기화", null);
     }
 }
