@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
-    private int team;
+    private final int team;
     private int score;
-    private List<Mal> malList;
+    private ArrayList<Mal> malList;
     private boolean turn;
 
     public Player(int team) {
@@ -28,7 +28,7 @@ public class Player {
         this.score += points;
     }
 
-    public List<Mal> getMalList() {
+    public ArrayList<Mal> getMalList() {
         return malList;
     }
 

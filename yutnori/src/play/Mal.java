@@ -8,7 +8,7 @@ public class Mal {
     private int malNumber;
     private int position;
     private boolean isFinished;
-    private List<Mal> stackedMal;
+    private ArrayList<Mal> stackedMal;
     private Player owner;
     private boolean life;
 
@@ -38,20 +38,25 @@ public class Mal {
         this.position = position;
     }
 
-    public boolean isFinished() {
+    public boolean getFinished() {
         return isFinished;
     }
 
     public void setFinished(boolean isFinished) {
         this.isFinished = isFinished;
+
     }
 
-    public List<Mal> getStackedMal() {
+    public ArrayList<Mal> getStackedMal() {
         return stackedMal;
     }
 
     public void stackMal(Mal otherMal) {
         stackedMal.add(otherMal);
+    }
+
+    public void clearStackedMal() {
+        stackedMal.clear();
     }
 
     public Player getOwner() {
