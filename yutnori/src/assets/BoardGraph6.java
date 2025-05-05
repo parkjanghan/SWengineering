@@ -19,7 +19,7 @@ public class BoardGraph6 implements BoardGraph {
         int size = 6;
         int middleX = 400, middleY = 300;
         int radius = 250;
-        double angleStep = 2 * Math.PI / 6; // 육각형이니까 60도 간격
+        double angleStep = 2 * Math.PI / 6;
         double offset = Math.PI / 2;
 
         // 육각형 꼭짓점 위치 계산
@@ -41,7 +41,7 @@ public class BoardGraph6 implements BoardGraph {
             int limit = (side == 5) ? size : size - 1;
 
             for (int j = 0; j < limit; j++) {
-                double t = j / (size - 1.0); // 보간 위치 계산
+                double t = j / (size - 1.0);
                 int x = (int) (from.x * (1 - t) + to.x * t);
                 int y = (int) (from.y * (1 - t) + to.y * t);
                 nodePositions.put(nodeId++, new Point(x, y));
