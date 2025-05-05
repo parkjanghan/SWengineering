@@ -1,9 +1,10 @@
 package display;
 
 import GameController.YutnoriSet;
+import assets.BoardGraph4;
+import assets.BoardGraph5;
 import play.YutResult;
 import assets.BoardGraph;
-import assets.BoardGraph4;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +25,7 @@ public class BoardPanel extends JPanel {
     private final List<MalButton> malButtons = new ArrayList<>();
 
     public BoardPanel(YutnoriSet yutnoriSet) {
-        this.boardGraph = new BoardGraph4(); // 기본 보드 그래프 설정
+        this.boardGraph = new BoardGraph4();
         this.yutnoriSet = yutnoriSet;
         setLayout(null);
         setBackground(new Color(240, 240, 240));

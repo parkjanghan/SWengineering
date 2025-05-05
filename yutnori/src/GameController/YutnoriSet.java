@@ -1,6 +1,7 @@
 package GameController;
 
 import board.Board4;
+import board.Board5;
 import board.BoardAbstract;
 import play.Mal;
 import play.Player;
@@ -39,16 +40,17 @@ public class YutnoriSet {
         if(boardType == 4) {
             this.board = new Board4();
         }
+
+        else if(boardType == 5)
+        {
+            this.board = new Board5();
+        }
         /*
-         else if(boardType == 5)
-         {
-             this.board = new Board5();
-         }
-         else if(boardType ==6)
-         {
-             this.board = new Board6();
-         }
-         */
+        else if(boardType ==6)
+        {
+            this.board = new Board6();
+        }
+        */
         else
         {
             throw new IllegalArgumentException("Invalid board type");
