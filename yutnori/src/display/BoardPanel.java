@@ -26,7 +26,15 @@ public class BoardPanel extends JPanel {
     private final List<MalButton> malButtons = new ArrayList<>();
 
     public BoardPanel(YutnoriSet yutnoriSet) {
-        this.boardGraph = new BoardGraph6();
+
+        //추가 - 보드 모양 선택
+        switch (yutnoriSet.getBoardType()) {
+            case 4 -> this.boardGraph = new BoardGraph4();
+            case 5 -> this.boardGraph = new BoardGraph5();
+            case 6 -> this.boardGraph = new BoardGraph6();
+            default -> throw new IllegalArgumentException("Invalid board type");
+        }
+        
         this.yutnoriSet = yutnoriSet;
         setLayout(null);
         setBackground(new Color(240, 240, 240));
