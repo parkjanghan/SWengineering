@@ -152,6 +152,10 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
         removeMalButton(playerId, malId);
 
         MalButton malBtn = new MalButton(playerId, malId, playerColors.get(playerId));
+        if(yutnoriSet.board.boardShape.get(nodeId).isEndPoint())
+        {
+            return;
+        }
         malBtn.setNodeId(nodeId);  // ★ 추가된 부분
         malBtn.setLocation(pos.x - 10, pos.y - 10);
         malBtn.addActionListener(e -> handleMalClick(playerId, malId, nodeId));

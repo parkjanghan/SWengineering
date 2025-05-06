@@ -69,7 +69,7 @@ public class Board6 extends BoardAbstract{
         createNode(41, 100, 350, false, false, false, false);
         createNode(42, 150, 350, false, false, false, false);
         createNode(43, 200, 350, false, false, false, false);
-        createNode(44, 250, 350, false, false, false, false);
+        createNode(44, 250, 350, false, true, false, false);
 
     }
 
@@ -281,6 +281,7 @@ public class Board6 extends BoardAbstract{
         boardShape.get(32).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(44)));  // 모
 
 // 43번 노드
+        boardShape.get(43).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(36))); // 빽도
         boardShape.get(43).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(31))); // 도
         boardShape.get(43).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(32))); // 개
         boardShape.get(43).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(1))); // 걸

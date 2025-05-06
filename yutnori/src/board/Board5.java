@@ -330,6 +330,7 @@ public class Board5 extends BoardAbstract{
         boardShape.get(27).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(37)));
 
 // 36번 노드
+        boardShape.get(36).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(31)));
         boardShape.get(36).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(26)));
         boardShape.get(36).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(27)));
         boardShape.get(36).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(1)));

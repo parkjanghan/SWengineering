@@ -65,6 +65,8 @@ public class BoardGraph5 implements BoardGraph {
         Point node1 = new Point(node25.x -50, node16.y );
         nodePositions.put(1, node1);
 
+        nodePositions.put(37, new Point(node1.x - 50, node1.y + 50)); // 37번 노드 추가
+
         // 출발 전 대기 노드
         //nodePositions.put(0, new Point(middleX + 240, middleY));
     }
