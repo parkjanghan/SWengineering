@@ -34,27 +34,27 @@ public class YutnoriSet {
 
     private PropertyChangeSupport observable; //GUI 갱신을 위한 옵저버 패턴
 
-
+   //추가
+    public int getBoardType() {
+        return boardType;
+    }
 
     public YutnoriSet(int boardType)
     {
-//        if(boardType == 4) {
-//            this.board = new Board4();
-//        }
+       //추가
+        this.boardType = boardType;
 
-        // if(boardType == 5)
-        {
-           // this.board = new Board5();
+        if(boardType == 4) {
+            this.board = new Board4();
         }
-
-        //else if(boardType ==6)
-        {
+        else if(boardType == 5) {
+            this.board = new Board5();
+        }
+        else if (boardType == 6){
             this.board = new Board6();
         }
-
-        //else
-        {
-           //throw new IllegalArgumentException("Invalid board type");
+        else {
+            throw new IllegalArgumentException("Invalid board type");
         }
 
         this.playerTurn = 0;   // 0번 사용자(첫 사용자)의 턴으로
