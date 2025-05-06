@@ -256,15 +256,11 @@ public class YutnoriSet {
         return caught;
     }
 
-
-
-
-
-
     public boolean moveMal(int playerTurn, int selectedMalNumber, int destNodeId, YutResult yutResult) {
         Player currentPlayer = players.get(playerTurn);
-        System.out.println("[moveMal] 현재 플레이어" + currentPlayer.getTeam());
-        // 🥷 이동 전에 적의 말이 있으면 잡기 시도
+        System.out.println("[moveMal] 현재 플레이어: " + currentPlayer.getTeam());
+
+        // 🥷 잡기 시도
         System.out.println("[moveMal] 잡기 시도 시작...");
         boolean didCatch = tryCatchMal(playerTurn, destNodeId);
         System.out.println("[moveMal] 잡기 결과: " + didCatch);
@@ -276,16 +272,17 @@ public class YutnoriSet {
         boolean isEnd = board.boardShape.get(destNodeId).isEndPoint();
 
         if (currentNode <= 0) {
+            // 시작지점에서 이동한 경우
             selectedMal.setPosition(destNodeId);
             if (isEnd) {
                 selectedMal.setFinished(true);
                 currentPlayer.addScore(1);
-                System.out.println("[moveMal]현재 플레이어: "+ currentPlayer.getTeam() + "득점");
+                System.out.println("[moveMal] 득점: 플레이어 " + currentPlayer.getTeam());
                 notifyGameStateChange("득점", playerTurn);
             }
             board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, selectedMal);
-        }
-        else {
+        } else {
+            // 현재 노드에서 이동한 경우: 같은 팀 말들을 그룹으로 이동
             ArrayList<Mal> movingStack = new ArrayList<>();
             for (Mal mal : board.boardShape.get(currentNode).getOccupyingPieces()) {
                 if (mal.getTeam() == playerTurn) {
@@ -293,25 +290,35 @@ public class YutnoriSet {
                     if (isEnd) {
                         mal.setFinished(true);
                         currentPlayer.addScore(1);
-                        System.out.println("[moveMal]현재 플레이어: "+ currentPlayer.getTeam() + "득점");
+                        System.out.println("[moveMal] 득점: 플레이어 " + currentPlayer.getTeam());
                         notifyGameStateChange("득점", playerTurn);
                     }
                     movingStack.add(mal);
                 }
             }
+
+            // 현재 노드 초기화
             board.boardShape.get(currentNode).clearOccupyingPieces();
+
+            if (!movingStack.isEmpty()) {
+                // 대표 말에 다른 말들 stack
+                Mal representative = movingStack.get(0);
+                representative.clearStackedMal();  // 혹시 모를 이전 stack 초기화
+                for (int i = 1; i < movingStack.size(); i++) {
+                    representative.stackMal(movingStack.get(i));
+                }
+            }
+
+            // 새 노드에 말들 추가
             for (Mal mal : movingStack) {
                 board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, mal);
             }
         }
-        for(Player player : players)
-        {
-            System.out.println("[moveMal] 플레이어 " + player.getTeam() + " 점수: " + player.getScore());
-        }
 
+        // 말 이동 알림
         notifyGameStateChange("말 이동됨", new int[]{playerTurn, selectedMalNumber, destNodeId});
 
-
+        // 승리 조건 확인
         long finishedCount = currentPlayer.getMalList().stream()
                 .filter(Mal::getFinished)
                 .count();
@@ -326,19 +333,17 @@ public class YutnoriSet {
         }
 
         if (didCatch) {
-            System.out.println("[moveMal] 추가 턴 부여됨 (잡기 성공)");
             setInGameFlag(NEED_TO_ROLL);
+            System.out.println("[moveMal] 추가 턴 부여됨 (잡기 성공)");
             return true;
-        }
-        else {
+        } else {
             setInGameFlag(playerResults.isEmpty() ? NEED_TO_ROLL : NEED_TO_SELECT);
-
             System.out.println("[moveMal] 추가 턴 없음. 남은 결과 여부: " + !playerResults.isEmpty());
-            // 결과가 남아 있으면 한 번 더
-
             return !playerResults.isEmpty();
         }
     }
+
+
 
     //
     public void changeTurn()

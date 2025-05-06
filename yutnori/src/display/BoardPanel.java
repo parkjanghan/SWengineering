@@ -28,6 +28,8 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
     private int selectedMalId = -1;
     private final Map<Integer, NodeButton> nodeButtons = new HashMap<>();
     private final List<MalButton> malButtons = new ArrayList<>();
+    private final Map<Integer, JLabel> nodeCountLabels = new HashMap<>();
+
 
     public BoardPanel(YutnoriSet yutnoriSet) {
         switch (GameSettings.getBoardShape()) {
@@ -131,43 +133,42 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
         int malId = data[1];
         int nodeId = data[2];
 
-        Point pos;
-
-        if (nodeId <= 0) {
-            // 0번 노드일 때 플레이어/말마다 살짝 다른 위치로 분산 배치
-//            Point base = boardGraph.getNodePositions().get(0);
-//            int offsetX = (playerId - 1) * 20 + (malId % 2) * 10;
-//            int offsetY = (malId / 2) * 10;
-//            pos = new Point(base.x + offsetX, base.y + offsetY);
-            //Point base = boardGraph.getNodePositions().get(0);
-            int offsetX = 800;
-            int offsetY = 150 + 50*(playerId);
-            pos = new Point(offsetX, offsetY);
-        } else {
-            pos = boardGraph.getNodePositions().get(nodeId);
-        }
-
-        if (pos == null) return;
-
-        removeMalButton(playerId, malId);
-
-        MalButton malBtn = new MalButton(playerId, malId, playerColors.get(playerId));
-        if(yutnoriSet.board.boardShape.get(nodeId).isEndPoint())
-        {
+        if (nodeId > 0 && yutnoriSet.board.boardShape.get(nodeId).isEndPoint()) {
+            removeMalButton(playerId, malId); // 혹시 남은 버튼 제거
+            malPositions.remove(playerId * 10 + malId);
             return;
         }
-        malBtn.setNodeId(nodeId);  // ★ 추가된 부분
+
+        Point pos = (nodeId <= 0) ? new Point(800, 150 + 50 * playerId)
+                : boardGraph.getNodePositions().get(nodeId);
+        if (pos == null) return;
+
+        // 기존 말 버튼 제거
+        removeMalButton(playerId, malId);
+
+        // 말 버튼 생성
+        MalButton malBtn = new MalButton(playerId, malId, playerColors.get(playerId));
+        malBtn.setNodeId(nodeId);
+
+        // 노드에 같은 팀의 다른 말이 있는지 확인
+        long count = malButtons.stream()
+                .filter(m -> m.getNodeId() == nodeId && m.getPlayerId() == playerId)
+                .count();
+
+        if (count >= 1 && nodeId > 0) {
+            // 이미 대표 말이 있으면 말 버튼은 추가하지 않고 라벨만 업데이트 (stack 처리만 로직에서 처리)
+            return;
+        }
+
+        // 대표 말이므로 버튼 생성
         malBtn.setLocation(pos.x - 10, pos.y - 10);
         malBtn.addActionListener(e -> handleMalClick(playerId, malId, nodeId));
-
-
         add(malBtn);
         setComponentZOrder(malBtn, 0);
         malButtons.add(malBtn);
-
-        // 🟢 위치도 따로 저장 (paintComponent에서 쓰는 것)
         malPositions.put(playerId * 10 + malId, pos);
     }
+
 
 
     private void removeMalButton(int playerId, int malId) {
