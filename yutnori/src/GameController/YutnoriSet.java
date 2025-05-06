@@ -236,6 +236,8 @@ public class YutnoriSet {
         return true;
     }
 
+
+    //✅말 겹침 그룹화 내부 구조
     public void moveMal(int playerTurn, int selectedMalNumber, int destNodeId, YutResult yutResult) {
         Player currentPlayer = players.get(playerTurn);
         Mal selectedMal = currentPlayer.getMalList().get(selectedMalNumber);
@@ -253,7 +255,7 @@ public class YutnoriSet {
                 if (mal.getTeam() == playerTurn) {
                     mal.setPosition(destNodeId);
                     if (!mal.equals(selectedMal)) {
-                        selectedMal.stackMal(mal); // ✅ 그룹화
+                        selectedMal.stackMal(mal); // 그룹화
                     }
                 }
             }

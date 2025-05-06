@@ -125,7 +125,8 @@ public class BoardPanel extends JPanel {
         setComponentZOrder(malBtn, 0);
         malButtons.add(malBtn);
 
-        // ✅ 정확한 말 개수 계산: 실제 보드 정보 기반
+        //✅겹친 말 갯수 계산
+        // 정확한 말 개수 계산: 실제 보드 정보 기반
         List<Mal> occupyingMals = yutnoriSet.getBoard().boardShape.get(nodeId).getOccupyingPieces();
 
         int totalCount = 0;
@@ -134,7 +135,7 @@ public class BoardPanel extends JPanel {
             totalCount += mal.getStackedMal().size(); // 그룹된 말 수 포함
         }
 
-        // ✅ 라벨 표시
+        // 라벨 표시
         if (totalCount >= 1) {
             JLabel label = nodeCountLabels.computeIfAbsent(nodeId, id -> {
                 JLabel l = new JLabel();
@@ -156,6 +157,7 @@ public class BoardPanel extends JPanel {
 
 
 
+    //✅그룹화시 이동 전 노드의 말버튼 삭제
     private void removeMalButton(int playerId, int malId) {
         MalButton removed = null;
         for (MalButton btn : malButtons) {
@@ -192,7 +194,7 @@ public class BoardPanel extends JPanel {
         this.selectedPlayerId = playerId;
         this.selectedMalId = malId;
 
-        // 🔁 모든 노드를 비활성화 & 하이라이트 해제 & 이벤트 제거
+        // 모든 노드를 비활성화 & 하이라이트 해제 & 이벤트 제거
         for (NodeButton b : nodeButtons.values()) {
             b.setHighlighted(false);
             b.setEnabled(false);
@@ -201,7 +203,7 @@ public class BoardPanel extends JPanel {
             }
         }
 
-        // 🎯 현재 플레이어의 이동 가능한 윷 결과 조회
+        // 현재 플레이어의 이동 가능한 윷 결과 조회
         List<YutResult> results = yutnoriSet.getPlayerResults();
         if (results.isEmpty())
             return;
@@ -214,7 +216,7 @@ public class BoardPanel extends JPanel {
             NodeButton btn = nodeButtons.get(nodeId);
             if (btn != null) {
                 btn.setHighlighted(true);
-                btn.setEnabled(true); // ✅ 클릭 가능하도록 활성화
+                btn.setEnabled(true); // 클릭 가능하도록 활성화
                 btn.addActionListener(e -> handleNodeClick(nodeId, result));
             }
         }
@@ -232,14 +234,15 @@ public class BoardPanel extends JPanel {
         }
 
         // 말 잡기 시도
+        // ✅말 그룹화시 말이 시작되는 부분 노드에서는 그룹화 안되게 설정
         yutnoriSet.tryCatchMal(selectedPlayerId, nodeId);
 
         if (currentNode == 0) {
-            // ✅ 노드 0번이면 선택된 말 하나만 이동
+            // 노드 0번이면 선택된 말 하나만 이동
             yutnoriSet.moveMal(selectedPlayerId, selectedMalId, nodeId, result);
             updateMalPosition(new int[]{selectedPlayerId, selectedMalId, nodeId});
         } else {
-            // ✅ 그 외의 경우: 그룹 말 전부 이동
+            // 그 외의 경우: 그룹 말 전부 이동
             List<MalButton> group = new ArrayList<>();
             for (MalButton btn : malButtons) {
                 if (btn.getPlayerId() == selectedPlayerId && btn.getNodeId() == currentNode) {
