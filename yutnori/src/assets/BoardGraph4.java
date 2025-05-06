@@ -22,7 +22,10 @@ public class BoardGraph4 implements BoardGraph {
         int middleX = startX - size * gap / 2;
         int middleY = startY - size * gap / 2;
 
-        nodePositions.put(0, new Point(startX + 100, startY + 100)); // 말 대기 위치 (출발 전) ✅
+        nodePositions.put(0, new Point(800, 150)); // 0번 사용자 말 대기 위치 (출발 전) ✅
+        nodePositions.put(-1, new Point(800, 200));
+        nodePositions.put(-2, new Point(800, 250));
+        nodePositions.put(-3, new Point(800, 300));
 
         int index = 1;
 
@@ -55,6 +58,8 @@ public class BoardGraph4 implements BoardGraph {
         // ✅ 중앙 노드 (29), 결승점 (30)
         nodePositions.put(index++, new Point(middleX, middleY));       // 29
         nodePositions.put(index++, new Point(startX, startY + 50));    // 30
+
+
     }
 
     private void initEdges() {

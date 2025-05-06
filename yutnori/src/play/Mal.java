@@ -16,7 +16,7 @@ public class Mal {
         this.team = team;
         this.malNumber = malNumber;
         this.owner = owner;
-        this.position = 0;
+        this.position = (-1) * owner.getTeam();
         this.isFinished = false;
         this.life = true;
         this.stackedMal = new ArrayList<>();

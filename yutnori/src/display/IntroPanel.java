@@ -38,6 +38,9 @@ public class IntroPanel extends JPanel {
             GamePanel gamePanel = new GamePanel(yutnoriSet);
             parentFrame.setContentPane(gamePanel);
             parentFrame.revalidate();
+
+
+            //game시작 함수를 여기다
         });
 
         settingBtn.addActionListener(e -> parentFrame.switchTo("setting"));

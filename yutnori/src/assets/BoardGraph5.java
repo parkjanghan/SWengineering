@@ -49,7 +49,10 @@ public class BoardGraph5 implements BoardGraph {
 
         Point center = new Point(middleX, middleY);
         nodePositions.put(36, center);
-
+        nodePositions.put(0, new Point(800, 150)); // 0번 사용자 말 대기 위치 (출발 전) ✅
+        nodePositions.put(-1, new Point(800, 200));
+        nodePositions.put(-2, new Point(800, 250));
+        nodePositions.put(-3, new Point(800, 300));
         addDiagonalNodes(1, 27, 26);
         addDiagonalNodes(6, 28, 29);
         addDiagonalNodes(11, 30, 31);

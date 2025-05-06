@@ -65,7 +65,11 @@ public class BoardGraph6 implements BoardGraph {
 //
 
         // 출발 전 대기 노드
-        nodePositions.put(0, new Point(middleX + 240, middleY));
+       // nodePositions.put(0, new Point(middleX + 240, middleY));
+        nodePositions.put(0, new Point(800, 150)); // 0번 사용자 말 대기 위치 (출발 전) ✅
+        nodePositions.put(-1, new Point(800, 200));
+        nodePositions.put(-2, new Point(800, 250));
+        nodePositions.put(-3, new Point(800, 300));
     }
 
     private void addDiagonalNodes(int corner, int mid1Id, int mid2Id) {

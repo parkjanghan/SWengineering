@@ -4,6 +4,7 @@ import GameController.YutnoriSet;
 import assets.BoardGraph4;
 import assets.BoardGraph5;
 import assets.BoardGraph6;
+import play.Player;
 import play.YutResult;
 import assets.BoardGraph;
 import play.Mal;
@@ -18,6 +19,7 @@ public class BoardPanel extends JPanel {
 
     private BoardGraph boardGraph;
     private YutnoriSet yutnoriSet; // YutnoriSet 객체를 통해 게임 상태를 관리
+
     private Map<Integer, Point> malPositions = new HashMap<>(); // key = playerId * 10 + malId
     private final Map<Integer, Color> playerColors = Map.of(0, Color.RED, 1, Color.BLUE, 2, Color.GREEN, 3, Color.MAGENTA);
     private int selectedPlayerId = -1;
@@ -38,7 +40,9 @@ public class BoardPanel extends JPanel {
 
         // 모든 노드 버튼 생성 및 추가
         for (Map.Entry<Integer, Point> entry : boardGraph.getNodePositions().entrySet()) {
+
             int nodeId = entry.getKey();
+            if (nodeId == 0) continue; // 노드 0은 제외
             Point pos = entry.getValue();
             NodeButton btn = new NodeButton(nodeId, pos);
             btn.setEnabled(false); // 클릭 불가로 시작
@@ -86,6 +90,7 @@ public class BoardPanel extends JPanel {
         g2.setColor(Color.GRAY);
 
         for (int[] edge : boardGraph.getEdges()) {
+
             Point from = boardGraph.getNodePositions().get(edge[0]);
             Point to = boardGraph.getNodePositions().get(edge[1]);
             if (from != null && to != null) {
@@ -95,7 +100,9 @@ public class BoardPanel extends JPanel {
 
         for (Map.Entry<Integer, Point> entry : boardGraph.getNodePositions().entrySet()) {
             int id = entry.getKey();
+
             Point p = entry.getValue();
+
             g2.setColor(Color.WHITE);
             g2.fillOval(p.x - 15, p.y - 15, 30, 30);
             g2.setColor(Color.BLACK);
@@ -116,7 +123,7 @@ public class BoardPanel extends JPanel {
         // 기존 버튼 제거
         removeMalButton(playerId, malId);
 
-        // 대표 말 버튼 생성
+         //대표 말 버튼 생성
         MalButton malBtn = new MalButton(playerId, malId, playerColors.get(playerId));
         malBtn.setLocation(pos.x - 10, pos.y - 10);
         malBtn.setNodeId(nodeId);
@@ -124,6 +131,9 @@ public class BoardPanel extends JPanel {
         add(malBtn);
         setComponentZOrder(malBtn, 0);
         malButtons.add(malBtn);
+
+        //사용자의 대표 말 생성하기
+
 
         // ✅ 정확한 말 개수 계산: 실제 보드 정보 기반
         List<Mal> occupyingMals = yutnoriSet.getBoard().boardShape.get(nodeId).getOccupyingPieces();

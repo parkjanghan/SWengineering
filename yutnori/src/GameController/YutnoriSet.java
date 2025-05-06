@@ -171,7 +171,7 @@ public class YutnoriSet {
     {
         ArrayList<Mal> moveableOutOfBoardMal = new ArrayList<>();
         for (Mal mal : malList) {
-            if (mal.getPosition() == 0) {
+            if (mal.getPosition() <= 0) {
                 moveableOutOfBoardMal.add(mal);
             }
         }
@@ -186,7 +186,7 @@ public class YutnoriSet {
         Mal selectedMal = malList.get(selectedMalNumber);
         int selectedMalPosition = selectedMal.getPosition();
 
-        if (selectedMalPosition == 0)
+        if (selectedMalPosition <= 0)
         {
             return -1; //선택할 수 있는 말이 없음
         }
@@ -225,7 +225,7 @@ public class YutnoriSet {
         {
             if (mal.getTeam() != playerTurn)
             {
-                mal.setPosition(0);//판 밖으로 이동
+                mal.setPosition((-1) * mal.getPosition());//판 밖으로 이동
 
             }
         }
@@ -239,11 +239,12 @@ public class YutnoriSet {
     public void moveMal(int playerTurn, int selectedMalNumber, int destNodeId, YutResult yutResult) {
         Player currentPlayer = players.get(playerTurn);
         Mal selectedMal = currentPlayer.getMalList().get(selectedMalNumber);
+
         int currentNode = selectedMal.getPosition();
 
         playerResults.remove(yutResult);
 
-        if (currentNode == 0) {
+        if (currentNode <= 0) {
             selectedMal.setPosition(destNodeId);
             board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, selectedMal);
         } else {
@@ -287,8 +288,8 @@ public class YutnoriSet {
         }
         else if (inGameFlag == NEED_TO_SELECT)
         {
-            //selectOutOfBoardPiece(playerTurn);
-            //+
+
+
         }
         else if (inGameFlag == NEED_TO_MOVE)
         {
@@ -364,7 +365,7 @@ public class YutnoriSet {
     }
 
     public void nextTurn() {
-        this.playerTurn = (this.playerTurn + 1) % players.size();
+        this.playerTurn = (this.playerTurn + 1) % players.size() ;
         notifyGameStateChange("턴 변경됨", playerTurn);
     }
 
@@ -382,5 +383,20 @@ public class YutnoriSet {
             }
         }
         return null; // 플레이어를 찾지 못한 경우
+    }
+
+    public void playGame() {
+        while (true) {
+            // 턴 시작
+            System.out.println("[YutnoriSet] 🎲 턴 시작: 플레이어 " + (playerTurn + 1));
+            decisionMaking();
+
+            // 턴 종료
+            nextTurn();
+            if(players.get(playerTurn).getScore() >= 4) {
+                System.out.println("[YutnoriSet] 🏆 게임 종료: 플레이어 " + (playerTurn + 1) + " 승리!");
+                break;
+            }
+        }
     }
 }

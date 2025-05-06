@@ -80,7 +80,26 @@ public class Board6 extends BoardAbstract{
 
     protected void SetConnections() {
 
+        boardShape.get(-1).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(30,32))); //0은 빽도
+        boardShape.get(-1).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
+        boardShape.get(-1).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
+        boardShape.get(-1).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
+        boardShape.get(-1).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
+        boardShape.get(-1).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//
 
+        boardShape.get(-2).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(30,32))); //0은 빽도
+        boardShape.get(-2).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
+        boardShape.get(-2).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
+        boardShape.get(-2).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
+        boardShape.get(-2).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
+        boardShape.get(-2).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//
+
+        boardShape.get(-3).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(30,32))); //0은 빽도
+        boardShape.get(-3).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
+        boardShape.get(-3).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
+        boardShape.get(-3).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
+        boardShape.get(-3).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
+        boardShape.get(-3).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//
         // 0번 노드
         boardShape.get(0).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(30,32))); //0은 빽도
         boardShape.get(0).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도

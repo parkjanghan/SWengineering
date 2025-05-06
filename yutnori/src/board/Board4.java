@@ -23,6 +23,10 @@ public class Board4 extends BoardAbstract
     protected void InitNodes()
     {
         createNode(0, 600, 600, true, false, false, false); // 노드 0은
+        createNode(-1, 600, 600, true, false, false, false);
+        createNode(-2, 600, 600, true, false, false, false);
+        createNode(-3, 600, 600, true, false, false, false);
+
         //시작점
         createNode(1, 500, 500, false, false, false, false);  // Start node
         createNode(2, 450, 500, false, false, false, false);
@@ -81,14 +85,36 @@ public class Board4 extends BoardAbstract
 
     protected void SetConnections() {
 
-        //0번 노드
         boardShape.get(0).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(20))); //0은 빽도
         boardShape.get(0).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
         boardShape.get(0).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
         boardShape.get(0).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
         boardShape.get(0).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
         boardShape.get(0).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//모
-       //1번 노드 = 끝 전 마지막 노드
+        //-1번 노드 = 1번 사용자의 시작 노드
+        boardShape.get(-1).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(20))); //0은 빽도
+        boardShape.get(-1).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
+        boardShape.get(-1).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
+        boardShape.get(-1).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
+        boardShape.get(-1).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
+        boardShape.get(-1).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//모
+        //-2 번 노드 = 2번 사용자의 시작 노드
+        boardShape.get(-2).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(20))); //0은 빽도
+        boardShape.get(-2).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
+        boardShape.get(-2).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
+        boardShape.get(-2).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
+        boardShape.get(-2).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
+        boardShape.get(-2).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//모
+        //-3번 노드 = 3번 사용자의 시작 노드
+        boardShape.get(-3).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(20))); //0은 빽도
+        boardShape.get(-3).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
+        boardShape.get(-3).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
+        boardShape.get(-3).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
+        boardShape.get(-3).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
+        boardShape.get(-3).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//모
+
+
+        //1번 노드 = 끝 전 마지막 노드
         boardShape.get(1).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(20))); //0은 빽도
         boardShape.get(1).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(30))); //도
         boardShape.get(1).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(30))); //개

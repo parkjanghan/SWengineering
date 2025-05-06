@@ -54,19 +54,31 @@ public class GamePanel extends JPanel {
 
         for (int playerId = 0; playerId < yutnoriSet.getPlayers().size(); playerId++) {
             for (int malId = 0; malId < yutnoriSet.getPlayers().get(playerId).getMalList().size(); malId++) {
-                yutnoriSet.getPlayers().get(playerId).getMalList().get(malId).setPosition(0);
+                yutnoriSet.getPlayers().get(playerId).getMalList().get(malId).setPosition(playerId * (-1));
 
                 // 위치 계산: 노드 0의 좌표 + y축 아래로 50px
-                Point node0 = boardPanel.getBoardGraph().getNodePositions().get(0);
-                Point initial = new Point(node0.x, node0.y + 50);
+                Point node0 = boardPanel.getBoardGraph().getNodePositions().get(playerId * (-1));
+                Point initial = new Point(node0.x, node0.y );
 
                 boardPanel.addInitialMalButton(playerId, malId, initial);
             }
         }
 
-
         // 4. 첫 번째 턴 UI 초기화
         infoPanel.updatePlayerTurn(yutnoriSet.getPlayerTurn());
+        infoPanel.showPlayerScores();
+        //일단 여기까지는 윷을 굴리기 전이므로 윷을 굴린 다음의 프로세스를 진행해야함
 
     }
+    // 5. 게임 진행
+    public void startGame()
+    {
+        yutnoriSet.startGame(GameSettings.getPlayerCount(), GameSettings.getMalCount());
+        yutnoriSet.playGame();
+    }
+    public YutnoriSet getYutnoriSet() {
+        return yutnoriSet;
+    }
+
+
 }
