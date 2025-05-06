@@ -15,7 +15,7 @@ public class BoardGraph5 implements BoardGraph {
     }
 
     public void setupBoardGraph() {
-
+        
         int size = 6;
         int middleX = 400, middleY = 300;
         double angleStep = 2 * Math.PI / 5;
@@ -61,8 +61,9 @@ public class BoardGraph5 implements BoardGraph {
         Point node1 = new Point(node25.x -50, node25.y - 50);
         nodePositions.put(1, node1);
 
-        // 출발 전 대기 노드
-        nodePositions.put(0, new Point(middleX + 240, middleY));
+        // ✅ 시작 노드 0번 (명시적으로 먼저 설정)
+        nodePositions.put(0, new Point(middleX + 240, middleY)); // 말이 시작하는 자
+
     }
 
     private void addDiagonalNodes(int corner, int mid1Id, int mid2Id) {

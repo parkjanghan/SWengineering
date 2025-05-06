@@ -30,15 +30,19 @@ public class IntroPanel extends JPanel {
         
         //startBtn.addActionListener(e -> parentFrame.switchTo("game"));
         startBtn.addActionListener(e -> {
-            // 게임 세팅값으로 YutnoriSet 초기화
-            YutnoriSet yutnoriSet = new YutnoriSet(GameSettings.getBoardShape()); // 보드 타입 4
-            //yutnoriSet.setPlayer(GameSettings.getPlayerCount(), GameSettings.getMalCount());
-        
-            // GamePanel에 YutnoriSet 주입
+            int boardType = GameSettings.getBoardShape();  //설정값 불러오기
+
+            if (boardType < 4 || boardType > 6) {
+                boardType = 4; // 기본값 보정
+            }
+
+            YutnoriSet yutnoriSet = new YutnoriSet(boardType); // 예외 방지
+
             GamePanel gamePanel = new GamePanel(yutnoriSet);
             parentFrame.setContentPane(gamePanel);
             parentFrame.revalidate();
         });
+
 
         settingBtn.addActionListener(e -> parentFrame.switchTo("setting"));
     }

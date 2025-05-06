@@ -2,14 +2,17 @@ package display;
 
 import GameController.YutnoriSet;
 import play.YutResult;
-import display.BoardPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel {
 
     private final YutnoriSet yutnoriSet;
+    private BoardPanel boardPanel;
+    private ThrowPanel throwPanel;
+    private PlayerInfoPanel infoPanel;
 
     public GamePanel(YutnoriSet yutnoriSet) {
         setLayout(new BorderLayout());
@@ -17,9 +20,9 @@ public class GamePanel extends JPanel {
         this.yutnoriSet.startGame(GameSettings.getPlayerCount(), GameSettings.getMalCount()); // ✅ 2인용, 말 4개로 초기화 추가
 
         // 1. 각 서브 패널에 yutnoriSet 전달
-        BoardPanel boardPanel = new BoardPanel(yutnoriSet);
-        ThrowPanel throwPanel = new ThrowPanel(yutnoriSet);
-        PlayerInfoPanel infoPanel = new PlayerInfoPanel(yutnoriSet);
+        boardPanel = new BoardPanel(yutnoriSet);
+        throwPanel = new ThrowPanel(yutnoriSet);
+        infoPanel = new PlayerInfoPanel(yutnoriSet);
 
         // 2. 오른쪽 묶음 패널 생성 (수직 배치), 패널 추가
         JPanel rightPanel = new JPanel();
@@ -33,13 +36,35 @@ public class GamePanel extends JPanel {
         // 3. 옵저버 등록 (게임 로직에서 UI 상태 갱신받기)
         yutnoriSet.addObserver(evt -> {
             switch (evt.getPropertyName()) {
-                case "윷 던지기 결과" -> throwPanel.showYutResult((YutResult) evt.getNewValue());
+                case "모/윷이 나옴" -> {
+                    throwPanel.showYutResult((YutResult) evt.getNewValue());
+                    throwPanel.enableAllButtons(true);
+                }
+                case "윷 던지기 결과" -> {
+                    throwPanel.showYutResult((YutResult) evt.getNewValue());
+                    boardPanel.enableMalButtonsForPlayer(yutnoriSet.getPlayerTurn());
+                    throwPanel.enableAllButtons(false);
+                }
                 case "말 이동됨" -> {
                     int[] data = (int[]) evt.getNewValue(); // [playerId, malId, destNodeId]
                     boardPanel.updateMalPosition(data); // BoardPanel에 말 위치 반영
+
                 }
-                case "말 잡힘" -> boardPanel.removeMalAt((int[]) evt.getNewValue());
-                case "턴 변경됨" -> infoPanel.updatePlayerTurn((int) evt.getNewValue());
+                case "말 잡힘" -> {
+                    @SuppressWarnings("unchecked")
+                    ArrayList<Integer> info = (ArrayList<Integer>) evt.getNewValue();
+                    int playerId = info.get(0);
+                    int malId = info.get(1);
+
+                    boardPanel.removeMalAt(new int[] { playerId, malId });
+                    boardPanel.enableMalButtonsForPlayer(yutnoriSet.getPlayerTurn());
+                    throwPanel.enableAllButtons(true);
+                }
+                case "턴 변경됨" -> {
+                    infoPanel.updatePlayerTurn((int) evt.getNewValue());
+                    throwPanel.enableAllButtons(true);
+                    boardPanel.disableAllMalButtons();
+                }
             }
         });
 
@@ -54,13 +79,9 @@ public class GamePanel extends JPanel {
 
         for (int playerId = 0; playerId < yutnoriSet.getPlayers().size(); playerId++) {
             for (int malId = 0; malId < yutnoriSet.getPlayers().get(playerId).getMalList().size(); malId++) {
+                // 항상 존재하는 노드 ID로 초기화 (예: 노드 1)
                 yutnoriSet.getPlayers().get(playerId).getMalList().get(malId).setPosition(0);
-
-                // 위치 계산: 노드 0의 좌표 + y축 아래로 50px
-                Point node0 = boardPanel.getBoardGraph().getNodePositions().get(0);
-                Point initial = new Point(node0.x, node0.y + 50);
-
-                boardPanel.addInitialMalButton(playerId, malId, initial);
+                boardPanel.updateMalPosition(new int[] { playerId, malId, 0 });
             }
         }
 
