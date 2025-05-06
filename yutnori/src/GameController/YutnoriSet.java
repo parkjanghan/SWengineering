@@ -35,6 +35,7 @@ public class YutnoriSet {
     public static final int NEED_TO_ROLL = 0;
     public static final int NEED_TO_SELECT = 1;
     public static final int NEED_TO_MOVE = 2;
+    public static final int NEED_TO_CHANGE_TURN = 3;
 
 
 
@@ -231,6 +232,10 @@ public class YutnoriSet {
 
         for (Mal mal : occupyingMal) {
             if (mal.getTeam() != playerTurn) {
+                if(board.boardShape.get(destNodeId).isEndPoint()) //종료 종착지에서도 잡히는 오류 해결
+                {
+                    return false;
+                }
                 System.out.println("[tryCatchMal] 🔥 적 말 잡음! 팀: " + mal.getTeam() + ", 말 번호: " + mal.getMalNumber());
                 mal.setPosition(0);
                 mal.setFinished(false);
@@ -258,7 +263,7 @@ public class YutnoriSet {
 
     public boolean moveMal(int playerTurn, int selectedMalNumber, int destNodeId, YutResult yutResult) {
         Player currentPlayer = players.get(playerTurn);
-
+        System.out.println("[moveMal] 현재 플레이어" + currentPlayer.getTeam());
         // 🥷 이동 전에 적의 말이 있으면 잡기 시도
         System.out.println("[moveMal] 잡기 시도 시작...");
         boolean didCatch = tryCatchMal(playerTurn, destNodeId);
@@ -270,14 +275,17 @@ public class YutnoriSet {
 
         boolean isEnd = board.boardShape.get(destNodeId).isEndPoint();
 
-        if (currentNode == 0) {
+        if (currentNode <= 0) {
             selectedMal.setPosition(destNodeId);
             if (isEnd) {
                 selectedMal.setFinished(true);
                 currentPlayer.addScore(1);
+                System.out.println("[moveMal]현재 플레이어: "+ currentPlayer.getTeam() + "득점");
+                notifyGameStateChange("득점", playerTurn);
             }
             board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, selectedMal);
-        } else {
+        }
+        else {
             ArrayList<Mal> movingStack = new ArrayList<>();
             for (Mal mal : board.boardShape.get(currentNode).getOccupyingPieces()) {
                 if (mal.getTeam() == playerTurn) {
@@ -285,6 +293,8 @@ public class YutnoriSet {
                     if (isEnd) {
                         mal.setFinished(true);
                         currentPlayer.addScore(1);
+                        System.out.println("[moveMal]현재 플레이어: "+ currentPlayer.getTeam() + "득점");
+                        notifyGameStateChange("득점", playerTurn);
                     }
                     movingStack.add(mal);
                 }
@@ -293,6 +303,10 @@ public class YutnoriSet {
             for (Mal mal : movingStack) {
                 board.boardShape.get(destNodeId).addOccupyingPiece(playerTurn, mal);
             }
+        }
+        for(Player player : players)
+        {
+            System.out.println("[moveMal] 플레이어 " + player.getTeam() + " 점수: " + player.getScore());
         }
 
         notifyGameStateChange("말 이동됨", new int[]{playerTurn, selectedMalNumber, destNodeId});
@@ -315,14 +329,31 @@ public class YutnoriSet {
             System.out.println("[moveMal] 추가 턴 부여됨 (잡기 성공)");
             setInGameFlag(NEED_TO_ROLL);
             return true;
-        } else {
+        }
+        else {
             setInGameFlag(playerResults.isEmpty() ? NEED_TO_ROLL : NEED_TO_SELECT);
+
             System.out.println("[moveMal] 추가 턴 없음. 남은 결과 여부: " + !playerResults.isEmpty());
-            return !playerResults.isEmpty(); // 결과가 남아 있으면 한 번 더
+            // 결과가 남아 있으면 한 번 더
+
+            return !playerResults.isEmpty();
         }
     }
 
+    //
+    public void changeTurn()
+    {
+        if (inGameFlag == NEED_TO_ROLL)
+        {
+            nextTurn();
 
+
+        }
+        else
+        {
+            System.out.println("[YutnoriSet] 턴 변경 아님. 현재 상태: " + inGameFlag);
+        }
+    }
     // decisionMaking은 process 보고 결정을 해야 할 듯 합니다
     public void decisionMaking()
     {

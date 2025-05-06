@@ -133,12 +133,16 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
 
         Point pos;
 
-        if (nodeId == 0) {
+        if (nodeId <= 0) {
             // 0번 노드일 때 플레이어/말마다 살짝 다른 위치로 분산 배치
-            Point base = boardGraph.getNodePositions().get(0);
-            int offsetX = (playerId - 1) * 20 + (malId % 2) * 10;
-            int offsetY = (malId / 2) * 10;
-            pos = new Point(base.x + offsetX, base.y + offsetY);
+//            Point base = boardGraph.getNodePositions().get(0);
+//            int offsetX = (playerId - 1) * 20 + (malId % 2) * 10;
+//            int offsetY = (malId / 2) * 10;
+//            pos = new Point(base.x + offsetX, base.y + offsetY);
+            //Point base = boardGraph.getNodePositions().get(0);
+            int offsetX = 800;
+            int offsetY = 150 + 50*(playerId);
+            pos = new Point(offsetX, offsetY);
         } else {
             pos = boardGraph.getNodePositions().get(nodeId);
         }

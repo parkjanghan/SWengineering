@@ -15,7 +15,7 @@ public class BoardGraph5 implements BoardGraph {
     }
 
     public void setupBoardGraph() {
-        
+
         int size = 6;
         int middleX = 400, middleY = 300;
         double angleStep = 2 * Math.PI / 5;
@@ -49,7 +49,10 @@ public class BoardGraph5 implements BoardGraph {
 
         Point center = new Point(middleX, middleY);
         nodePositions.put(36, center);
-
+        nodePositions.put(0, new Point(800, 150)); // 0번 사용자 말 대기 위치 (출발 전) ✅
+        nodePositions.put(-1, new Point(800, 200));
+        nodePositions.put(-2, new Point(800, 250));
+        nodePositions.put(-3, new Point(800, 300));
         addDiagonalNodes(1, 27, 26);
         addDiagonalNodes(6, 28, 29);
         addDiagonalNodes(11, 30, 31);
@@ -58,12 +61,12 @@ public class BoardGraph5 implements BoardGraph {
 
         // 25번과 연결되는 노드 1번
         Point node25 = nodePositions.get(25);
-        Point node1 = new Point(node25.x -50, node25.y - 50);
+        Point node16 = nodePositions.get(16);
+        Point node1 = new Point(node25.x -50, node16.y );
         nodePositions.put(1, node1);
 
-        // ✅ 시작 노드 0번 (명시적으로 먼저 설정)
-        nodePositions.put(0, new Point(middleX + 240, middleY)); // 말이 시작하는 자
-
+        // 출발 전 대기 노드
+        //nodePositions.put(0, new Point(middleX + 240, middleY));
     }
 
     private void addDiagonalNodes(int corner, int mid1Id, int mid2Id) {

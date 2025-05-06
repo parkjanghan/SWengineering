@@ -21,7 +21,12 @@ public class Board5 extends BoardAbstract{
 
     protected void InitNodes()
     {
-        createNode(0, 600, 600, true, false, false, false); //시작 노드
+        createNode(0, 600, 600, true, false, false, false); // 노드 0은
+        createNode(-1, 600, 600, true, false, false, false);
+        createNode(-2, 600, 600, true, false, false, false);
+        createNode(-3, 600, 600, true, false, false, false);
+
+        // createNode(0, 600, 600, true, false, false, false); //시작 노드
         createNode(1, 500, 500, false, false, false, false);  // 임시 좌표
         createNode(2, 450, 500, false, false, false, false);
         createNode(3, 400, 500, false, false, false, false);
@@ -58,7 +63,7 @@ public class Board5 extends BoardAbstract{
         createNode(34, 150, 400, false, false, false, false);
         createNode(35, 100, 400, false, false, false, false);
         createNode(36, 50, 400, false, false, false, false);
-        createNode(37, 500, 500, false, true, false, false); 
+        createNode(37, 500, 500, false, true, false, false);
 
     }
 
@@ -133,13 +138,39 @@ public class Board5 extends BoardAbstract{
 
     protected void SetConnections() {
 
-        //0번 노드
         boardShape.get(0).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(25,27))); //0은 빽도 - 25 or 27??
         boardShape.get(0).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
         boardShape.get(0).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
         boardShape.get(0).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
         boardShape.get(0).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
         boardShape.get(0).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//모
+
+        //-1번 노드 = 1번 사용자의 시작 노드
+        boardShape.get(-1).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(25,27))); //0은 빽도 - 25 or 27??
+        boardShape.get(-1).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
+        boardShape.get(-1).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
+        boardShape.get(-1).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
+        boardShape.get(-1).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
+        boardShape.get(-1).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//모
+
+        //-2 번 노드 = 2번 사용자의 시작 노드
+        boardShape.get(-2).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(25,27))); //0은 빽도 - 25 or 27??
+        boardShape.get(-2).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
+        boardShape.get(-2).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
+        boardShape.get(-2).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
+        boardShape.get(-2).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
+        boardShape.get(-2).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//모
+
+        //-3번 노드 = 3번 사용자의 시작 노드
+        boardShape.get(-3).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(25,27))); //0은 빽도 - 25 or 27??
+        boardShape.get(-3).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(2))); //도
+        boardShape.get(-3).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(3))); //개
+        boardShape.get(-3).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(4)));//걸
+        boardShape.get(-3).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(5)));//윷
+        boardShape.get(-3).addNext_nodes(YutResult.MO, new ArrayList<>(List.of(6)));//모
+
+
+        //0번 노드
 
         //1번 노드
         boardShape.get(1).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(25,27))); //0은 빽도 - 25 or 27??
@@ -184,7 +215,7 @@ public class Board5 extends BoardAbstract{
 
             }
         }
-        
+
         // 6번 노드
 
         boardShape.get(6).addNext_nodes(YutResult.BACK_DO, new ArrayList<>(List.of(5)));
