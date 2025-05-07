@@ -15,7 +15,7 @@ yutnori
 │   ├── display
 │   ├── GameController
 │   ├── main
-│   ├── play
+│   └── play
 └── README.md
 ```
 ## 📝 Document
