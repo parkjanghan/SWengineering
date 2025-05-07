@@ -336,17 +336,35 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
         }
 
         // 🎯 게임 종료 처리
-        else if (property.equals("게임 종료")) {
+       else if (property.equals("게임 종료")) {
             Object value = evt.getNewValue();
             if (value instanceof int[]) {
                 int[] data = (int[]) value;
                 int playerTurn = data[0];
 
-                JOptionPane.showMessageDialog(this,
-                        "🎉 플레이어 " + (playerTurn + 1) + "이(가) 승리했습니다!",
-                        "게임 종료", JOptionPane.INFORMATION_MESSAGE);
+                JDialog dialog = new JDialog((Frame)SwingUtilities.getWindowAncestor(this), "게임 종료", true);
+                dialog.setLayout(null);
+                dialog.setSize(320, 140);
+                dialog.setLocationRelativeTo(this);
 
-                System.out.println("[BoardPanel] 🎉 게임 종료 알림 수신: player " + playerTurn);
+                JButton restartBtn = new JButton("다시하기");
+                restartBtn.setBounds(30, 40, 100, 35);
+                restartBtn.addActionListener(e -> {
+                    dialog.dispose();
+                    ((Yutnori) SwingUtilities.getWindowAncestor(this)).goToIntro();
+                });
+                dialog.add(restartBtn);
+
+                JButton exitBtn = new JButton("종료하기");
+                exitBtn.setBounds(170, 40, 100, 35);
+                exitBtn.addActionListener(e -> {
+                    dialog.dispose();
+                    System.exit(0);
+                });
+                dialog.add(exitBtn);
+
+                dialog.setVisible(true);
+                System.out.println("[BoardPanel] 게임 종료 알림 수신: player " + playerTurn);
             } else {
                 System.err.println("⚠️ '게임 종료' 이벤트 타입 불일치: " + value.getClass().getName());
             }
