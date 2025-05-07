@@ -35,8 +35,11 @@ public class Yutnori extends JFrame {
     }
 
     public void goToIntro() {
-        setContentPane(new IntroPanel(this));
-        revalidate();
+        switchTo("intro");
+    }
+
+    public void addGamePanel(JPanel gamePanel) {
+        mainPanel.add(gamePanel, "game");
     }
 
 }
