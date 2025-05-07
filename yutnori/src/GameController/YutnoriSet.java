@@ -27,6 +27,7 @@ public class YutnoriSet {
     private int playerTurn; //어느 사용자의 턴인지?
     private int inGameFlag;
     private ArrayList<YutResult> playerResults;
+    private YutResult yutResult_to_use;
 
 
 
@@ -345,39 +346,6 @@ public class YutnoriSet {
 
 
 
-    //
-    public void changeTurn()
-    {
-        if (inGameFlag == NEED_TO_ROLL)
-        {
-            nextTurn();
-
-
-        }
-        else
-        {
-            System.out.println("[YutnoriSet] 턴 변경 아님. 현재 상태: " + inGameFlag);
-        }
-    }
-    // decisionMaking은 process 보고 결정을 해야 할 듯 합니다
-    public void decisionMaking()
-    {
-        if (inGameFlag == NEED_TO_ROLL)
-        {
-            rollYut();
-        }
-        else if (inGameFlag == NEED_TO_SELECT)
-        {
-            //selectOutOfBoardPiece(playerTurn);
-            //+
-        }
-        else if (inGameFlag == NEED_TO_MOVE)
-        {
-            //selectInBoardPiece(playerTurn, chosenDestNodeId);
-        }
-    }
-
-
     public void setPlayerResults(YutResult yutResult) {
         this.playerResults.add(yutResult);
     }
@@ -469,4 +437,32 @@ public class YutnoriSet {
         // "윷을 던져야 하는 상태"일 때만 true
         return inGameFlag == GameFlag.NEED_TO_ROLL;
     }
+
+    public void setYutResult_to_use(YutResult yutResult_to_use) {
+        this.yutResult_to_use = yutResult_to_use;
+    }
+
+    public YutResult getYutResult_to_use() {
+        YutResult temp = yutResult_to_use;
+        yutResult_to_use = null; // 사용 후 null로 초기화
+        return temp;
+    }
+    public YutResult use_player_result(YutResult input)
+    {
+        //System.out.println("[YutnoriSet] playerResults " + playerResults);
+        if(input == null)
+        {
+            System.out.println("[YutnoriSet] 사용자가 선택한 결과가 없음");
+            return null;
+        }
+        else
+        {
+            System.out.println("[YutnoriSet] 사용자가 선택한 결과: " + input.getName());
+           playerResults.remove(input);
+           notifyGameStateChange( "사용할 결과 선택", input);
+            return input;
+        }
+    }
+
+
 }

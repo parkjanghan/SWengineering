@@ -45,6 +45,11 @@ public class GamePanel extends JPanel {
                     boardPanel.enableMalButtonsForPlayer(yutnoriSet.getPlayerTurn());
                     throwPanel.enableAllButtons(false);
                 }
+                case "사용할 결과 선택"-> {
+                    throwPanel.enableAllButtons(true);
+                    throwPanel.updateResultDisplay();
+                    throwPanel.enableAllButtons(false);
+                }
                 case "말 이동됨" -> {
                     int[] data = (int[]) evt.getNewValue(); // [playerId, malId, destNodeId]
                     boardPanel.updateMalPosition(data); // BoardPanel에 말 위치 반영

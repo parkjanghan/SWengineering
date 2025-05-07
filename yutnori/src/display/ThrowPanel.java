@@ -14,7 +14,9 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
 
     private final YutnoriSet yutnoriSet;
     private JLabel resultLabel;
+    private JPanel resultPanel;
     private List<JButton> allButtons = new ArrayList<>();
+    public YutResult rollResult_to_use;
 
     public ThrowPanel(YutnoriSet yutnoriSet) {
         setLayout(new BorderLayout());
@@ -22,7 +24,12 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
 
         this.yutnoriSet = yutnoriSet;
 
-        resultLabel = new JLabel("결과: ", SwingConstants.CENTER);
+        // 결과 패널 초기화
+        resultPanel = new JPanel();
+        resultPanel.setLayout(new FlowLayout());
+        add(resultPanel, BorderLayout.SOUTH);
+
+        resultLabel = new JLabel("남은 결과: 없음");
         resultLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18));
 
         // 랜덤 윷 던지기 버튼
@@ -42,7 +49,7 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
 
         // 수동 윷 선택 버튼들
         JPanel yutButtons = new JPanel(new GridLayout(1, 6, 5, 5));
-        String[] names = {"백도", "도", "개", "걸", "윷", "모"};
+        String[] names = {"빽", "도", "개", "걸", "윷", "모"};
         YutResult[] results = {
                 YutResult.BACK_DO, YutResult.DO, YutResult.GAE,
                 YutResult.GEOL, YutResult.YUT, YutResult.MO
@@ -63,12 +70,11 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
             yutButtons.add(btn);
         }
 
-        // 옵저버 한 번만 등록
+        // 옵저버 등록
         this.yutnoriSet.addObserver(this);
 
         add(topPanel, BorderLayout.NORTH);
         add(yutButtons, BorderLayout.CENTER);
-        add(resultLabel, BorderLayout.SOUTH);
     }
 
     // 옵저버 콜백 구현
@@ -76,28 +82,77 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         String property = evt.getPropertyName();
 
-        if ("사용자의 결과 추가됨".equals(property) || "사용자의 결과 삭제됨".equals(property)) {
-            showYutResult(null);
+        if ("사용자의 결과 추가됨".equals(property) || "사용자의 결과 삭제됨".equals(property))
+        {
+            updateResultDisplay();
         }
+        else if("말 이동됨".equals(property))
+        {
+            for (Component comp : resultPanel.getComponents()) {
+                if (comp instanceof JButton) {
+                    comp.setEnabled(true);
+                }
+            }
+        }
+    }
+
+    // 결과 화면 업데이트
+    void updateResultDisplay() {
+        //System.out.println("[ThrowPanel] 📢 updateResultDisplay() 호출됨");
+
+        // 기존 결과 패널의 모든 컴포넌트 제거
+        resultPanel.removeAll();
+        System.out.println("[ThrowPanel] 📢 updateResultDisplay() -" +
+                "현재 playerResults: " + yutnoriSet.getPlayerResults());
+        List<YutResult> results = yutnoriSet.getPlayerResults();
+
+        if (results == null || results.isEmpty()) {
+            JLabel noResultLabel = new JLabel("남은 결과: 없음");
+            noResultLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+            resultPanel.add(noResultLabel);
+        }
+        else {
+            JLabel titleLabel = new JLabel("사용할 결과: ");
+            titleLabel.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+            resultPanel.add(titleLabel);
+
+            for (YutResult result : results) {
+                JButton resultBtn = new JButton(result.getName());
+                resultBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+                resultBtn.addActionListener(e -> {
+
+                    for (Component comp : resultPanel.getComponents()) {
+                        if (comp instanceof JButton) {
+                            comp.setEnabled(false);
+                        }
+                    }
+                    //System.out.println("[ThrowPanel] ✅ 사용할 결과 버튼 클릭됨: " + result.getName());
+                    // 결과 사용 - 여기서 사용할 윷 결과 boardPanel에 전달
+                    yutnoriSet.setYutResult_to_use(result);
+                    //그리고 클릭된 버튼을 삭제해야
+
+                    resultPanel.remove(resultBtn);
+
+                    resultPanel.remove(resultBtn);
+                    // 패널 다시 그리기
+                    resultPanel.revalidate();
+                    resultPanel.repaint();
+
+
+                });
+                resultPanel.add(resultBtn);
+            }
+        }
+
+        // 패널 갱신
+        resultPanel.revalidate();
+        resultPanel.repaint();
     }
 
     public void showYutResult(YutResult result) {
         System.out.println("[ThrowPanel] 📢 showYutResult() 호출됨");
-
-        List<YutResult> results = yutnoriSet.getPlayerResults();
-
-        if (results == null || results.isEmpty()) {
-            resultLabel.setText("남은 결과: 없음");
-            return;
-        }
-
-
-        StringBuilder sb = new StringBuilder("남은 결과: ");
-        for (YutResult r : results) {
-            sb.append(r.getName()).append(" ");
-        }
-
-        resultLabel.setText(sb.toString().trim());
+        // 결과 표시 화면 업데이트
+        updateResultDisplay();
     }
 
     public void enableAllButtons(boolean enable) {
@@ -106,4 +161,13 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
         }
     }
 
+    public void enableResultButtons() {
+        for (Component comp : resultPanel.getComponents()) {
+            if (comp instanceof JButton) {
+                comp.setEnabled(true);
+            }
+        }
+        resultPanel.revalidate();
+        resultPanel.repaint();
+    }
 }

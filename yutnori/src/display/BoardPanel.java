@@ -213,24 +213,49 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
                 b.removeActionListener(l);
             }
         }
+        System.out.println("[handleMalClick] playerResults: " + yutnoriSet.getPlayerResults());
+        //움직임을 먼저 선택해야 이전에 있었던 움직임들이 반영이 안됨
+        //즉 사용할 yutResult를 먼저 고르게 해야 굴린 결과들을 사용 할 수 있음
+        for(MalButton btn : malButtons) {
+            if (btn.getPlayerId() == playerId && btn.getMalId() == malId) {
+                btn.setEnabled(false);
+            }
+        }//말 버튼들 비활성화
 
-        List<YutResult> results = yutnoriSet.getPlayerResults();
-        if (results.isEmpty()) return;
+        //움직일 윷 yutResult 선택하기
+       // List<YutResult> results = yutnoriSet.getPlayerResults();
+        if (yutnoriSet.getPlayerResults().isEmpty()) return;
 
-        YutResult result = results.getFirst();
+       // 여러개 선택 할 수 있게 변경
+        YutResult result = yutnoriSet.getYutResult_to_use();
+
         List<Integer> moveable = yutnoriSet.showMoveableNodeId(currentNode, result);
 
-        for (int nodeId : moveable) {
-            NodeButton btn = nodeButtons.get(nodeId);
-            if (btn != null) {
-                btn.setHighlighted(true);
+        for(MalButton btn : malButtons) {
+            if (btn.getPlayerId() == playerId && btn.getMalId() == malId) {
                 btn.setEnabled(true);
-                btn.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        handleNodeClick(nodeId, result);
-                    }
-                });
+            }
+        }//말 버튼들 다시 활성화
+        if(moveable == null)
+        {
+            System.out.println("[handleMalClick] 이동할 수 있는 노드 없음");
+            JOptionPane.showMessageDialog(this, "사용할 결과를 먼저 선택하세요");
+        }
+        else
+        {
+            for (int nodeId : moveable) {
+
+                NodeButton btn = nodeButtons.get(nodeId);
+                if (btn != null) {
+                    btn.setHighlighted(true);
+                    btn.setEnabled(true);
+                    btn.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            handleNodeClick(nodeId, result);
+                        }
+                    });
+                }
             }
         }
 
@@ -251,6 +276,7 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
         }
 
         repaint();
+
 
         if (!keepTurn) {
             System.out.println("[handleNodeClick] 턴 종료: 다음 플레이어로 넘어갑니다.");
