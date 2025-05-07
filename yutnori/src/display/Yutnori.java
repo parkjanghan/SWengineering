@@ -34,4 +34,9 @@ public class Yutnori extends JFrame {
         cardLayout.show(mainPanel, panelName);
     }
 
+    public void goToIntro() {
+        setContentPane(new IntroPanel(this));
+        revalidate();
+    }
+
 }
