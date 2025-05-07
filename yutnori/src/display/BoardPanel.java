@@ -128,17 +128,61 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
         }
     }
 
+    private void updateNodeCountLabel(int nodeId, int playerId) {
+        // 기존 라벨 제거
+        JLabel label = nodeCountLabels.get(nodeId);
+        if (label != null) {
+            remove(label);
+            nodeCountLabels.remove(nodeId);
+        }
+
+        long count;
+
+        if (nodeId <= 0) {
+            // 시작 노드인 경우, 직접 말 리스트에서 위치가 nodeId인 말들을 셈
+            count = yutnoriSet.getPlayers().get(playerId).getMalList().stream()
+                    .filter(m -> m.getPosition() == nodeId)
+                    .count();
+        } else {
+            // 일반 노드인 경우, board 내부 점유 말 리스트를 기준으로 셈
+            count = yutnoriSet.getBoard()
+                    .boardShape
+                    .get(nodeId)
+                    .getOccupyingPieces()
+                    .stream()
+                    .filter(m -> m.getTeam() == playerId)
+                    .count();
+        }
+
+        if (count < 1) return;
+
+        Point pos = (nodeId <= 0) ? new Point(800, 150 + 50 * playerId)
+                : boardGraph.getNodePositions().get(nodeId);
+        if (pos == null) return;
+
+        JLabel countLabel = new JLabel(String.valueOf(count), SwingConstants.CENTER);
+        countLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        countLabel.setForeground(Color.BLACK);
+        countLabel.setBounds(pos.x - 30, pos.y - 20, 20, 20);
+        add(countLabel);
+        setComponentZOrder(countLabel, 0);
+
+        nodeCountLabels.put(nodeId, countLabel);
+    }
+
     public void updateMalPosition(int[] data) {
         int playerId = data[0];
         int malId = data[1];
         int nodeId = data[2];
 
+        // 도착 노드가 종료 지점이면 말 제거
         if (nodeId > 0 && yutnoriSet.board.boardShape.get(nodeId).isEndPoint()) {
-            removeMalButton(playerId, malId); // 혹시 남은 버튼 제거
+            removeMalButton(playerId, malId);
             malPositions.remove(playerId * 10 + malId);
             return;
         }
 
+        // 위치 계산
         Point pos = (nodeId <= 0) ? new Point(800, 150 + 50 * playerId)
                 : boardGraph.getNodePositions().get(nodeId);
         if (pos == null) return;
@@ -146,40 +190,56 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
         // 기존 말 버튼 제거
         removeMalButton(playerId, malId);
 
-        // 말 버튼 생성
-        MalButton malBtn = new MalButton(playerId, malId, playerColors.get(playerId));
-        malBtn.setNodeId(nodeId);
-
-        // 노드에 같은 팀의 다른 말이 있는지 확인
+        // 현재 노드에 이미 같은 팀 말이 있으면 대표 말만 표시
         long count = malButtons.stream()
                 .filter(m -> m.getNodeId() == nodeId && m.getPlayerId() == playerId)
                 .count();
 
         if (count >= 1 && nodeId > 0) {
-            // 이미 대표 말이 있으면 말 버튼은 추가하지 않고 라벨만 업데이트 (stack 처리만 로직에서 처리)
+            // 이미 대표 말이 있으면 추가하지 않음
+            updateNodeCountLabel(nodeId, playerId);  //라벨만 갱신
             return;
         }
 
-        // 대표 말이므로 버튼 생성
+        // 대표 말 버튼 생성
+        MalButton malBtn = new MalButton(playerId, malId, playerColors.get(playerId));
+        malBtn.setNodeId(nodeId);
         malBtn.setLocation(pos.x - 10, pos.y - 10);
         malBtn.addActionListener(e -> handleMalClick(playerId, malId, nodeId));
         add(malBtn);
         setComponentZOrder(malBtn, 0);
         malButtons.add(malBtn);
         malPositions.put(playerId * 10 + malId, pos);
+
+        // 말 버튼 추가 후 말 개수 라벨 갱신
+        updateNodeCountLabel(nodeId, playerId);
     }
+
 
 
 
     private void removeMalButton(int playerId, int malId) {
-        malButtons.removeIf(btn -> {
+        MalButton removed = null;
+        int nodeId = -999;
+
+        for (MalButton btn : malButtons) {
             if (btn.getPlayerId() == playerId && btn.getMalId() == malId) {
+                removed = btn;
+                nodeId = btn.getNodeId();
                 remove(btn); // 화면에서 제거
-                return true;
+                break;
             }
-            return false;
-        });
+        }
+
+        if (removed != null) {
+            malButtons.remove(removed);
+            malPositions.remove(playerId * 10 + malId);
+
+            //라벨 갱신
+            updateNodeCountLabel(nodeId, playerId);
+        }
     }
+
 
     public void disableAllMalButtons() {
         for (MalButton btn : malButtons) {
