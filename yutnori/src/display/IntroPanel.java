@@ -39,8 +39,8 @@ public class IntroPanel extends JPanel {
             YutnoriSet yutnoriSet = new YutnoriSet(boardType); // 예외 방지
 
             GamePanel gamePanel = new GamePanel(yutnoriSet);
-            parentFrame.setContentPane(gamePanel);
-            parentFrame.revalidate();
+            parentFrame.addGamePanel(gamePanel);
+            parentFrame.switchTo("game");
         });
 
 
