@@ -202,7 +202,13 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
             JOptionPane.showMessageDialog(this, "지금은 플레이어 " + (yutnoriSet.getPlayerTurn() + 1) + "의 턴입니다.");
             return;
         }
-
+        if (selectedPlayerId != -1 && selectedMalId != -1) {
+            for (MalButton btn : malButtons) {
+                if (btn.getPlayerId() == selectedPlayerId && btn.getMalId() == selectedMalId) {
+                    btn.setEnabled(true); // 이전 선택된 말 버튼 활성화
+                }
+            }
+        }
         this.selectedPlayerId = playerId;
         this.selectedMalId = malId;
 
@@ -217,25 +223,26 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
         //움직임을 먼저 선택해야 이전에 있었던 움직임들이 반영이 안됨
         //즉 사용할 yutResult를 먼저 고르게 해야 굴린 결과들을 사용 할 수 있음
         for(MalButton btn : malButtons) {
-            if (btn.getPlayerId() == playerId && btn.getMalId() == malId) {
+            if (btn.getPlayerId() == playerId)
+            {
+                btn.setEnabled(true);
+            }
+            else
+            {
                 btn.setEnabled(false);
             }
         }//말 버튼들 비활성화
 
         //움직일 윷 yutResult 선택하기
        // List<YutResult> results = yutnoriSet.getPlayerResults();
-        if (yutnoriSet.getPlayerResults().isEmpty()) return;
+        //if (yutnoriSet.getPlayerResults().isEmpty()) return;
 
        // 여러개 선택 할 수 있게 변경
         YutResult result = yutnoriSet.getYutResult_to_use();
 
         List<Integer> moveable = yutnoriSet.showMoveableNodeId(currentNode, result);
 
-        for(MalButton btn : malButtons) {
-            if (btn.getPlayerId() == playerId && btn.getMalId() == malId) {
-                btn.setEnabled(true);
-            }
-        }//말 버튼들 다시 활성화
+
         if(moveable == null)
         {
             System.out.println("[handleMalClick] 이동할 수 있는 노드 없음");
@@ -249,14 +256,14 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
                 if (btn != null) {
                     btn.setHighlighted(true);
                     btn.setEnabled(true);
-                    btn.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            handleNodeClick(nodeId, result);
-                        }
-                    });
+                    for (ActionListener l : btn.getActionListeners()) {
+                        btn.removeActionListener(l);
+                    }
+                    btn.addActionListener(e -> handleNodeClick(nodeId, result));
+
                 }
             }
+
         }
 
         repaint();
@@ -264,6 +271,7 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
 
     private void handleNodeClick(int nodeId, YutResult result) {
         boolean keepTurn = yutnoriSet.moveMal(selectedPlayerId, selectedMalId, nodeId, result);
+
 
         updateMalPosition(new int[]{selectedPlayerId, selectedMalId, nodeId});
 
@@ -280,8 +288,10 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
 
         if (!keepTurn) {
             System.out.println("[handleNodeClick] 턴 종료: 다음 플레이어로 넘어갑니다.");
+            yutnoriSet.setYutResult_to_use(null);
             yutnoriSet.nextTurn();
         } else {
+            yutnoriSet.setYutResult_to_use(null);
             System.out.println("[handleNodeClick] 턴 유지됨: 잡기 또는 윷/모로 추가 턴!");
         }
     }
@@ -316,8 +326,8 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
 
             for (Player p : yutnoriSet.getPlayers()) {
                 for (Mal m : p.getMalList()) {
-                    if (m.getPosition() == 0) {
-                        updateMalPosition(new int[]{m.getTeam(), m.getMalNumber(), 0});
+                    if (m.getPosition() <= 0) {
+                        updateMalPosition(new int[]{m.getTeam(), m.getMalNumber(), p.getTeam()*(-1)});
                     }
                 }
             }

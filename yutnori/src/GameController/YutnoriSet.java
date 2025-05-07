@@ -444,7 +444,7 @@ public class YutnoriSet {
 
     public YutResult getYutResult_to_use() {
         YutResult temp = yutResult_to_use;
-        yutResult_to_use = null; // 사용 후 null로 초기화
+        //yutResult_to_use = null; // 사용 후 null로 초기화
         return temp;
     }
     public YutResult use_player_result(YutResult input)

@@ -16,7 +16,7 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
     private JLabel resultLabel;
     private JPanel resultPanel;
     private List<JButton> allButtons = new ArrayList<>();
-    public YutResult rollResult_to_use;
+
 
     public ThrowPanel(YutnoriSet yutnoriSet) {
         setLayout(new BorderLayout());
