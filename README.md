@@ -3,8 +3,9 @@
 # Yutnori Game
 
 ## 🛠 Tech Stack
-- java
-- java swing
+- Java
+- Java Swing(GUI)
+- Observer Pattern
 
 ## 📁 Directory
 ```
