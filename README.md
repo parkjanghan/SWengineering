@@ -10,8 +10,12 @@
 ```
 yutnori
 ├── src
+│   ├── assets
+│   ├── board
 │   ├── display
-│   ├── img
+│   ├── GameController
+│   ├── main
+│   └── play
 └── README.md
 ```
 ## 📝 Document
