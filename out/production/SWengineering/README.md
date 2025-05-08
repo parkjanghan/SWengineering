@@ -3,15 +3,20 @@
 # Yutnori Game
 
 ## 🛠 Tech Stack
-- java
-- java swing
+- Java
+- Java Swing(GUI)
+- Observer Pattern
 
 ## 📁 Directory
 ```
 yutnori
 ├── src
+│   ├── assets
+│   ├── board
 │   ├── display
-│   ├── img
+│   ├── GameController
+│   ├── main
+│   └── play
 └── README.md
 ```
 ## 📝 Document
