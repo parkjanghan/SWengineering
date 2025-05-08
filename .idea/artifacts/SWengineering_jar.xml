@@ -3,7 +3,6 @@
     <output-path>$PROJECT_DIR$/out/artifacts/SWengineering_jar</output-path>
     <root id="archive" name="SWengineering.jar">
       <element id="module-output" name="SWengineering" />
-      <element id="library" level="module" name="JUnit5.8.1" module-name="SWengineering" />
     </root>
   </artifact>
 </component>

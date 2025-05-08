@@ -146,12 +146,17 @@ public class Board6 extends BoardAbstract{
             for(int j =-1; j<6;j ++)
             {
 
-                if(i+j>30)
+                if(i+j>32)
                 {
                     setConnection_one_dest(i,j,44); //끝나면
                 }
                 else if(j==0){
                     setConnection_one_dest(i,j,i-1); //빽도
+                }
+                else if (i+j==31)
+                {
+
+                    setConnection_one_dest(i,j,1);
                 }
                 else {
                     setConnection_one_dest(i,j,i+j); //일반적인 경우

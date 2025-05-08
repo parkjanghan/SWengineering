@@ -14,7 +14,7 @@ public class IntroPanel extends JPanel {
         setPreferredSize(new Dimension(1280, 720));
 
         // 배경 이미지 로드
-        background = new ImageIcon(getClass().getResource("/assets/images/introBackground.png")).getImage();
+        //background = new ImageIcon(getClass().getClassLoader().getResource("assets/images/introBackground.png")).getImage();
 
         // Start 버튼
         JButton startBtn = new JButton("Start");
