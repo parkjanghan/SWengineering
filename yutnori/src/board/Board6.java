@@ -203,6 +203,7 @@ public class Board6 extends BoardAbstract{
 // 33 35 37 39 개걸윷모
         int[] nodeNumbers1 = {33, 35, 37, 39};
         for (int node : nodeNumbers1) {
+
             boardShape.get(node).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(43)));  // 개
             boardShape.get(node).addNext_nodes(YutResult.GEOL, new ArrayList<>(List.of(41)));  // 걸
             boardShape.get(node).addNext_nodes(YutResult.YUT, new ArrayList<>(List.of(42)));  // 윷
@@ -210,7 +211,7 @@ public class Board6 extends BoardAbstract{
         }
 
 //34 36 38 40 도개걸윷모
-        int[] nodeNumbers2 = {33, 35, 37, 39};
+        int[] nodeNumbers2 = {34, 36, 38, 40};
         for (int node : nodeNumbers2) {
             boardShape.get(node).addNext_nodes(YutResult.DO, new ArrayList<>(List.of(43)));  // 도
             boardShape.get(node).addNext_nodes(YutResult.GAE, new ArrayList<>(List.of(41)));  // 개
