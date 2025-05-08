@@ -28,8 +28,7 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
     private int selectedMalId = -1;
     private final Map<Integer, NodeButton> nodeButtons = new HashMap<>();
     private final List<MalButton> malButtons = new ArrayList<>();
-    private final Map<Integer, JLabel> nodeCountLabels = new HashMap<>();
-
+    private final Map<String, JLabel> nodeCountLabels = new HashMap<>();
 
     public BoardPanel(YutnoriSet yutnoriSet) {
         switch (GameSettings.getBoardShape()) {
@@ -129,22 +128,26 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
     }
 
     private void updateNodeCountLabel(int nodeId, int playerId) {
+        // 시작 노드 nodeId는 통일해서 0으로 처리
+        int labelNodeId = (nodeId <= 0) ? 0 : nodeId;
+
+        // 고유 키: "playerId:labelNodeId"
+        String labelKey = playerId + ":" + labelNodeId;
+
         // 기존 라벨 제거
-        JLabel label = nodeCountLabels.get(nodeId);
-        if (label != null) {
-            remove(label);
-            nodeCountLabels.remove(nodeId);
+        JLabel oldLabel = nodeCountLabels.get(labelKey);
+        if (oldLabel != null) {
+            remove(oldLabel);
+            nodeCountLabels.remove(labelKey);
         }
 
+        // 말 개수 계산
         long count;
-
         if (nodeId <= 0) {
-            // 시작 노드인 경우, 직접 말 리스트에서 위치가 nodeId인 말들을 셈
             count = yutnoriSet.getPlayers().get(playerId).getMalList().stream()
-                    .filter(m -> m.getPosition() == nodeId)
+                    .filter(m -> m.getPosition() <= 0)
                     .count();
         } else {
-            // 일반 노드인 경우, board 내부 점유 말 리스트를 기준으로 셈
             count = yutnoriSet.getBoard()
                     .boardShape
                     .get(nodeId)
@@ -156,18 +159,56 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
 
         if (count < 1) return;
 
-        Point pos = (nodeId <= 0) ? new Point(800, 150 + 50 * playerId)
-                : boardGraph.getNodePositions().get(nodeId);
-        if (pos == null) return;
+        // 위치 계산
+        Point basePos;
+        if (nodeId <= 0) {
+            basePos = new Point(800, 150 + (playerId * 50));
+        } else {
+            basePos = boardGraph.getNodePositions().get(nodeId);
+        }
+
+        if (basePos == null) return;
+
+        int labelX = basePos.x + 15;
+        int labelY = basePos.y - 15;
 
         JLabel countLabel = new JLabel(String.valueOf(count), SwingConstants.CENTER);
         countLabel.setFont(new Font("Arial", Font.BOLD, 12));
         countLabel.setForeground(Color.BLACK);
-        countLabel.setBounds(pos.x - 30, pos.y - 20, 20, 20);
+        countLabel.setBounds(labelX, labelY, 20, 20);
         add(countLabel);
         setComponentZOrder(countLabel, 0);
 
-        nodeCountLabels.put(nodeId, countLabel);
+        nodeCountLabels.put(labelKey, countLabel);
+
+        revalidate();
+        repaint();
+    }
+
+
+
+    private void moveCaughtMalToStartNode(int team, int malNumber) {
+        // 기존 말 버튼 제거
+        removeMalButton(team, malNumber);
+
+        // 시작 노드 고정 좌표
+        int startNodeId = 0;
+        Point pos = new Point(800, 150 + 50 * team);
+
+        // 말 위치 저장
+        malPositions.put(team * 10 + malNumber, pos);
+
+        // 새 말 버튼 생성
+        MalButton malBtn = new MalButton(team, malNumber, playerColors.get(team));
+        malBtn.setNodeId(startNodeId);
+        malBtn.setLocation(pos.x - 10, pos.y - 10);
+        malBtn.addActionListener(e -> handleMalClick(team, malNumber, startNodeId));
+        add(malBtn);
+        setComponentZOrder(malBtn, 0);
+        malButtons.add(malBtn);
+
+        // 시작 노드의 라벨 갱신
+        updateNodeCountLabel(startNodeId, team);
     }
 
     public void updateMalPosition(int[] data) {
@@ -371,12 +412,11 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
             2, new Point(300, 50),   // 플레이어 3: 위쪽 (추후 확장용)
             3, new Point(300, 550)   // 플레이어 4: 아래쪽 (추후 확장용)
     );
-
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String property = evt.getPropertyName();
 
-        // 🎯 잡기 이벤트 처리
+        // 잡기 이벤트 처리
         if (property.equals("말 잡힘")) {
             ArrayList<Integer> info = (ArrayList<Integer>) evt.getNewValue();
             int playerTurn = info.get(0);
@@ -386,13 +426,15 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
 
             for (Player p : yutnoriSet.getPlayers()) {
                 for (Mal m : p.getMalList()) {
-                    if (m.getPosition() <= 0) {
-                        updateMalPosition(new int[]{m.getTeam(), m.getMalNumber(), p.getTeam()*(-1)});
+                    if (m.getPosition() == 0) {
+                        moveCaughtMalToStartNode(m.getTeam(), m.getMalNumber());
                     }
                 }
             }
+
             repaint();
         }
+
 
         // 🎯 말 이동 시 UI 업데이트
         else if (property.equals("말 이동됨")) {
@@ -406,7 +448,7 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
         }
 
         // 🎯 게임 종료 처리
-       else if (property.equals("게임 종료")) {
+        else if (property.equals("게임 종료")) {
             Object value = evt.getNewValue();
             if (value instanceof int[]) {
                 int[] data = (int[]) value;
