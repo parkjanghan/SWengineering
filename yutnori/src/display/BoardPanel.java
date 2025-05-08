@@ -1,6 +1,6 @@
 package display;
 
-import GameController.YutnoriSet;
+import GameModel.YutnoriSet;
 import assets.BoardGraph4;
 import assets.BoardGraph5;
 import assets.BoardGraph6;
@@ -11,7 +11,6 @@ import assets.BoardGraph;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;

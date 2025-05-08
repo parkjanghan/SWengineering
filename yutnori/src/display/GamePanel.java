@@ -1,6 +1,6 @@
 package display;
 
-import GameController.YutnoriSet;
+import GameModel.YutnoriSet;
 import play.YutResult;
 
 import javax.swing.*;

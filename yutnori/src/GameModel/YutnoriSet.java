@@ -1,4 +1,4 @@
-package GameController;
+package GameModel;
 
 import board.Board4;
 import board.Board5;

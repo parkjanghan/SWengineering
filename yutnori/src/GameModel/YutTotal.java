@@ -1,4 +1,4 @@
-package GameController;
+package GameModel;
 
 import play.YutResult;
 
