@@ -1,7 +1,6 @@
 package play;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Mal {
     private int team;
@@ -16,7 +15,7 @@ public class Mal {
         this.team = team;
         this.malNumber = malNumber;
         this.owner = owner;
-        this.position = 0;
+        this.position = owner.getTeam()*(-1);
         this.isFinished = false;
         this.life = true;
         this.stackedMal = new ArrayList<>();

@@ -181,7 +181,7 @@ public class YutnoriSet {
     {
         ArrayList<Mal> moveableOutOfBoardMal = new ArrayList<>();
         for (Mal mal : malList) {
-            if (mal.getPosition() == 0) {
+            if (mal.getPosition() <= 0) {
                 moveableOutOfBoardMal.add(mal);
             }
         }
@@ -196,7 +196,7 @@ public class YutnoriSet {
         Mal selectedMal = malList.get(selectedMalNumber);
         int selectedMalPosition = selectedMal.getPosition();
 
-        if (selectedMalPosition == 0)
+        if (selectedMalPosition <= 0)
         {
             return -1; //선택할 수 있는 말이 없음
         }

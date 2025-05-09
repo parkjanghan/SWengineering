@@ -14,7 +14,7 @@ yutnori
 │   ├── assets
 │   ├── board
 │   ├── display
-│   ├── GameController
+│   ├── GameModel
 │   ├── main
 │   └── play
 └── README.md
