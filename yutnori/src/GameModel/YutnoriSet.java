@@ -8,7 +8,7 @@ import play.Mal;
 import play.Player;
 import play.YutResult;
 
-import javax.swing.*;
+//import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -324,6 +324,7 @@ public class YutnoriSet {
                 .filter(Mal::getFinished)
                 .count();
 
+        //수정필요
         if (finishedCount == currentPlayer.getMalList().size()) {
             inGameFlag = GameFlag.WAITING;
             JOptionPane.showMessageDialog(null,
