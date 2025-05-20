@@ -1,6 +1,5 @@
 package assets;
 
-import java.awt.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,7 @@ public interface BoardGraph {
     // 각 노드의 위치를 설정하는 메소드
     void setupBoardGraph();
 
-    Map<Integer, Point> getNodePositions();
+    Map<Integer, MyPoint> getNodePositions();
     List<int[]> getEdges();
     Set<Integer> getClickableNodes();
 
