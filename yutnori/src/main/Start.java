@@ -1,5 +1,7 @@
 package main;
 
+import display.Yutnori;
+
 public class Start {
 
     public static final int SCREEN_WIDTH = 1280;
