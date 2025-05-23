@@ -1,15 +1,15 @@
 package display;
 
 import GameModel.YutnoriSet;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
+
+import javafx.geometry.*;
+import javafx.scene.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 import java.util.ArrayList;
 
