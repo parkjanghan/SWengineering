@@ -56,15 +56,15 @@ public class GamePane extends BorderPane {
                     ArrayList<Integer> info = (ArrayList<Integer>) evt.getNewValue();
                     int playerId = info.get(0);
                     int malId = info.get(1);
-                    //boardPanel.removeMalAt(new int[]{playerId, malId});
-                    //boardPanel.enableMalButtonsForPlayer(yutnoriSet.getPlayerTurn());
+                    boardPanel.removeMalAt(new int[]{playerId, malId});
+                    boardPanel.enableMalButtonsForPlayer(yutnoriSet.getPlayerTurn());
                     throwPanel.enableAllButtons(true);
                 }
                 case "턴 변경됨" -> {
                     int newTurn = (int) evt.getNewValue();
                     infoPanel.updatePlayerTurn(newTurn);
                     throwPanel.enableAllButtons(true);
-                    //boardPanel.disableAllMalButtons();
+                    boardPanel.disableAllMalButtons();
                 }
                 case "득점" -> {
                     infoPanel.showPlayerScores();
@@ -83,7 +83,7 @@ public class GamePane extends BorderPane {
             for (int malId = 0; malId < yutnoriSet.getPlayers().get(playerId).getMalList().size(); malId++) {
                 int startNode = playerId * (-1);
                 yutnoriSet.getPlayers().get(playerId).getMalList().get(malId).setPosition(startNode);
-                //boardPanel.updateMalPosition(new int[]{playerId, malId, startNode});
+                boardPanel.updateMalPosition(new int[]{playerId, malId, startNode});
             }
         }
 
