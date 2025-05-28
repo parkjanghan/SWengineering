@@ -249,7 +249,7 @@ public class BoardPane extends Pane implements PropertyChangeListener{
         for (NodeButton btn : nodeButtons.values()) {
             btn.setHighlighted(false);
             btn.setDisable(true);
-            btn.setOnAction(null); //  오류 해결
+            btn.setOnAction(null);
         }
 
         // JavaFX는 자동 갱신. 필요하면 수동으로 요청 가능

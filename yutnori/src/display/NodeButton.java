@@ -4,8 +4,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.control.Button;
 
-public class NodeButton extends StackPane {
+public class NodeButton extends Button {
 
     private final int nodeId;
     private boolean isHighlighted = false;
