@@ -3,12 +3,18 @@ package display;
 import GameModel.YutnoriSet;
 import assets.*;
 import javafx.geometry.Point2D;
-import javafx.scene.Cursor;
+
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.control.Button;
 import play.Mal;
 import play.Player;
+import play.YutResult;
+import assets.BoardGraph4;
+import assets.BoardGraph5;
+import assets.BoardGraph6;
+import assets.BoardGraph;
 
 import java.awt.*;
 import java.beans.PropertyChangeListener;
@@ -101,45 +107,8 @@ public class BoardPane extends Pane implements PropertyChangeListener{
 
     }
 
-
-
-
     private void drawBoardGraph() {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-        gc.setStroke(javafx.scene.paint.Color.GRAY);
-        gc.setLineWidth(2);
-
-        // 1. 노드 간 선 (edge) 그리기
-        for (int[] edge : boardGraph.getEdges()) {
-            MyPoint from = boardGraph.getNodePositions().get(edge[0]);
-            MyPoint to = boardGraph.getNodePositions().get(edge[1]);
-            if (from != null && to != null) {
-                gc.strokeLine(from.getX(), from.getY(), to.getX(), to.getY());
-            }
-        }
-
-        // 2. 노드 원 및 번호 그리기
-        for (Map.Entry<Integer, MyPoint> entry : boardGraph.getNodePositions().entrySet()) {
-            int id = entry.getKey();
-            MyPoint p = entry.getValue();
-
-            double x = p.getX();
-            double y = p.getY();
-            double r = 15;
-
-            // 노드 원
-            gc.setFill(javafx.scene.paint.Color.WHITE);
-            gc.fillOval(x - r, y - r, r * 2, r * 2);
-
-            gc.setStroke(javafx.scene.paint.Color.BLACK);
-            gc.strokeOval(x - r, y - r, r * 2, r * 2);
-
-            // 노드 번호 텍스트
-            gc.setFill(javafx.scene.paint.Color.BLACK);
-            gc.setFont(javafx.scene.text.Font.font("Arial", 10));
-            gc.fillText(String.valueOf(id), x - 6, y + 4);
-        }
+        //추가 필요
     }
 
     private void updateNodeCountLabel(int nodeId, int playerId) {
@@ -185,44 +154,12 @@ public class BoardPane extends Pane implements PropertyChangeListener{
         double labelY = basePos.getY() - 15;
 
         // 라벨 생성
-        Label countLabel = new Label(String.valueOf(count));
-        countLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        countLabel.setTextFill(Color.BLACK);
-        countLabel.setAlignment(Pos.CENTER);
-        countLabel.setPrefWidth(20);
-        countLabel.setPrefHeight(20);
-        countLabel.setLayoutX(labelX);
-        countLabel.setLayoutY(labelY);
-
-        getChildren().add(countLabel);
-        nodeCountLabels.put(labelKey, countLabel);
+        //추가 필요
     }
 
 
     private void moveCaughtMalToStartNode(int team, int malNumber) {
-        // 기존 말 버튼 제거
-        removeMalButton(team, malNumber);
-
-        // 시작 노드 고정 좌표
-        int startNodeId = 0;
-        MyPoint pos = new MyPoint(800, 150 + 50 * team);
-
-        // 말 위치 저장
-        malPositions.put(team * 10 + malNumber, new Point((int) pos.getX(), (int) pos.getY())); // 유지
-
-        // 새 말 버튼 생성
-        MalButton malBtn = new MalButton(team, malNumber, playerColors.get(team));
-        malBtn.setNodeId(startNodeId);
-        malBtn.setLayoutX(pos.getX() - 10);
-        malBtn.setLayoutY(pos.getY() - 10);
-        malBtn.setOnAction(e -> handleMalClick(team, malNumber, startNodeId));
-
-        getChildren().add(malBtn);
-        malBtn.toFront();  // 최상단 배치
-        malButtons.add(malBtn);
-
-        // 시작 노드의 라벨 갱신
-        updateNodeCountLabel(startNodeId, team);
+        //추가필요
     }
 
     public void updateMalPosition(int[] data) {
@@ -238,14 +175,7 @@ public class BoardPane extends Pane implements PropertyChangeListener{
         }
 
         // 위치 계산
-        MyPoint pos;
-        if (nodeId <= 0) {
-            pos = new MyPoint(800, 150 + 50 * playerId);
-        } else {
-            Point raw = boardGraph.getNodePositions().get(nodeId);
-            if (raw == null) return;
-            pos = new MyPoint(raw.x, raw.y);
-        }
+
 
         // 기존 말 버튼 제거
         removeMalButton(playerId, malId);
@@ -262,16 +192,7 @@ public class BoardPane extends Pane implements PropertyChangeListener{
         }
 
         // 대표 말 버튼 생성
-        MalButton malBtn = new MalButton(playerId, malId, playerColors.get(playerId));
-        malBtn.setNodeId(nodeId);
-        malBtn.setLayoutX(pos.getX() - 10);
-        malBtn.setLayoutY(pos.getY() - 10);
-        malBtn.setOnAction(e -> handleMalClick(playerId, malId, nodeId));
 
-        getChildren().add(malBtn);
-        malBtn.toFront();
-        malButtons.add(malBtn);
-        malPositions.put(playerId * 10 + malId, new Point((int) pos.getX(), (int) pos.getY()));
 
         // 말 버튼 추가 후 말 개수 라벨 갱신
         updateNodeCountLabel(nodeId, playerId);
@@ -316,7 +237,7 @@ public class BoardPane extends Pane implements PropertyChangeListener{
     }
 
     private void handleMalClick(int playerId, int malId, int currentNode) {
-
+            //추가필요
     }
 
 
@@ -328,10 +249,11 @@ public class BoardPane extends Pane implements PropertyChangeListener{
         for (NodeButton btn : nodeButtons.values()) {
             btn.setHighlighted(false);
             btn.setDisable(true);
-            btn.setOnAction(null);  // 모든 액션 제거
+            btn.setOnAction(null); //  오류 해결
         }
 
-        // JavaFX는 repaint 불필요 (자동 렌더링됨)
+        // JavaFX는 자동 갱신. 필요하면 수동으로 요청 가능
+        requestLayout();
 
         if (!keepTurn) {
             System.out.println("[handleNodeClick] 턴 종료: 다음 플레이어로 넘어갑니다.");
@@ -342,6 +264,7 @@ public class BoardPane extends Pane implements PropertyChangeListener{
             System.out.println("[handleNodeClick] 턴 유지됨: 잡기 또는 윷/모로 추가 턴!");
         }
     }
+
 
     public void removeMalAt(int[] data) {
         int playerId = data[0];
@@ -358,7 +281,7 @@ public class BoardPane extends Pane implements PropertyChangeListener{
     public void propertyChange(PropertyChangeEvent evt) {
         String property = evt.getPropertyName();
 
-        // 🟥 잡기 이벤트 처리
+        // 잡기 이벤트 처리
         if (property.equals("말 잡힘")) {
             ArrayList<Integer> info = (ArrayList<Integer>) evt.getNewValue();
             int playerTurn = info.get(0);
@@ -377,7 +300,7 @@ public class BoardPane extends Pane implements PropertyChangeListener{
             this.requestLayout();
         }
 
-        // 🟦 말 이동 시 UI 업데이트
+        // 말 이동 시 UI 업데이트
         else if (property.equals("말 이동됨")) {
             int[] data = (int[]) evt.getNewValue();
             int playerId = data[0];
@@ -388,12 +311,9 @@ public class BoardPane extends Pane implements PropertyChangeListener{
             this.requestLayout();
         }
 
-        // 🟩 게임 종료 처리
-
+        // 게임 종료 처리
+        //추가해야됨
 
     }
-
-
-
 
 }
