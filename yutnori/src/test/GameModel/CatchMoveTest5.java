@@ -152,4 +152,23 @@ class CatchMoveTest5 {
             assertTrue(selectedId >= 0);
         }
     }
+
+    //추가: 업힌 말이 함께 이동하는지 확인
+    @Test
+    void testStackedMalMoveTogether() {
+        yutnoriSet.addPlayerResult(YutResult.DO);
+        yutnoriSet.moveMal(0, 0, 5, YutResult.DO);
+
+        yutnoriSet.addPlayerResult(YutResult.DO);
+        yutnoriSet.moveMal(0, 1, 5, YutResult.DO);
+
+        assertEquals(2, yutnoriSet.board.boardShape.get(5).getNumOfOccupyingPieces());
+
+        yutnoriSet.addPlayerResult(YutResult.GAE);
+        yutnoriSet.moveMal(0, 0, 6, YutResult.GAE);
+
+        assertEquals(2, yutnoriSet.board.boardShape.get(6).getNumOfOccupyingPieces());
+        assertEquals(6, yutnoriSet.players.get(0).getMalList().get(0).getPosition());
+        assertEquals(6, yutnoriSet.players.get(0).getMalList().get(1).getPosition());
+    }
 }
