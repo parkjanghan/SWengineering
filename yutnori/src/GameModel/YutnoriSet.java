@@ -406,6 +406,7 @@ public class YutnoriSet {
 
     public void nextTurn() {
         this.playerTurn = (this.playerTurn + 1) % players.size();
+        setInGameFlag(NEED_TO_ROLL);
         notifyGameStateChange("턴 변경됨", playerTurn);
     }
 

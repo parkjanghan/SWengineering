@@ -2,29 +2,21 @@ package display;
 
 import GameModel.YutnoriSet;
 import assets.*;
-import javafx.geometry.Point2D;
 
+import javafx.geometry.Point2D;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.control.Button;
 import play.Mal;
 import play.Player;
 import play.YutResult;
-import assets.BoardGraph4;
-import assets.BoardGraph5;
-import assets.BoardGraph6;
-import assets.BoardGraph;
 
-import java.awt.*;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.*;
-import java.util.List;
 
-
-
-public class BoardPane extends Pane implements PropertyChangeListener{
+public class BoardPane extends Pane implements PropertyChangeListener {
 
     private final YutnoriSet yutnoriSet;
     private BoardGraph boardGraph;
@@ -32,7 +24,6 @@ public class BoardPane extends Pane implements PropertyChangeListener{
     private final List<MalButton> malButtons = new ArrayList<>();
     private final Map<Integer, Point2D> malPositions = new HashMap<>();
     private final Map<String, Label> nodeCountLabels = new HashMap<>();
-
 
     private int selectedPlayerId = -1;
     private int selectedMalId = -1;
@@ -43,19 +34,18 @@ public class BoardPane extends Pane implements PropertyChangeListener{
 
     public BoardPane(YutnoriSet yutnoriSet) {
         this.yutnoriSet = yutnoriSet;
+        System.out.println("BoardPane created");
 
         // 보드 종류 선택
         switch (GameSettings.getBoardShape()) {
             case 4 -> this.boardGraph = new BoardGraph4();
             case 5 -> this.boardGraph = new BoardGraph5();
             case 6 -> this.boardGraph = new BoardGraph6();
+            default -> {
+                System.out.println("Board type 잘못됨: " + GameSettings.getBoardShape() + ", 기본값 4로 설정");
+                this.boardGraph = new BoardGraph4();
+            }
         }
-
-        if (this.boardGraph == null) {
-            System.out.println("Board type 잘못됨: " + GameSettings.getBoardShape() + ", 기본값 4로 설정");
-            this.boardGraph = new BoardGraph4();
-        }
-
 
         // 배경 색상 설정
         setPrefSize(1000, 720);
@@ -68,7 +58,7 @@ public class BoardPane extends Pane implements PropertyChangeListener{
             Point2D pos = new Point2D(raw.getX(), raw.getY());
 
             NodeButton btn = new NodeButton(nodeId, pos);
-            btn.setDisable(true);  // Swing의 setEnabled(false) 대응
+            btn.setDisable(true);
             nodeButtons.put(nodeId, btn);
             getChildren().add(btn);
         }
@@ -86,12 +76,10 @@ public class BoardPane extends Pane implements PropertyChangeListener{
                 for (Player p : yutnoriSet.getPlayers()) {
                     for (Mal m : p.getMalList()) {
                         if (m.getPosition() == 0) {
-                            removeMalAt(new int[]{m.getTeam(), m.getMalNumber()});
                             updateMalPosition(new int[]{m.getTeam(), m.getMalNumber(), 0});
                         }
                     }
                 }
-                // repaint() → JavaFX에서는 생략 가능
             }
         });
 
@@ -99,30 +87,182 @@ public class BoardPane extends Pane implements PropertyChangeListener{
         yutnoriSet.addObserver(this);
     }
 
-    private Point2D toPoint2D(MyPoint point) {
-        return new Point2D(point.getX(), point.getY());
+    private void handleMalClick(int playerId, int malId, int currentNode) {
+        if (playerId != yutnoriSet.getPlayerTurn()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("턴 알림");
+            alert.setHeaderText(null);
+            alert.setContentText("[BoardPane]-handleMalClick: 지금은 플레이어 " + (yutnoriSet.getPlayerTurn() + 1) + "의 턴입니다.");
+            alert.showAndWait();
+            return;
+        }
+
+        if (selectedPlayerId != -1 && selectedMalId != -1) {
+            for (MalButton btn : malButtons) {
+                if (btn.getPlayerId() == selectedPlayerId && btn.getMalId() == selectedMalId) {
+                    btn.setDisable(false); // 이전 선택된 말 버튼 활성화
+                }
+            }
+        }
+
+        this.selectedPlayerId = playerId;
+        this.selectedMalId = malId;
+
+        // 모든 노드 버튼 초기화
+        for (NodeButton b : nodeButtons.values()) {
+            b.setHighlighted(false);
+            b.setDisable(true);
+            // JavaFX에서는 setOnAction으로 이벤트 핸들러를 제거
+            b.setOnAction(null);
+        }
+
+        System.out.println("[BoardPane][handleMalClick] playerResults: " + yutnoriSet.getPlayerResults());
+
+        // 움직임을 먼저 선택해야 이전에 있었던 움직임들이 반영이 안됨
+        // 즉 사용할 yutResult를 먼저 고르게 해야 굴린 결과들을 사용 할 수 있음
+        for (MalButton btn : malButtons) {
+            if (btn.getPlayerId() == playerId) {
+                btn.setDisable(false);
+            } else {
+                btn.setDisable(true);
+            }
+        } // 말 버튼들 활성화/비활성화
+
+        // 움직일 윷 yutResult 선택하기
+        YutResult result = yutnoriSet.getYutResult_to_use();
+        List<Integer> moveable = yutnoriSet.showMoveableNodeId(currentNode, result);
+
+        if (moveable == null) {
+            System.out.println("[BoardPane][handleMalClick] 이동할 수 있는 노드 없음");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("이동 불가");
+            alert.setHeaderText(null);
+            alert.setContentText("사용할 결과를 먼저 선택하세요");
+            alert.showAndWait();
+        } else {
+            for (int nodeId : moveable) {
+                NodeButton btn = nodeButtons.get(nodeId);
+                if (btn != null) {
+                    btn.setHighlighted(true);
+                    btn.setDisable(false);
+                    // JavaFX에서는 setOnAction으로 이벤트 핸들러 설정
+                    btn.setOnAction(e -> handleNodeClick(nodeId, result));
+                }
+            }
+        }
+
+        // JavaFX에서는 보통 Scene의 루트 노드에서 repaint가 자동으로 처리됨
+        // 필요하다면 특정 노드에서 requestLayout() 또는 autoSizeChildren() 호출
     }
 
-    protected void paintComponent(Graphics g) {
+    private void handleNodeClick(int nodeId, YutResult result) {
+        boolean keepTurn = yutnoriSet.moveMal(selectedPlayerId, selectedMalId, nodeId, result);
+        updateMalPosition(new int[]{selectedPlayerId, selectedMalId, nodeId});
 
+        // 모든 노드 버튼 초기화
+        for (NodeButton btn : nodeButtons.values()) {
+            btn.setHighlighted(false);
+            btn.setDisable(true);
+            // JavaFX에서는 setOnAction으로 이벤트 핸들러를 제거
+            btn.setOnAction(null);
+            //System.out.println("[BoardPane][handleNodeClick] 노드 버튼 초기화: " + btn.getNodeId());
+        }
+
+        // JavaFX에서는 보통 Scene의 루트 노드에서 repaint가 자동으로 처리됨
+        // 필요하다면 특정 노드에서 requestLayout() 또는 autoSizeChildren() 호출
+
+        if (!keepTurn) {
+            System.out.println("[BoardPane] [handleNodeClick] 턴 종료: 다음 플레이어로 넘어갑니다.");
+            System.out.println("[BoardPane] [handleNodeClick] 현재 플레이어: " + yutnoriSet.getPlayerTurn()+ "flag: " + yutnoriSet.getInGameFlag());
+            yutnoriSet.setYutResult_to_use(null);
+            yutnoriSet.nextTurn();
+        }
+        else {
+
+            yutnoriSet.setYutResult_to_use(null);
+            System.out.println("[handleNodeClick] 턴 유지됨: 잡기 또는 윷/모로 추가 턴!");
+        }
+    }
+    public void updateMalPosition(int[] data) {
+        int playerId = data[0];
+        int malId = data[1];
+        int nodeId = data[2];
+
+        if (nodeId > 0 && yutnoriSet.board.boardShape.get(nodeId).isEndPoint()) {
+            removeMalButton(playerId, malId);
+            malPositions.remove(playerId * 10 + malId);
+            return;
+        }
+
+        Point2D position;
+        if (nodeId <= 0) {
+            position = new Point2D(800, 150 + (playerId * 50));
+        } else {
+            MyPoint nodePos = boardGraph.getNodePositions().get(nodeId);
+            if (nodePos == null) return;
+            position = new Point2D(nodePos.getX(), nodePos.getY());
+        }
+
+        removeMalButton(playerId, malId);
+
+        long count = malButtons.stream()
+                .filter(m -> m.getNodeId() == nodeId && m.getPlayerId() == playerId)
+                .count();
+
+        if (count >= 1 && nodeId > 0) {
+            updateNodeCountLabel(nodeId, playerId);
+            return;
+        }
+
+        Color playerColor = playerColors.get(playerId);
+        MalButton malButton = new MalButton(playerId, malId, playerColor);
+        malButton.setLayoutX(position.getX() - 10);
+        malButton.setLayoutY(position.getY() - 10);
+        malButton.setNodeId(nodeId);
+
+        malButton.getButton().setOnAction(e -> {
+            if (yutnoriSet.getPlayerTurn() == playerId &&
+                    yutnoriSet.getInGameFlag() == YutnoriSet.NEED_TO_SELECT) {
+                handleMalClick(playerId, malId, nodeId);
+            }
+        });
+
+        malButtons.add(malButton);
+        malPositions.put(playerId * 10 + malId, position);
+        getChildren().add(malButton);
+
+        updateNodeCountLabel(nodeId, playerId);
     }
 
-    private void drawBoardGraph() {
-        //추가 필요
+    private void removeMalButton(int playerId, int malId) {
+        int key = playerId * 10 + malId;
+        MalButton existingMalButton = null;
+
+        for (MalButton mb : malButtons) {
+            if (mb.getPlayerId() == playerId && mb.getMalId() == malId) {
+                existingMalButton = mb;
+                break;
+            }
+        }
+
+        if (existingMalButton != null) {
+            getChildren().remove(existingMalButton);
+            malButtons.remove(existingMalButton);
+            malPositions.remove(key);
+            System.out.println("[BoardPane] 말 제거됨: player " + playerId + ", mal " + malId);
+        }
     }
 
     private void updateNodeCountLabel(int nodeId, int playerId) {
         int labelNodeId = (nodeId <= 0) ? 0 : nodeId;
         String labelKey = playerId + ":" + labelNodeId;
 
-        // 기존 라벨 제거
         Label oldLabel = nodeCountLabels.get(labelKey);
         if (oldLabel != null) {
             getChildren().remove(oldLabel);
             nodeCountLabels.remove(labelKey);
         }
 
-        // 말 개수 계산
         long count;
         if (nodeId <= 0) {
             count = yutnoriSet.getPlayers().get(playerId).getMalList().stream()
@@ -140,7 +280,6 @@ public class BoardPane extends Pane implements PropertyChangeListener{
 
         if (count < 1) return;
 
-        // 위치 계산
         MyPoint basePos;
         if (nodeId <= 0) {
             basePos = new MyPoint(800, 150 + (playerId * 50));
@@ -153,128 +292,19 @@ public class BoardPane extends Pane implements PropertyChangeListener{
         double labelX = basePos.getX() + 15;
         double labelY = basePos.getY() - 15;
 
-        // 라벨 생성
-        //추가 필요
-    }
-
-
-    private void moveCaughtMalToStartNode(int team, int malNumber) {
-        //추가필요
-    }
-
-    public void updateMalPosition(int[] data) {
-        int playerId = data[0];
-        int malId = data[1];
-        int nodeId = data[2];
-
-        // 도착 노드가 종료 지점이면 말 제거
-        if (nodeId > 0 && yutnoriSet.board.boardShape.get(nodeId).isEndPoint()) {
-            removeMalButton(playerId, malId);
-            malPositions.remove(playerId * 10 + malId);
-            return;
+        Label countLabel = new Label(String.valueOf(count));
+        countLabel.setLayoutX(labelX);
+        countLabel.setLayoutY(labelY);
+        String color;
+        switch (playerId) {
+            case 0 -> color = "blue";
+            case 1 -> color = "red";
+            case 2 -> color = "green";
+            case 3 -> color = "magenta";
+            default -> color = "black";
         }
 
-        // 위치 계산
-
-
-        // 기존 말 버튼 제거
-        removeMalButton(playerId, malId);
-
-        // 현재 노드에 이미 같은 팀 말이 있으면 대표 말만 표시
-        long count = malButtons.stream()
-                .filter(m -> m.getNodeId() == nodeId && m.getPlayerId() == playerId)
-                .count();
-
-        if (count >= 1 && nodeId > 0) {
-            // 이미 대표 말이 있으면 추가하지 않음
-            updateNodeCountLabel(nodeId, playerId); // 라벨만 갱신
-            return;
-        }
-
-        // 대표 말 버튼 생성
-
-
-        // 말 버튼 추가 후 말 개수 라벨 갱신
-        updateNodeCountLabel(nodeId, playerId);
-    }
-
-    private void removeMalButton(int playerId, int malId) {
-        MalButton removed = null;
-        int nodeId = -999;
-
-        for (MalButton btn : malButtons) {
-            if (btn.getPlayerId() == playerId && btn.getMalId() == malId) {
-                removed = btn;
-                nodeId = btn.getNodeId();
-                getChildren().remove(btn); // JavaFX에서 화면에서 제거
-                break;
-            }
-        }
-
-        if (removed != null) {
-            malButtons.remove(removed);
-            malPositions.remove(playerId * 10 + malId);
-
-            // 말 개수 라벨 갱신
-            updateNodeCountLabel(nodeId, playerId);
-        }
-    }
-
-    public void disableAllMalButtons() {
-        for (MalButton btn : malButtons) {
-            btn.setDisable(true);
-        }
-    }
-
-    public void enableMalButtonsForPlayer(int playerId) {
-        for (MalButton btn : malButtons) {
-            if (btn.getPlayerId() == playerId) {
-                btn.setDisable(false);  // 활성화
-            } else {
-                btn.setDisable(true);   // 비활성화
-            }
-        }
-    }
-
-    private void handleMalClick(int playerId, int malId, int currentNode) {
-            //추가필요
-    }
-
-
-    private void handleNodeClick(int nodeId, YutResult result) {
-        boolean keepTurn = yutnoriSet.moveMal(selectedPlayerId, selectedMalId, nodeId, result);
-
-        updateMalPosition(new int[]{selectedPlayerId, selectedMalId, nodeId});
-
-        for (NodeButton btn : nodeButtons.values()) {
-            btn.setHighlighted(false);
-            btn.setDisable(true);
-            btn.setOnAction(null);
-        }
-
-        // JavaFX는 자동 갱신. 필요하면 수동으로 요청 가능
-        requestLayout();
-
-        if (!keepTurn) {
-            System.out.println("[handleNodeClick] 턴 종료: 다음 플레이어로 넘어갑니다.");
-            yutnoriSet.setYutResult_to_use(null);
-            yutnoriSet.nextTurn();
-        } else {
-            yutnoriSet.setYutResult_to_use(null);
-            System.out.println("[handleNodeClick] 턴 유지됨: 잡기 또는 윷/모로 추가 턴!");
-        }
-    }
-
-
-    public void removeMalAt(int[] data) {
-        int playerId = data[0];
-        int malId = data[1];
-
-        malPositions.remove(playerId * 10 + malId); // 말 위치 맵에서 제거
-
-        // JavaFX는 자동으로 다시 그려지므로 repaint()는 불필요하지만,
-        // 강제로 새로고침이 필요할 경우 layout 갱신을 호출할 수 있음
-        this.requestLayout(); // 또는 this.layout()으로 대체 가능
+        countLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: " + color + ";");
     }
 
     @Override
@@ -291,7 +321,7 @@ public class BoardPane extends Pane implements PropertyChangeListener{
 
             for (Player p : yutnoriSet.getPlayers()) {
                 for (Mal m : p.getMalList()) {
-                    if (m.getPosition() == 0) {
+                    if (m.getPosition() <= 0) {
                         moveCaughtMalToStartNode(m.getTeam(), m.getMalNumber());
                     }
                 }
@@ -311,9 +341,107 @@ public class BoardPane extends Pane implements PropertyChangeListener{
             this.requestLayout();
         }
 
-        // 게임 종료 처리
-        //추가해야됨
+        // 턴 변경 이벤트 처리
+        else if (property.equals("턴 변경")) {
+            int newPlayerTurn = yutnoriSet.getPlayerTurn();
+            System.out.println("[BoardPanel] 턴 변경 알림: 새로운 플레이어 " + newPlayerTurn);
 
+            // Reset UI state
+            disableAllMalButtons();
+
+
+            if (yutnoriSet.getInGameFlag() == YutnoriSet.NEED_TO_SELECT) {
+                enableMalButtonsForPlayer(newPlayerTurn);
+                System.out.println("[BoardPanel] 플레이어 " + newPlayerTurn + " 말 선택 가능 상태로 설정");
+            }
+            // NEED_TO_MOVE 상태라면 윷 결과가 있을 때만 활성화
+            else if (yutnoriSet.getInGameFlag() == YutnoriSet.NEED_TO_MOVE &&
+                    yutnoriSet.getPlayerResults() != null &&
+                    !yutnoriSet.getPlayerResults().isEmpty()) {
+                enableMalButtonsForPlayer(newPlayerTurn);
+                System.out.println("[BoardPanel] 플레이어 " + newPlayerTurn + " 말 이동 가능 상태로 설정");
+            }
+        }
+
+        // 윷 던지기 결과 처리
+        else if (property.equals("윷 결과")) {
+            int currentPlayer = yutnoriSet.getPlayerTurn();
+            System.out.println("[BoardPanel] 윷 결과 알림: 플레이어 " + currentPlayer);
+            System.out.println("[BoardPanel] 현재 게임 상태: " + yutnoriSet.getInGameFlag());
+
+            // 윷 결과가 나온 후 말 선택/이동이 가능한 상태가 되면 말 버튼 활성화
+            if (yutnoriSet.getInGameFlag() == YutnoriSet.NEED_TO_SELECT ||
+                    yutnoriSet.getInGameFlag() == YutnoriSet.NEED_TO_MOVE) {
+                enableMalButtonsForPlayer(currentPlayer);
+                System.out.println("[BoardPanel] 윷 결과 후 플레이어 " + currentPlayer + " 말 버튼 활성화");
+            }
+        }
+
+        // 게임 종료 처리
+        else if (property.equals("게임 종료")) {
+            System.out.println("[BoardPanel] 게임 종료");
+            disableAllMalButtons();
+            // Add any game end UI updates here
+
+        }
     }
 
+    private void moveCaughtMalToStartNode(int team, int malNumber) {
+        int startNode = team * (-1);
+        yutnoriSet.getPlayers().get(team).getMalList().get(malNumber).setPosition(startNode);
+        updateMalPosition(new int[]{team, malNumber, startNode});
+        System.out.println("[BoardPane] 말이 시작 위치로 이동됨: team " + team + ", mal " + malNumber + ", node " + startNode);
+    }
+
+    public void removeMalAt(int[] ints) {
+        int playerId = ints[0];
+        int malId = ints[1];
+
+        System.out.println("[BoardPane] 말 제거 요청: player " + playerId + ", mal " + malId);
+        removeMalButton(playerId, malId);
+
+        // 말이 제거되면 해당 노드의 말 개수 레이블도 업데이트
+        for (NodeButton btn : nodeButtons.values()) {
+            if (btn.getNodeId() == ints[2]) {
+                updateNodeCountLabel(ints[2], playerId);
+                break;
+            }
+        }
+    }
+
+    public void enableMalButtonsForPlayer(int playerTurn) {
+        System.out.println("[BoardPane] 플레이어 " + playerTurn + "의 말 버튼 활성화");
+
+        for (MalButton malButton : malButtons) {
+            if (malButton.getPlayerId() == playerTurn) {
+                malButton.setDisable(false);
+                malButton.getButton().setOnAction(e -> {
+                    int currentNode = malButton.getNodeId();
+                    handleMalClick(playerTurn, malButton.getMalId(), currentNode);
+                });
+            } else {
+                malButton.setDisable(true);
+            }
+        }
+    }
+
+    public void disableAllMalButtons() {
+        System.out.println("[BoardPane][disableAllMalButtons] 모든 말 버튼 비활성화");
+
+        for (MalButton malButton : malButtons) {
+            malButton.setDisable(true);
+            malButton.getButton().setOnAction(null);
+        }
+
+        selectedPlayerId = -1;
+        selectedMalId = -1;
+
+        for (NodeButton btn : nodeButtons.values()) {
+            btn.setHighlighted(false);
+            btn.setDisable(true);
+            btn.setOnAction(null);
+        }
+    }
 }
+
+

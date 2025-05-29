@@ -39,7 +39,7 @@ public class GamePane extends BorderPane {
                 }
                 case "윷 던지기 결과" -> {
                     throwPanel.showYutResult((YutResult) evt.getNewValue());
-                    //boardPanel.enableMalButtonsForPlayer(yutnoriSet.getPlayerTurn());
+                    boardPanel.enableMalButtonsForPlayer(yutnoriSet.getPlayerTurn());
                     throwPanel.enableAllButtons(false);
                 }
                 case "사용할 결과 선택" -> {
@@ -49,7 +49,7 @@ public class GamePane extends BorderPane {
                 }
                 case "말 이동됨" -> {
                     int[] data = (int[]) evt.getNewValue(); // [playerId, malId, destNodeId]
-                    //boardPanel.updateMalPosition(data);
+                    boardPanel.updateMalPosition(data);
                 }
                 case "말 잡힘" -> {
                     @SuppressWarnings("unchecked")
