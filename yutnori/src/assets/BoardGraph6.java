@@ -1,13 +1,6 @@
 package assets;
 
-import java.util.*;
-import java.util.List;
-
-public class BoardGraph6 implements BoardGraph {
-
-    private final Map<Integer, MyPoint> nodePositions = new HashMap<>();
-    private final List<int[]> edges = new ArrayList<>();
-    private final Set<Integer> clickableNodes = new HashSet<>();
+public class BoardGraph6 extends AbstractBoardGraph {
 
     public BoardGraph6() {
         setupBoardGraph();
@@ -22,20 +15,20 @@ public class BoardGraph6 implements BoardGraph {
         double offset = Math.PI / 2;
 
         // 육각형 꼭짓점 위치 계산
-        MyPoint[] corners = new MyPoint[6];
+        Point[] corners = new Point[6];
         for (int i = 0; i < 6; i++) {
             double angle = Math.PI / 2 + i * angleStep + offset; // 반시계 방향 회전
             int x = (int) (middleX + radius * Math.cos(angle));
             int y = (int) (middleY - radius * Math.sin(angle));
-            corners[i] = new MyPoint(x, y);
+            corners[i] = new Point(x, y);
         }
 
         int nodeId = 1;
 
         // 꼭짓점 포함한 외곽 노드 1~30 생성
         for (int side = 0; side < 6; side++) {
-            MyPoint from = corners[side];
-            MyPoint to = corners[(side + 1) % 6];
+            Point from = corners[side];
+            Point to = corners[(side + 1) % 6];
 
             int limit = (side == 5) ? size : size - 1;
 
@@ -43,12 +36,11 @@ public class BoardGraph6 implements BoardGraph {
                 double t = j / (size - 1.0);
                 int x = (int) (from.x * (1 - t) + to.x * t);
                 int y = (int) (from.y * (1 - t) + to.y * t);
-                nodePositions.put(nodeId++, new MyPoint(x, y));
+                nodePositions.put(nodeId++, new Point(x, y));
             }
         }
 
-
-        MyPoint center = new MyPoint(middleX, middleY);
+        Point center = new Point(middleX, middleY);
         nodePositions.put(43, center);
 
         addDiagonalNodes(1, 32, 31);
@@ -59,43 +51,39 @@ public class BoardGraph6 implements BoardGraph {
         addDiagonalNodes(26, 42, 41);
 
         // 30번과 연결되는 노드 1번
-        MyPoint node30 = nodePositions.get(30);
-        MyPoint node16 = nodePositions.get(16);
-//
+        Point node30 = nodePositions.get(30);
 
         // 출발 전 대기 노드
-        // nodePositions.put(0, new Point(middleX + 240, middleY));
-        nodePositions.put(0, new MyPoint(800, 150)); // 0번 사용자 말 대기 위치 (출발 전) ✅
-        nodePositions.put(-1, new MyPoint(800, 200));
-        nodePositions.put(-2, new MyPoint(800, 250));
-        nodePositions.put(-3, new MyPoint(800, 300));
+        nodePositions.put(0, new Point(800, 150)); // 0번 사용자 말 대기 위치 (출발 전) ✅
+        nodePositions.put(-1, new Point(800, 200));
+        nodePositions.put(-2, new Point(800, 250));
+        nodePositions.put(-3, new Point(800, 300));
 
-        nodePositions.put(44, new MyPoint(node30.x -100 , 400)); // 44번 사용자 말 대기 위치 (출발 전) ✅
+        nodePositions.put(44, new Point(node30.x -100 , 400)); // 44번 사용자 말 대기 위치 (출발 전) ✅
     }
 
     private void addDiagonalNodes(int corner, int mid1Id, int mid2Id) {
-        MyPoint start = nodePositions.get(corner);
-        MyPoint center = nodePositions.get(43);
+        Point start = nodePositions.get(corner);
+        Point center = nodePositions.get(43);
 
         double t1 = 0.33;
         double t2 = 0.66;
 
         int x1 = (int) (start.x * (1 - t1) + center.x * t1);
         int y1 = (int) (start.y * (1 - t1) + center.y * t1);
-        nodePositions.put(mid1Id, new MyPoint(x1, y1));
+        nodePositions.put(mid1Id, new Point(x1, y1));
 
         int x2 = (int) (start.x * (1 - t2) + center.x * t2);
         int y2 = (int) (start.y * (1 - t2) + center.y * t2);
-        nodePositions.put(mid2Id, new MyPoint(x2, y2));
+        nodePositions.put(mid2Id, new Point(x2, y2));
     }
 
 
-    private void initEdges() {
+    protected void initEdges() {
 
         for (int i = 1; i<30; i++) {
             edges.add(new int[]{i, i + 1});
         }
-
 
         edges.add(new int[]{43, 31});
         edges.add(new int[]{31, 32});
@@ -122,24 +110,5 @@ public class BoardGraph6 implements BoardGraph {
         edges.add(new int[]{42, 26});
 
         edges.add(new int[]{30, 1});
-
-
-
-    }
-
-    @Override
-    public Map<Integer, MyPoint> getNodePositions() {
-        return nodePositions;
-    }
-
-    @Override
-    public List<int[]> getEdges() {
-        if (edges.isEmpty()) initEdges();
-        return edges;
-    }
-
-    @Override
-    public Set<Integer> getClickableNodes() {
-        return clickableNodes;
     }
 }

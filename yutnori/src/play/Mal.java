@@ -15,7 +15,7 @@ public class Mal {
         this.team = team;
         this.malNumber = malNumber;
         this.owner = owner;
-        this.position = owner.getTeam()*(-1);
+        this.position = owner.getTeam() * (-1);
         this.isFinished = false;
         this.life = true;
         this.stackedMal = new ArrayList<>();
@@ -46,10 +46,6 @@ public class Mal {
 
     }
 
-    public ArrayList<Mal> getStackedMal() {
-        return stackedMal;
-    }
-
     public void stackMal(Mal otherMal) {
         stackedMal.add(otherMal);
     }
@@ -58,15 +54,4 @@ public class Mal {
         stackedMal.clear();
     }
 
-    public Player getOwner() {
-        return owner;
-    }
-
-    public boolean isLife() {
-        return life;
-    }
-
-    public void setLife(boolean life) {
-        this.life = life;
-    }
 }

@@ -1,7 +1,6 @@
 package display;
 
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.control.Button;
@@ -15,7 +14,7 @@ public class NodeButton extends Button {
     private final Circle circle;
     private final int size = 30;
 
-    public NodeButton(int nodeId, MyPoint pos) {
+    public NodeButton(int nodeId, Point pos) {
         this.nodeId = nodeId;
 
         // 원형 노드 생성

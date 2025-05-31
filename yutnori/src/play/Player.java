@@ -35,12 +35,4 @@ public class Player {
     public void addMal(Mal mal) {
         malList.add(mal);
     }
-
-    public boolean isTurn() {
-        return turn;
-    }
-
-    public void setTurn(boolean turn) {
-        this.turn = turn;
-    }
 }

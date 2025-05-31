@@ -22,8 +22,8 @@ public class BoardPane extends Pane implements PropertyChangeListener {
     private BoardGraph boardGraph;
     private YutnoriSet yutnoriSet;
 
-    // JavaFX의 위치 표현은 Point2D
-    private final Map<Integer, MyPoint> malPositions = new HashMap<>();
+    // JavaFX의 위치 표현은 Point
+    private final Map<Integer, Point> malPositions = new HashMap<>();
 
     // JavaFX의 Color 사용
     private final Map<Integer, Color> playerColors = Map.of(
@@ -61,10 +61,10 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         setStyle("-fx-background-color: rgb(240, 240, 240);");
 
         // 노드 버튼 생성 및 추가
-        for (Map.Entry<Integer, MyPoint> entry : boardGraph.getNodePositions().entrySet()) {
+        for (Map.Entry<Integer, Point> entry : boardGraph.getNodePositions().entrySet()) {
             int nodeId = entry.getKey();
-            MyPoint raw = entry.getValue();
-            MyPoint pos = new MyPoint(raw.getX(), raw.getY());
+            Point raw = entry.getValue();
+            Point pos = new Point(raw.getX(), raw.getY());
 
             NodeButton btn = new NodeButton(nodeId, pos);
             btn.setDisable(true);
@@ -101,10 +101,10 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         // 기존 말 UI 제거
         this.getChildren().removeIf(node -> node instanceof javafx.scene.shape.Circle);
 
-        for (Map.Entry<Integer, MyPoint> entry : malPositions.entrySet()) {
+        for (Map.Entry<Integer, Point> entry : malPositions.entrySet()) {
             int key = entry.getKey();
             int playerId = key / 10;
-            MyPoint pos = entry.getValue();
+            Point pos = entry.getValue();
 
             Color color = playerColors.getOrDefault(playerId, Color.BLACK);
 
@@ -137,8 +137,8 @@ public class BoardPane extends Pane implements PropertyChangeListener {
     private void drawBoardGraph() {
         // 간선(선) 먼저 그림
         for (int[] edge : boardGraph.getEdges()) {
-            MyPoint from = boardGraph.getNodePositions().get(edge[0]);
-            MyPoint to = boardGraph.getNodePositions().get(edge[1]);
+            Point from = boardGraph.getNodePositions().get(edge[0]);
+            Point to = boardGraph.getNodePositions().get(edge[1]);
 
             if (from != null && to != null) {
                 Line line = new Line(from.getX(), from.getY(), to.getX(), to.getY());
@@ -149,9 +149,9 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         }
 
         // 노드(원 + 텍스트)
-        for (Map.Entry<Integer, MyPoint> entry : boardGraph.getNodePositions().entrySet()) {
+        for (Map.Entry<Integer, Point> entry : boardGraph.getNodePositions().entrySet()) {
             int id = entry.getKey();
-            MyPoint p = entry.getValue();
+            Point p = entry.getValue();
 
             // 노드 원
             Circle circle = new Circle(p.getX(), p.getY(), 15);
@@ -291,9 +291,9 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         }
 
         // 좌표 계산
-        MyPoint nodePos;
+        Point nodePos;
         if (nodeId <= 0) {
-            nodePos = new MyPoint(800, 150 + (playerId * 50)); // 대기 위치
+            nodePos = new Point(800, 150 + (playerId * 50)); // 대기 위치
         } else {
             nodePos = boardGraph.getNodePositions().get(nodeId);
             if (nodePos == null) return;
@@ -383,9 +383,9 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         if (count < 1) return;
 
         // 위치 계산
-        MyPoint basePos;
+        Point basePos;
         if (nodeId <= 0) {
-            basePos = new MyPoint(800, 150 + (playerId * 50));
+            basePos = new Point(800, 150 + (playerId * 50));
         } else {
             basePos = boardGraph.getNodePositions().get(nodeId);
         }

@@ -1,17 +1,8 @@
 package assets;
 
-import java.util.*;
-import java.util.List;
+public class BoardGraph4 extends AbstractBoardGraph {
 
-public class BoardGraph4 implements BoardGraph {
-
-    private final Map<Integer, MyPoint> nodePositions = new HashMap<>();
-    private final List<int[]> edges = new ArrayList<>();
-    private final Set<Integer> clickableNodes = new HashSet<>();
-
-    public BoardGraph4() {
-        setupBoardGraph(); // ✅ 보드 정보 초기화
-    }
+    public BoardGraph4() { setupBoardGraph(); }
 
     public void setupBoardGraph() {
         int size = 5;    // 외곽 변의 노드 개수
@@ -21,18 +12,18 @@ public class BoardGraph4 implements BoardGraph {
         int middleX = startX - size * gap / 2;
         int middleY = startY - size * gap / 2;
 
-        nodePositions.put(0, new MyPoint(800, 150)); // 0번 사용자 말 대기 위치 (출발 전) ✅
-        nodePositions.put(-1, new MyPoint(800, 200));
-        nodePositions.put(-2, new MyPoint(800, 250));
-        nodePositions.put(-3, new MyPoint(800, 300));
+        nodePositions.put(0, new Point(800, 150)); // 0번 사용자 말 대기 위치 (출발 전) ✅
+        nodePositions.put(-1, new Point(800, 200));
+        nodePositions.put(-2, new Point(800, 250));
+        nodePositions.put(-3, new Point(800, 300));
 
         int index = 1;
 
         // ✅ 외곽 사각형 노드 (시계 방향)
-        for (int i = 0; i <= size; i++) nodePositions.put(index++, new MyPoint(startX, startY - i * gap));              // 위쪽
-        for (int i = 1; i <= size; i++) nodePositions.put(index++, new MyPoint(startX - i * gap, startY - size * gap)); // 오른쪽
-        for (int i = 1; i <= size; i++) nodePositions.put(index++, new MyPoint(startX - size * gap, startY - (size - i) * gap)); // 아래쪽
-        for (int i = 1; i <= size - 1; i++) nodePositions.put(index++, new MyPoint(startX - (size - i) * gap, startY)); // 왼쪽
+        for (int i = 0; i <= size; i++) nodePositions.put(index++, new Point(startX, startY - i * gap));              // 위쪽
+        for (int i = 1; i <= size; i++) nodePositions.put(index++, new Point(startX - i * gap, startY - size * gap)); // 오른쪽
+        for (int i = 1; i <= size; i++) nodePositions.put(index++, new Point(startX - size * gap, startY - (size - i) * gap)); // 아래쪽
+        for (int i = 1; i <= size - 1; i++) nodePositions.put(index++, new Point(startX - (size - i) * gap, startY)); // 왼쪽
 
         // ✅ 대각선 지름길 노드
         int crossGap = (startX - middleX) / 3;
@@ -40,32 +31,33 @@ public class BoardGraph4 implements BoardGraph {
 
         // ↗ 지름길 (6 → 21 → 22 → 29)
         for (int i = 1; i <= crossCount; i++)
-            nodePositions.put(index++, new MyPoint(startX - i * crossGap, startY - size * gap + i * crossGap));
+            nodePositions.put(index++, new Point(startX - i * crossGap, startY - size * gap + i * crossGap));
 
         // ↙ 지름길 (29 → 23 → 24 → 16)
         for (int i = 1; i <= crossCount; i++)
-            nodePositions.put(index++, new MyPoint(middleX - i * crossGap, middleX + i * crossGap));
+            nodePositions.put(index++, new Point(middleX - i * crossGap, middleX + i * crossGap));
 
         // ↘ 지름길 (11 → 25 → 26 → 29)
         for (int i = 1; i <= crossCount; i++)
-            nodePositions.put(index++, new MyPoint(startX - size * gap + i * crossGap, startY - size * gap + i * crossGap));
+            nodePositions.put(index++, new Point(startX - size * gap + i * crossGap, startY - size * gap + i * crossGap));
 
         // ↖ 지름길 (29 → 27 → 28 → 1)
         for (int i = 1; i <= crossCount; i++)
-            nodePositions.put(index++, new MyPoint(middleX + i * crossGap, middleY + i * crossGap));
+            nodePositions.put(index++, new Point(middleX + i * crossGap, middleY + i * crossGap));
 
         // ✅ 중앙 노드 (29), 결승점 (30)
-        nodePositions.put(index++, new MyPoint(middleX, middleY));       // 29
-        nodePositions.put(index++, new MyPoint(startX, startY + 50));    // 30
-
+        nodePositions.put(index++, new Point(middleX, middleY));       // 29
+        nodePositions.put(index, new Point(startX, startY + 50));    // 30
 
     }
 
-    private void initEdges() {
+    @Override
+    protected void initEdges() {
         // ✅ 외곽 사각형 순차 연결 (1~20)
         for (int i = 1; i < 20; i++) {
             edges.add(new int[]{i, i + 1});
         }
+
         edges.add(new int[]{20, 1}); // 30: 결승점
 
         // ✅ 지름길 경로
@@ -84,21 +76,5 @@ public class BoardGraph4 implements BoardGraph {
         edges.add(new int[]{29, 27});
         edges.add(new int[]{27, 28});
         edges.add(new int[]{28, 1});
-    }
-
-    @Override
-    public Map<Integer, MyPoint> getNodePositions() {
-        return nodePositions;
-    }
-
-    @Override
-    public List<int[]> getEdges() {
-        if (edges.isEmpty()) initEdges(); // ✅ 필요 시 lazy 초기화
-        return edges;
-    }
-
-    @Override
-    public Set<Integer> getClickableNodes() {
-        return clickableNodes;
     }
 }

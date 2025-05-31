@@ -105,6 +105,5 @@ public class SettingPane extends Pane {
             parentFrame.switchTo("intro");
         });
 
-
     }
 }
