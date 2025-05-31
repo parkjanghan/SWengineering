@@ -13,6 +13,7 @@ import javafx.scene.control.ButtonType;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class YutnoriSet {
     public static class GameFlag {
@@ -29,6 +30,7 @@ public class YutnoriSet {
     private int inGameFlag;
     private ArrayList<YutResult> playerResults;
     private YutResult yutResult_to_use;
+    private Consumer<Integer> onGameEndCallback;
 
     private int chosenDestNodeId ;
 
@@ -318,6 +320,23 @@ public class YutnoriSet {
         if (finishedCount == currentPlayer.getMalList().size()) {
             inGameFlag = GameFlag.WAITING;
 
+//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//            alert.setTitle("게임 종료");
+//            alert.setHeaderText(null);
+//            alert.setContentText("🎉 플레이어 " + (playerTurn + 1) + "이(가) 승리했습니다!");
+//            alert.showAndWait();
+
+            if (onGameEndCallback != null) {
+                onGameEndCallback.accept(playerTurn);  // UI 호출은 외부에 위임
+            }
+
+            notifyGameStateChange("게임 종료", new int[]{playerTurn});
+            return false;
+        }
+
+        if (finishedCount == currentPlayer.getMalList().size()) {
+            inGameFlag = GameFlag.WAITING;
+
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("게임 종료");
             alert.setHeaderText(null);
@@ -327,6 +346,7 @@ public class YutnoriSet {
             notifyGameStateChange("게임 종료", new int[]{playerTurn});
             return false;
         }
+
 
         if (didCatch) {
             setInGameFlag(NEED_TO_ROLL);
@@ -454,6 +474,10 @@ public class YutnoriSet {
             notifyGameStateChange( "사용할 결과 선택", input);
             return input;
         }
+    }
+
+    public void setOnGameEndCallback(Consumer<Integer> callback) {
+        this.onGameEndCallback = callback;
     }
 
 }

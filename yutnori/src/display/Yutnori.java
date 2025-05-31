@@ -12,6 +12,12 @@ public class Yutnori extends Application {
     private Stage primaryStage;
     private Map<String, Scene> scenes = new HashMap<>();
 
+    private static Yutnori yutnori;
+
+    public Yutnori() {
+        yutnori = this;
+    }
+
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -39,6 +45,11 @@ public class Yutnori extends Application {
 
     public void goToIntro() {
         switchTo("intro");
+    }
+
+    // 🔹 어디서든 호출 가능
+    public static Yutnori getInstance() {
+        return yutnori;
     }
 
     public void addGamePanel(GamePane gamePanel) {

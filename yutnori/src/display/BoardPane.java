@@ -3,12 +3,20 @@ package display;
 import GameModel.YutnoriSet;
 import assets.*;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import play.Mal;
 import play.Player;
 import play.YutResult;
@@ -490,10 +498,61 @@ public class BoardPane extends Pane implements PropertyChangeListener {
 
         // 게임 종료 처리
         else if (property.equals("게임 종료")) {
-            System.out.println("[BoardPanel] 게임 종료");
-            disableAllMalButtons();
-            // Add any game end UI updates here
+            Object value = evt.getNewValue();
+            if (value instanceof int[]) {
+                int[] data = (int[]) value;
+                int playerTurn = data[0];
 
+                Stage parentStage = (Stage) this.getScene().getWindow();
+
+                // 🎉 승자 안내 라벨
+                Label winnerLabel = new Label("🎉 플레이어 " + (playerTurn + 1) + "이(가) 승리했습니다!");
+                winnerLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-font-family: '맑은 고딕';");
+                winnerLabel.setAlignment(Pos.CENTER);
+                winnerLabel.setPrefWidth(260);
+
+                // JavaFX 다이얼로그(Stage) 생성
+                Stage dialog = new Stage();
+                dialog.initModality(Modality.WINDOW_MODAL);
+                dialog.initOwner(parentStage); // ⚠️ 현재 루트 스테이지 필요
+                dialog.setTitle("게임 종료");
+                dialog.setWidth(320);
+                dialog.setHeight(160);
+                dialog.setResizable(false);
+
+                // 다시하기 버튼
+                Button restartBtn = new Button("다시하기");
+                restartBtn.setPrefSize(100, 35);
+                restartBtn.setOnAction(e -> {
+                    dialog.close();
+                    Yutnori.getInstance().goToIntro(); // ✅ 바로 호출 가능
+                });
+
+                // 종료하기 버튼
+                Button exitBtn = new Button("종료하기");
+                exitBtn.setPrefSize(100, 35);
+                exitBtn.setOnAction(e -> {
+                    dialog.close();
+                    System.exit(0);
+                });
+
+                // 버튼 배치
+                HBox buttonBox = new HBox(20, restartBtn, exitBtn);
+                buttonBox.setAlignment(Pos.CENTER);
+
+                // 전체 레이아웃 구성
+                VBox layout = new VBox(15, winnerLabel, buttonBox);
+                layout.setAlignment(Pos.CENTER);
+                layout.setPadding(new Insets(10));
+
+                Scene scene = new Scene(layout);
+                dialog.setScene(scene);
+                dialog.showAndWait();
+
+                System.out.println("[BoardPanelFX] 게임 종료 알림 수신: player " + playerTurn);
+            } else {
+                System.err.println("⚠️ '게임 종료' 이벤트 타입 불일치: " + value.getClass().getName());
+            }
         }
     }
 
