@@ -3,11 +3,12 @@ package display;
 import GameModel.YutnoriSet;
 import assets.*;
 
-import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import play.Mal;
 import play.Player;
 import play.YutResult;
@@ -18,19 +19,27 @@ import java.util.*;
 
 public class BoardPane extends Pane implements PropertyChangeListener {
 
-    private final YutnoriSet yutnoriSet;
     private BoardGraph boardGraph;
-    private final Map<Integer, NodeButton> nodeButtons = new HashMap<>();
-    private final List<MalButton> malButtons = new ArrayList<>();
-    private final Map<Integer, Point2D> malPositions = new HashMap<>();
-    private final Map<String, Label> nodeCountLabels = new HashMap<>();
+    private YutnoriSet yutnoriSet;
+
+    // JavaFX의 위치 표현은 Point2D
+    private final Map<Integer, MyPoint> malPositions = new HashMap<>();
+
+    // JavaFX의 Color 사용
+    private final Map<Integer, Color> playerColors = Map.of(
+            0, Color.RED,
+            1, Color.BLUE,
+            2, Color.GREEN,
+            3, Color.MAGENTA
+    );
 
     private int selectedPlayerId = -1;
     private int selectedMalId = -1;
 
-    private final Map<Integer, Color> playerColors = Map.of(
-            0, Color.RED, 1, Color.BLUE, 2, Color.GREEN, 3, Color.MAGENTA
-    );
+    private final Map<Integer, NodeButton> nodeButtons = new HashMap<>();
+    private final List<MalButton> malButtons = new ArrayList<>();
+
+    private final Map<String, Label> nodeCountLabels = new HashMap<>();
 
     public BoardPane(YutnoriSet yutnoriSet) {
         this.yutnoriSet = yutnoriSet;
@@ -55,7 +64,7 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         for (Map.Entry<Integer, MyPoint> entry : boardGraph.getNodePositions().entrySet()) {
             int nodeId = entry.getKey();
             MyPoint raw = entry.getValue();
-            Point2D pos = new Point2D(raw.getX(), raw.getY());
+            MyPoint pos = new MyPoint(raw.getX(), raw.getY());
 
             NodeButton btn = new NodeButton(nodeId, pos);
             btn.setDisable(true);
@@ -76,6 +85,7 @@ public class BoardPane extends Pane implements PropertyChangeListener {
                 for (Player p : yutnoriSet.getPlayers()) {
                     for (Mal m : p.getMalList()) {
                         if (m.getPosition() == 0) {
+                            removeMalAt(new int[]{m.getTeam(), m.getMalNumber()});
                             updateMalPosition(new int[]{m.getTeam(), m.getMalNumber(), 0});
                         }
                     }
@@ -86,6 +96,91 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         // 일반 옵저버 등록
         yutnoriSet.addObserver(this);
     }
+
+    private void drawMals() {
+        // 기존 말 UI 제거
+        this.getChildren().removeIf(node -> node instanceof javafx.scene.shape.Circle);
+
+        for (Map.Entry<Integer, MyPoint> entry : malPositions.entrySet()) {
+            int key = entry.getKey();
+            int playerId = key / 10;
+            MyPoint pos = entry.getValue();
+
+            Color color = playerColors.getOrDefault(playerId, Color.BLACK);
+
+            // JavaFX 원 그리기
+            javafx.scene.shape.Circle circle = new javafx.scene.shape.Circle();
+            circle.setRadius(7); // 반지름 14의 절반
+            circle.setCenterX(pos.getX());
+            circle.setCenterY(pos.getY());
+            circle.setFill(color);
+            circle.setStroke(Color.BLACK);
+            circle.setStrokeWidth(1.5);
+
+            this.getChildren().add(circle);
+        }
+    }
+
+    private void updateBoard() {
+        // 말, 버튼 등 기존 노드 초기화
+        this.getChildren().removeIf(node -> node instanceof MalButton || node instanceof javafx.scene.shape.Circle);
+
+        // 노드 버튼 다시 배치
+        for (NodeButton btn : nodeButtons.values()) {
+            this.getChildren().add(btn);
+        }
+
+        // 말 위치 저장된 것 기준으로 다시 그림
+        drawMals();
+    }
+
+    private void drawBoardGraph() {
+        // 간선(선) 먼저 그림
+        for (int[] edge : boardGraph.getEdges()) {
+            MyPoint from = boardGraph.getNodePositions().get(edge[0]);
+            MyPoint to = boardGraph.getNodePositions().get(edge[1]);
+
+            if (from != null && to != null) {
+                Line line = new Line(from.getX(), from.getY(), to.getX(), to.getY());
+                line.setStroke(Color.GRAY);
+                line.setStrokeWidth(2.0);
+                this.getChildren().add(line);
+            }
+        }
+
+        // 노드(원 + 텍스트)
+        for (Map.Entry<Integer, MyPoint> entry : boardGraph.getNodePositions().entrySet()) {
+            int id = entry.getKey();
+            MyPoint p = entry.getValue();
+
+            // 노드 원
+            Circle circle = new Circle(p.getX(), p.getY(), 15);
+            circle.setFill(Color.WHITE);
+            circle.setStroke(Color.BLACK);
+            this.getChildren().add(circle);
+
+            // 노드 ID 라벨
+            Label label = new Label(String.valueOf(id));
+            label.setStyle("-fx-font-size: 10px; -fx-font-family: Arial;");
+            label.setLayoutX(p.getX() - 6); // 위치 보정
+            label.setLayoutY(p.getY() - 7);
+            this.getChildren().add(label);
+        }
+    }
+
+    private void moveCaughtMalToStartNode(int team, int malNumber) {
+        // 팀마다 다른 시작 노드 번호 (예: -1, -2, ...)
+        int startNode = team * (-1);
+
+        // 말의 위치 정보를 논리적으로 이동
+        yutnoriSet.getPlayers().get(team).getMalList().get(malNumber).setPosition(startNode);
+
+        // 이 메서드 안에서 UI 업데이트까지 포함됨
+        updateMalPosition(new int[]{team, malNumber, startNode});
+
+        System.out.println("[BoardPane] 말이 시작 위치로 이동됨: team " + team + ", mal " + malNumber + ", node " + startNode);
+    }
+
 
     private void handleMalClick(int playerId, int malId, int currentNode) {
         if (playerId != yutnoriSet.getPlayerTurn()) {
@@ -188,23 +283,26 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         int malId = data[1];
         int nodeId = data[2];
 
+        // 도착지점이면 말 제거
         if (nodeId > 0 && yutnoriSet.board.boardShape.get(nodeId).isEndPoint()) {
             removeMalButton(playerId, malId);
             malPositions.remove(playerId * 10 + malId);
             return;
         }
 
-        Point2D position;
+        // 좌표 계산
+        MyPoint nodePos;
         if (nodeId <= 0) {
-            position = new Point2D(800, 150 + (playerId * 50));
+            nodePos = new MyPoint(800, 150 + (playerId * 50)); // 대기 위치
         } else {
-            MyPoint nodePos = boardGraph.getNodePositions().get(nodeId);
+            nodePos = boardGraph.getNodePositions().get(nodeId);
             if (nodePos == null) return;
-            position = new Point2D(nodePos.getX(), nodePos.getY());
         }
 
+        // 기존 버튼 제거
         removeMalButton(playerId, malId);
 
+        // 같은 위치에 이미 같은 플레이어의 말이 있으면 숫자만 갱신
         long count = malButtons.stream()
                 .filter(m -> m.getNodeId() == nodeId && m.getPlayerId() == playerId)
                 .count();
@@ -214,10 +312,11 @@ public class BoardPane extends Pane implements PropertyChangeListener {
             return;
         }
 
-        Color playerColor = playerColors.get(playerId);
-        MalButton malButton = new MalButton(playerId, malId, playerColor);
-        malButton.setLayoutX(position.getX() - 10);
-        malButton.setLayoutY(position.getY() - 10);
+        // 새 말 버튼 생성
+        Color color = playerColors.get(playerId);
+        MalButton malButton = new MalButton(playerId, malId, color);
+        malButton.setLayoutX(nodePos.getX() - 10);
+        malButton.setLayoutY(nodePos.getY() - 10);
         malButton.setNodeId(nodeId);
 
         malButton.getButton().setOnAction(e -> {
@@ -228,28 +327,29 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         });
 
         malButtons.add(malButton);
-        malPositions.put(playerId * 10 + malId, position);
+        malPositions.put(playerId * 10 + malId, nodePos);
         getChildren().add(malButton);
-
         updateNodeCountLabel(nodeId, playerId);
     }
 
-    private void removeMalButton(int playerId, int malId) {
-        int key = playerId * 10 + malId;
-        MalButton existingMalButton = null;
 
-        for (MalButton mb : malButtons) {
-            if (mb.getPlayerId() == playerId && mb.getMalId() == malId) {
-                existingMalButton = mb;
+    private void removeMalButton(int playerId, int malId) {
+        MalButton removed = null;
+        int nodeId = -999;
+
+        for (MalButton btn : malButtons) {
+            if (btn.getPlayerId() == playerId && btn.getMalId() == malId) {
+                removed = btn;
+                nodeId = btn.getNodeId();
+                getChildren().remove(btn); // JavaFX에서 말 버튼 제거
                 break;
             }
         }
 
-        if (existingMalButton != null) {
-            getChildren().remove(existingMalButton);
-            malButtons.remove(existingMalButton);
-            malPositions.remove(key);
-            System.out.println("[BoardPane] 말 제거됨: player " + playerId + ", mal " + malId);
+        if (removed != null) {
+            malButtons.remove(removed); // 리스트에서도 제거
+            malPositions.remove(playerId * 10 + malId); // 위치 정보 제거
+            updateNodeCountLabel(nodeId, playerId); // 라벨 갱신
         }
     }
 
@@ -257,12 +357,14 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         int labelNodeId = (nodeId <= 0) ? 0 : nodeId;
         String labelKey = playerId + ":" + labelNodeId;
 
+        // 기존 라벨 제거
         Label oldLabel = nodeCountLabels.get(labelKey);
         if (oldLabel != null) {
             getChildren().remove(oldLabel);
             nodeCountLabels.remove(labelKey);
         }
 
+        // 말 개수 계산
         long count;
         if (nodeId <= 0) {
             count = yutnoriSet.getPlayers().get(playerId).getMalList().stream()
@@ -280,6 +382,7 @@ public class BoardPane extends Pane implements PropertyChangeListener {
 
         if (count < 1) return;
 
+        // 위치 계산
         MyPoint basePos;
         if (nodeId <= 0) {
             basePos = new MyPoint(800, 150 + (playerId * 50));
@@ -292,9 +395,11 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         double labelX = basePos.getX() + 15;
         double labelY = basePos.getY() - 15;
 
+        // 새 라벨 생성
         Label countLabel = new Label(String.valueOf(count));
         countLabel.setLayoutX(labelX);
         countLabel.setLayoutY(labelY);
+
         String color;
         switch (playerId) {
             case 0 -> color = "blue";
@@ -305,7 +410,12 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         }
 
         countLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: " + color + ";");
+
+        // ❗ 반드시 추가해야 라벨이 보임
+        getChildren().add(countLabel);
+        nodeCountLabels.put(labelKey, countLabel);
     }
+
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -313,6 +423,7 @@ public class BoardPane extends Pane implements PropertyChangeListener {
 
         // 잡기 이벤트 처리
         if (property.equals("말 잡힘")) {
+            System.out.println("[BoardPane] 말 잡힘 알림 수신");
             ArrayList<Integer> info = (ArrayList<Integer>) evt.getNewValue();
             int playerTurn = info.get(0);
             int nodeId = info.get(1);
@@ -386,62 +497,31 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         }
     }
 
-    private void moveCaughtMalToStartNode(int team, int malNumber) {
-        int startNode = team * (-1);
-        yutnoriSet.getPlayers().get(team).getMalList().get(malNumber).setPosition(startNode);
-        updateMalPosition(new int[]{team, malNumber, startNode});
-        System.out.println("[BoardPane] 말이 시작 위치로 이동됨: team " + team + ", mal " + malNumber + ", node " + startNode);
-    }
-
-    public void removeMalAt(int[] ints) {
-        int playerId = ints[0];
-        int malId = ints[1];
+    public void removeMalAt(int[] data) {
+        int playerId = data[0];
+        int malId = data[1];
 
         System.out.println("[BoardPane] 말 제거 요청: player " + playerId + ", mal " + malId);
-        removeMalButton(playerId, malId);
+        malPositions.remove(playerId * 10 + malId);
 
-        // 말이 제거되면 해당 노드의 말 개수 레이블도 업데이트
-        for (NodeButton btn : nodeButtons.values()) {
-            if (btn.getNodeId() == ints[2]) {
-                updateNodeCountLabel(ints[2], playerId);
-                break;
-            }
-        }
-    }
-
-    public void enableMalButtonsForPlayer(int playerTurn) {
-        System.out.println("[BoardPane] 플레이어 " + playerTurn + "의 말 버튼 활성화");
-
-        for (MalButton malButton : malButtons) {
-            if (malButton.getPlayerId() == playerTurn) {
-                malButton.setDisable(false);
-                malButton.getButton().setOnAction(e -> {
-                    int currentNode = malButton.getNodeId();
-                    handleMalClick(playerTurn, malButton.getMalId(), currentNode);
-                });
-            } else {
-                malButton.setDisable(true);
-            }
-        }
     }
 
     public void disableAllMalButtons() {
-        System.out.println("[BoardPane][disableAllMalButtons] 모든 말 버튼 비활성화");
-
-        for (MalButton malButton : malButtons) {
-            malButton.setDisable(true);
-            malButton.getButton().setOnAction(null);
+        for (MalButton btn : malButtons) {
+            btn.setDisable(true);  // JavaFX에서는 setDisable(true)
         }
+    }
 
-        selectedPlayerId = -1;
-        selectedMalId = -1;
-
-        for (NodeButton btn : nodeButtons.values()) {
-            btn.setHighlighted(false);
-            btn.setDisable(true);
-            btn.setOnAction(null);
+    public void enableMalButtonsForPlayer(int playerId) {
+        for (MalButton btn : malButtons) {
+            if (btn.getPlayerId() == playerId) {
+                btn.setDisable(false); // 활성화
+            } else {
+                btn.setDisable(true);  // 비활성화
+            }
         }
     }
 }
+
 
 

@@ -6,6 +6,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.control.Button;
 
+import assets.*;
+
 public class NodeButton extends Button {
 
     private final int nodeId;
@@ -13,7 +15,7 @@ public class NodeButton extends Button {
     private final Circle circle;
     private final int size = 30;
 
-    public NodeButton(int nodeId, javafx.geometry.Point2D pos) {
+    public NodeButton(int nodeId, MyPoint pos) {
         this.nodeId = nodeId;
 
         // 원형 노드 생성
