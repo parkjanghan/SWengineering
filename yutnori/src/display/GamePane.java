@@ -1,5 +1,6 @@
 package display;
 
+import GameModel.GameSettings;
 import GameModel.YutnoriSet;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;

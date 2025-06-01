@@ -1,6 +1,6 @@
 package swing;
 
-import display.GameSettings;
+import GameModel.GameSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,8 +54,8 @@ public class SettingPanel extends JPanel {
             int boardShape = boardSelect.getSelectedIndex() + 4; // "사각형" 등
 
             // 예: GameSettings 같은 클래스에 저장
-            display.GameSettings.setPlayerCount(playerCount);
-            display.GameSettings.setMalCount(malCount);
+            GameSettings.setPlayerCount(playerCount);
+            GameSettings.setMalCount(malCount);
             GameSettings.setBoardShape(boardShape);
 
             System.out.println("설정 완료:");

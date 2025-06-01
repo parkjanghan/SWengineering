@@ -1,7 +1,7 @@
 package swing;
 
 import GameModel.YutnoriSet;
-import display.GameSettings;
+import GameModel.GameSettings;
 
 import javax.swing.*;
 import java.awt.*;

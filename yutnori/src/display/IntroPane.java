@@ -1,5 +1,6 @@
 package display;
 
+import GameModel.GameSettings;
 import GameModel.YutnoriSet;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;

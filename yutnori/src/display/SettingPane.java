@@ -1,5 +1,6 @@
 package display;
 
+import GameModel.GameSettings;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 

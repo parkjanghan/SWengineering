@@ -36,9 +36,9 @@ public class NodeButton extends Button {
     public void setHighlighted(boolean highlighted) {
         this.isHighlighted = highlighted;
         if (highlighted) {
-            circle.setFill(Color.YELLOW);
+            this.setStyle("-fx-background-color: yellow;");
         } else {
-            circle.setFill(Color.WHITE);
+            this.setStyle("-fx-background-color: white;");
         }
     }
 

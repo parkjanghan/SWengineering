@@ -1,5 +1,6 @@
 package display;
 
+import GameModel.GameSettings;
 import GameModel.YutnoriSet;
 import assets.*;
 

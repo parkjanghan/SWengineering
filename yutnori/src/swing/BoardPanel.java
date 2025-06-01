@@ -6,7 +6,7 @@ import assets.BoardGraph4;
 import assets.BoardGraph5;
 import assets.BoardGraph6;
 import assets.Point;
-import display.GameSettings;
+import GameModel.GameSettings;
 
 import play.Mal;
 import play.Player;

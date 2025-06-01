@@ -1,4 +1,4 @@
-package display;
+package GameModel;
 
 public class GameSettings {
     private static int playerCount = 2;

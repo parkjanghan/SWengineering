@@ -1,7 +1,7 @@
 package swing;
 
 import GameModel.YutnoriSet;
-import display.GameSettings;
+import GameModel.GameSettings;
 import play.YutResult;
 
 import javax.swing.*;
@@ -18,7 +18,7 @@ public class GamePanel extends JPanel {
     public GamePanel(YutnoriSet yutnoriSet) {
         setLayout(new BorderLayout());
         this.yutnoriSet = yutnoriSet;
-        this.yutnoriSet.startGame(display.GameSettings.getPlayerCount(), GameSettings.getMalCount()); // ✅ 2인용, 말 4개로 초기화 추가
+        this.yutnoriSet.startGame(GameSettings.getPlayerCount(), GameSettings.getMalCount()); // ✅ 2인용, 말 4개로 초기화 추가
 
         // 1. 각 서브 패널에 yutnoriSet 전달
         boardPanel = new BoardPanel(yutnoriSet);
