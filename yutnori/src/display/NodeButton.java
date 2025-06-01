@@ -1,6 +1,10 @@
 package display;
 
+import javafx.geometry.Insets;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.control.Button;
@@ -21,13 +25,18 @@ public class NodeButton extends Button {
         circle = new Circle(size / 2);
         circle.setStroke(Color.GRAY);
         circle.setStrokeWidth(2);
-        circle.setFill(Color.WHITE);
+        circle.setFill(Color.rgb(255, 255, 255, 1.0));
 
         setLayoutX(pos.getX() - size / 2);
         setLayoutY(pos.getY() - size / 2);
         setPrefSize(size, size);
 
         getChildren().add(circle);
+
+        this.setOpacity(1.0);
+        this.setBackground(new Background(
+                new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)
+        ));
 
         setPickOnBounds(false); // 원형 클릭만 인식
         setCursor(javafx.scene.Cursor.HAND);
@@ -37,9 +46,13 @@ public class NodeButton extends Button {
         this.isHighlighted = highlighted;
 
         if (highlighted) {
-            this.setStyle("-fx-background-color: yellow;");
+            this.setBackground(new Background(
+                    new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)
+            ));
         } else {
-            this.setStyle("-fx-background-color: white;");
+            this.setBackground(new Background(
+                    new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)
+            ));
         }
     }
 

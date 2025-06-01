@@ -69,6 +69,9 @@ public class BoardPane extends Pane implements PropertyChangeListener {
         setPrefSize(1000, 720);
         setStyle("-fx-background-color: rgb(240, 240, 240);");
 
+        //보드팬 생성 시 노드를 연결하는 그래프 그리기
+        drawBoardGraph();
+
         // 노드 버튼 생성 및 추가
         for (Map.Entry<Integer, Point> entry : boardGraph.getNodePositions().entrySet()) {
             int nodeId = entry.getKey();
@@ -155,25 +158,6 @@ public class BoardPane extends Pane implements PropertyChangeListener {
                 line.setStrokeWidth(2.0);
                 this.getChildren().add(line);
             }
-        }
-
-        // 노드(원 + 텍스트)
-        for (Map.Entry<Integer, Point> entry : boardGraph.getNodePositions().entrySet()) {
-            int id = entry.getKey();
-            Point p = entry.getValue();
-
-            // 노드 원
-            Circle circle = new Circle(p.getX(), p.getY(), 15);
-            circle.setFill(Color.WHITE);
-            circle.setStroke(Color.BLACK);
-            this.getChildren().add(circle);
-
-            // 노드 ID 라벨
-            Label label = new Label(String.valueOf(id));
-            label.setStyle("-fx-font-size: 10px; -fx-font-family: Arial;");
-            label.setLayoutX(p.getX() - 6); // 위치 보정
-            label.setLayoutY(p.getY() - 7);
-            this.getChildren().add(label);
         }
     }
 

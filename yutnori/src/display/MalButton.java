@@ -1,6 +1,10 @@
 package display;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.layout.StackPane;
@@ -21,7 +25,14 @@ public class MalButton extends StackPane {
         // 내부 버튼 생성
         button = new Button();
         button.setPrefSize(20, 20);
-        button.setStyle("-fx-background-color: " + toRgbString(color) + "; -fx-background-radius: 10;");
+        button.setBackground(new Background(
+                new BackgroundFill(color, new CornerRadii(10), Insets.EMPTY)
+        ));
+        button.setOpacity(1.0); // 항상 불투명
+
+        // 전체 StackPane 자체도 불투명하게
+        this.setOpacity(1.0);
+        this.setPickOnBounds(false); // 클릭 범위 최소화
 
         getChildren().add(button); // StackPane 위에 버튼 얹음
         setPrefSize(20, 20);
