@@ -35,6 +35,7 @@ public class NodeButton extends Button {
 
     public void setHighlighted(boolean highlighted) {
         this.isHighlighted = highlighted;
+
         if (highlighted) {
             this.setStyle("-fx-background-color: yellow;");
         } else {
