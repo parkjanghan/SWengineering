@@ -16,7 +16,7 @@ class CatchMoveTest6 {
 
     @BeforeEach
     void setUp() {
-        yutnoriSet = new YutnoriSet(4);
+        yutnoriSet = new YutnoriSet(6);
 
         // 초기 게임 상태 설정
         yutnoriSet.setPlayer(2, 4);
