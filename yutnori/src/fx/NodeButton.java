@@ -1,4 +1,4 @@
-package display;
+package fx;
 
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseEvent;

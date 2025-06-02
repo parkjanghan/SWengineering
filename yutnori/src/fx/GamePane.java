@@ -1,4 +1,4 @@
-package display;
+package fx;
 
 import GameModel.GameSettings;
 import GameModel.YutnoriSet;

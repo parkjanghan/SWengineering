@@ -1,4 +1,4 @@
-package display;
+package fx;
 
 import GameModel.YutnoriSet;
 import javafx.geometry.Insets;

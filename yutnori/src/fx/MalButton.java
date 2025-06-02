@@ -1,4 +1,4 @@
-package display;
+package fx;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -6,7 +6,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.layout.StackPane;
 
 public class MalButton extends StackPane {
