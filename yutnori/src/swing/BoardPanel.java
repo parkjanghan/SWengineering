@@ -1,21 +1,26 @@
-package display;
+package swing;
 
 import GameModel.YutnoriSet;
+import assets.BoardGraph;
 import assets.BoardGraph4;
 import assets.BoardGraph5;
 import assets.BoardGraph6;
+import assets.Point;
+import GameModel.GameSettings;
+
 import play.Mal;
 import play.Player;
 import play.YutResult;
-import assets.BoardGraph;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
-import java.util.*;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BoardPanel extends JPanel implements PropertyChangeListener {
 
@@ -76,6 +81,7 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
                 repaint();
             }
         });
+
         yutnoriSet.addObserver(this);
     }
 
@@ -280,7 +286,6 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
         }
     }
 
-
     public void disableAllMalButtons() {
         for (MalButton btn : malButtons) {
             btn.setEnabled(false);
@@ -453,10 +458,18 @@ public class BoardPanel extends JPanel implements PropertyChangeListener {
                 int[] data = (int[]) value;
                 int playerTurn = data[0];
 
+                // 🎉 승자 안내 라벨
+                JLabel winnerLabel = new JLabel("🎉 플레이어 " + (playerTurn + 1) + "이(가) 승리했습니다!");
+                winnerLabel.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+                winnerLabel.setBounds(30, 10, 260, 20);
+                winnerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
                 JDialog dialog = new JDialog((Frame)SwingUtilities.getWindowAncestor(this), "게임 종료", true);
                 dialog.setLayout(null);
                 dialog.setSize(320, 140);
                 dialog.setLocationRelativeTo(this);
+
+                dialog.add(winnerLabel);
 
                 JButton restartBtn = new JButton("다시하기");
                 restartBtn.setBounds(30, 40, 100, 35);

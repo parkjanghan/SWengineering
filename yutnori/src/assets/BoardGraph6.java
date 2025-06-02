@@ -1,14 +1,6 @@
 package assets;
 
-import java.awt.*;
-import java.util.*;
-import java.util.List;
-
-public class BoardGraph6 implements BoardGraph {
-
-    private final Map<Integer, Point> nodePositions = new HashMap<>();
-    private final List<int[]> edges = new ArrayList<>();
-    private final Set<Integer> clickableNodes = new HashSet<>();
+public class BoardGraph6 extends AbstractBoardGraph {
 
     public BoardGraph6() {
         setupBoardGraph();
@@ -48,7 +40,6 @@ public class BoardGraph6 implements BoardGraph {
             }
         }
 
-
         Point center = new Point(middleX, middleY);
         nodePositions.put(43, center);
 
@@ -61,11 +52,8 @@ public class BoardGraph6 implements BoardGraph {
 
         // 30번과 연결되는 노드 1번
         Point node30 = nodePositions.get(30);
-        Point node16 = nodePositions.get(16);
-//
 
         // 출발 전 대기 노드
-        // nodePositions.put(0, new Point(middleX + 240, middleY));
         nodePositions.put(0, new Point(800, 150)); // 0번 사용자 말 대기 위치 (출발 전) ✅
         nodePositions.put(-1, new Point(800, 200));
         nodePositions.put(-2, new Point(800, 250));
@@ -91,12 +79,11 @@ public class BoardGraph6 implements BoardGraph {
     }
 
 
-    private void initEdges() {
+    protected void initEdges() {
 
         for (int i = 1; i<30; i++) {
             edges.add(new int[]{i, i + 1});
         }
-
 
         edges.add(new int[]{43, 31});
         edges.add(new int[]{31, 32});
@@ -123,24 +110,5 @@ public class BoardGraph6 implements BoardGraph {
         edges.add(new int[]{42, 26});
 
         edges.add(new int[]{30, 1});
-
-
-
-    }
-
-    @Override
-    public Map<Integer, Point> getNodePositions() {
-        return nodePositions;
-    }
-
-    @Override
-    public List<int[]> getEdges() {
-        if (edges.isEmpty()) initEdges();
-        return edges;
-    }
-
-    @Override
-    public Set<Integer> getClickableNodes() {
-        return clickableNodes;
     }
 }

@@ -8,10 +8,12 @@ import play.Mal;
 import play.Player;
 import play.YutResult;
 
-import javax.swing.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class YutnoriSet {
     public static class GameFlag {
@@ -28,8 +30,7 @@ public class YutnoriSet {
     private int inGameFlag;
     private ArrayList<YutResult> playerResults;
     private YutResult yutResult_to_use;
-
-
+    private Consumer<Integer> onGameEndCallback;
 
     private int chosenDestNodeId ;
 
@@ -38,10 +39,7 @@ public class YutnoriSet {
     public static final int NEED_TO_MOVE = 2;
     public static final int NEED_TO_CHANGE_TURN = 3;
 
-
-
     private PropertyChangeSupport observable; //GUI 갱신을 위한 옵저버 패턴
-
 
     public int getBoardType() {
         return boardType;
@@ -66,7 +64,7 @@ public class YutnoriSet {
         this.inGameFlag = NEED_TO_ROLL;  //윷 던지기 저 상태
         this.playerResults = new ArrayList<>();
         this.yutTotal = new YutTotal();
-        
+
     }
 
     public void setPlayer(int numberOfPlayers, int numberOfPieces)
@@ -81,7 +79,6 @@ public class YutnoriSet {
         notifyGameStateChange("사용자 생성됨", players);
     }
 
-
     public void rollYut()
     {
 
@@ -89,10 +86,9 @@ public class YutnoriSet {
         System.out.println("[YutnoriSet] 🎯 결과: " + result.getName());
         addPlayerResult(result);
 
-       // 다시 한 번 던질 수 있나 확인->  그러면 한 번 더 저장
+        // 다시 한 번 던질 수 있나 확인->  그러면 한 번 더 저장
         boolean isExtraTurnAllowed;
         isExtraTurnAllowed = (result==YutResult.YUT || result == YutResult.MO);
-
 
         if (!isExtraTurnAllowed) //inGameFlag에 따라서 rollYut을 한 번 더 수행해야함
         {
@@ -115,7 +111,6 @@ public class YutnoriSet {
         addPlayerResult(input);
         boolean isExtraTurnAllowed;
         isExtraTurnAllowed = (input==YutResult.YUT || input == YutResult.MO);
-
 
         if (!isExtraTurnAllowed) //inGameFlag에 따라서 rollYut을 한 번 더 수행해야함
         {
@@ -148,7 +143,7 @@ public class YutnoriSet {
                 break;
             }
         }
-    } 
+    }
 
     public int selectOutOfBoardPiece(int playerTurn)
     {
@@ -171,9 +166,9 @@ public class YutnoriSet {
         }//플레이어가 어떤 말을 선택했는지를 어떻게 알려주는지? 0428
 
         //어떻게 남이 아씨는 말을 고를 것인 지에 대해서 수정이 필요함
-      setInGameFlag(NEED_TO_MOVE);
-      notifyGameStateChange("말 선택됨", new int[]{playerTurn, selectedMalNumber});
-      return OutOfBoardMal.getFirst().getMalNumber();
+        setInGameFlag(NEED_TO_MOVE);
+        notifyGameStateChange("말 선택됨", new int[]{playerTurn, selectedMalNumber});
+        return OutOfBoardMal.getFirst().getMalNumber();
         //-1 이면 선택 할 수 있는 말이 없음
     }
 
@@ -187,7 +182,6 @@ public class YutnoriSet {
         }
         return moveableOutOfBoardMal;
     }
-
 
     public int selectInBoardPiece(int playerTurn, int selectedMalNumber)
     {
@@ -211,12 +205,10 @@ public class YutnoriSet {
         return board.getNext_nodes_board(position, yutResult);
     }
 
-
     public void setChosenDestNodeId(int chosenDestNodeId) {
         this.chosenDestNodeId = chosenDestNodeId;
         notifyGameStateChange("목적지 노드 선택됨", chosenDestNodeId);
     }
-
 
     // Catch
     public boolean tryCatchMal(int playerTurn, int destNodeId) {
@@ -324,14 +316,37 @@ public class YutnoriSet {
                 .filter(Mal::getFinished)
                 .count();
 
+        // JavaFX Alert 사용으로 변경
         if (finishedCount == currentPlayer.getMalList().size()) {
             inGameFlag = GameFlag.WAITING;
-            JOptionPane.showMessageDialog(null,
-                    "🎉 플레이어 " + (playerTurn + 1) + "이(가) 승리했습니다!",
-                    "게임 종료", JOptionPane.INFORMATION_MESSAGE);
+
+//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//            alert.setTitle("게임 종료");
+//            alert.setHeaderText(null);
+//            alert.setContentText("🎉 플레이어 " + (playerTurn + 1) + "이(가) 승리했습니다!");
+//            alert.showAndWait();
+
+            if (onGameEndCallback != null) {
+                onGameEndCallback.accept(playerTurn);  // UI 호출은 외부에 위임
+            }
+
             notifyGameStateChange("게임 종료", new int[]{playerTurn});
             return false;
         }
+
+        if (finishedCount == currentPlayer.getMalList().size()) {
+            inGameFlag = GameFlag.WAITING;
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("게임 종료");
+            alert.setHeaderText(null);
+            alert.setContentText("🎉 플레이어 " + (playerTurn + 1) + "이(가) 승리했습니다!");
+            alert.showAndWait();
+
+            notifyGameStateChange("게임 종료", new int[]{playerTurn});
+            return false;
+        }
+
 
         if (didCatch) {
             setInGameFlag(NEED_TO_ROLL);
@@ -343,8 +358,6 @@ public class YutnoriSet {
             return !playerResults.isEmpty();
         }
     }
-
-
 
     public void setPlayerResults(YutResult yutResult) {
         this.playerResults.add(yutResult);
@@ -361,7 +374,6 @@ public class YutnoriSet {
     public void setPlayerTurn(int playerTurn) {
         this.playerTurn = playerTurn;
     }
-
 
     public int getInGameFlag() {
         return inGameFlag;
@@ -396,11 +408,11 @@ public class YutnoriSet {
     }
 
     public void addObserver(PropertyChangeListener listener) {
-    if (observable == null) {
-        observable = new PropertyChangeSupport(this);
+        if (observable == null) {
+            observable = new PropertyChangeSupport(this);
+        }
+        observable.addPropertyChangeListener(listener);
     }
-    observable.addPropertyChangeListener(listener);
-}
     public int getChosenDestNodeId() {
         return chosenDestNodeId;
     }
@@ -414,9 +426,9 @@ public class YutnoriSet {
 
     public void nextTurn() {
         this.playerTurn = (this.playerTurn + 1) % players.size();
+        setInGameFlag(NEED_TO_ROLL);
         notifyGameStateChange("턴 변경됨", playerTurn);
     }
-
 
     public void addPlayer() {
         Player newPlayer = new Player(players.size()); // 새로운 플레이어 생성 (ID는 현재 플레이어 수)
@@ -458,11 +470,14 @@ public class YutnoriSet {
         else
         {
             System.out.println("[YutnoriSet] 사용자가 선택한 결과: " + input.getName());
-           playerResults.remove(input);
-           notifyGameStateChange( "사용할 결과 선택", input);
+            playerResults.remove(input);
+            notifyGameStateChange( "사용할 결과 선택", input);
             return input;
         }
     }
 
+    public void setOnGameEndCallback(Consumer<Integer> callback) {
+        this.onGameEndCallback = callback;
+    }
 
 }

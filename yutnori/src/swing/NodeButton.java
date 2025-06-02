@@ -1,7 +1,8 @@
-package display;
+package swing;
 
 import javax.swing.*;
 import java.awt.*;
+import assets.Point;
 
 public class NodeButton extends JButton {
     private final int nodeId;

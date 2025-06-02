@@ -1,13 +1,13 @@
-package display;
+package swing;
 
 import GameModel.YutnoriSet;
 import play.YutResult;
-import java.util.ArrayList;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ThrowPanel extends JPanel implements PropertyChangeListener {
@@ -120,7 +120,7 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
                 JButton resultBtn = new JButton(result.getName());
                 resultBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
                 resultBtn.addActionListener(e -> {
-
+                    //버튼 클릭 불가능하게 변경
                     for (Component comp : resultPanel.getComponents()) {
                         if (comp instanceof JButton) {
                             comp.setEnabled(false);
@@ -129,10 +129,8 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
                     //System.out.println("[ThrowPanel] ✅ 사용할 결과 버튼 클릭됨: " + result.getName());
                     // 결과 사용 - 여기서 사용할 윷 결과 boardPanel에 전달
                     yutnoriSet.setYutResult_to_use(result);
-                    //그리고 클릭된 버튼을 삭제해야
-
+                    //결과를 패널에서 삭제
                     resultPanel.remove(resultBtn);
-
                     resultPanel.remove(resultBtn);
                     // 패널 다시 그리기
                     resultPanel.revalidate();
@@ -161,13 +159,4 @@ public class ThrowPanel extends JPanel implements PropertyChangeListener {
         }
     }
 
-    public void enableResultButtons() {
-        for (Component comp : resultPanel.getComponents()) {
-            if (comp instanceof JButton) {
-                comp.setEnabled(true);
-            }
-        }
-        resultPanel.revalidate();
-        resultPanel.repaint();
-    }
 }

@@ -1,6 +1,7 @@
-package display;
+package swing;
 
 import GameModel.YutnoriSet;
+import GameModel.GameSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,9 +27,6 @@ public class IntroPanel extends JPanel {
         settingBtn.setBounds(860, 300, 200, 100);
         add(settingBtn);
 
-        // 이벤트
-        
-        //startBtn.addActionListener(e -> parentFrame.switchTo("game"));
         startBtn.addActionListener(e -> {
             int boardType = GameSettings.getBoardShape();  //설정값 불러오기
 
@@ -42,7 +40,6 @@ public class IntroPanel extends JPanel {
             parentFrame.addGamePanel(gamePanel);
             parentFrame.switchTo("game");
         });
-
 
         settingBtn.addActionListener(e -> parentFrame.switchTo("setting"));
     }

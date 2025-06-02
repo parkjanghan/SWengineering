@@ -1,4 +1,4 @@
-package display;
+package swing;
 
 import GameModel.YutnoriSet;
 

@@ -57,18 +57,6 @@ public class Node {
         this.next_nodes.put(yut_result, next_node);
     }
 
-    public boolean isOccupied() {
-        return occupied;
-    }
-    public void setOccupied(boolean occupied) {
-        this.occupied = occupied;
-    }
-    public void resetOccupied() {
-        this.occupied = false;
-        this.occupyingPieces.clear();
-        this.numOfOccupyingPieces = 0;
-    }
-
     public ArrayList<Mal> getOccupyingPieces() {
         return occupyingPieces;
     }
@@ -82,20 +70,6 @@ public class Node {
     }
 
     public void clearOccupyingPieces() {
-        this.occupyingPieces.clear();
-        this.numOfOccupyingPieces = 0;
-    }
-
-    public int getNumOfOccupyingPieces()
-    {
-        return this.occupyingPieces.size();
-    }
-    public void resetNumOfOccupyingPieces() {
-        this.numOfOccupyingPieces = 0;
-    }
-    public void resetNode()
-    {
-        this.occupied = false;
         this.occupyingPieces.clear();
         this.numOfOccupyingPieces = 0;
     }

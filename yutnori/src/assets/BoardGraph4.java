@@ -1,18 +1,8 @@
 package assets;
 
-import java.awt.*;
-import java.util.*;
-import java.util.List;
+public class BoardGraph4 extends AbstractBoardGraph {
 
-public class BoardGraph4 implements BoardGraph {
-
-    private final Map<Integer, Point> nodePositions = new HashMap<>();
-    private final List<int[]> edges = new ArrayList<>();
-    private final Set<Integer> clickableNodes = new HashSet<>();
-
-    public BoardGraph4() {
-        setupBoardGraph(); // ✅ 보드 정보 초기화
-    }
+    public BoardGraph4() { setupBoardGraph(); }
 
     public void setupBoardGraph() {
         int size = 5;    // 외곽 변의 노드 개수
@@ -57,16 +47,17 @@ public class BoardGraph4 implements BoardGraph {
 
         // ✅ 중앙 노드 (29), 결승점 (30)
         nodePositions.put(index++, new Point(middleX, middleY));       // 29
-        nodePositions.put(index++, new Point(startX, startY + 50));    // 30
-
+        nodePositions.put(index, new Point(startX, startY + 50));    // 30
 
     }
 
-    private void initEdges() {
+    @Override
+    protected void initEdges() {
         // ✅ 외곽 사각형 순차 연결 (1~20)
         for (int i = 1; i < 20; i++) {
             edges.add(new int[]{i, i + 1});
         }
+
         edges.add(new int[]{20, 1}); // 30: 결승점
 
         // ✅ 지름길 경로
@@ -85,21 +76,5 @@ public class BoardGraph4 implements BoardGraph {
         edges.add(new int[]{29, 27});
         edges.add(new int[]{27, 28});
         edges.add(new int[]{28, 1});
-    }
-
-    @Override
-    public Map<Integer, Point> getNodePositions() {
-        return nodePositions;
-    }
-
-    @Override
-    public List<int[]> getEdges() {
-        if (edges.isEmpty()) initEdges(); // ✅ 필요 시 lazy 초기화
-        return edges;
-    }
-
-    @Override
-    public Set<Integer> getClickableNodes() {
-        return clickableNodes;
     }
 }

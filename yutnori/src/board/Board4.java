@@ -6,23 +6,14 @@ import java.util.*;
 
 public class Board4 extends BoardAbstract
 {
-
-
-
-
-    public Board4()
-    {
-
+    public Board4() {
         InitNodes();
         SetConnections();
-
-
     }
 
-
-    protected void InitNodes()
-    {
-        createNode(0, 600, 600, true, false, false, false); // 노드 0은
+    protected void InitNodes() {
+        //Node(0) ~ Node(-3)까지는 아직 출발하지 않은 말이 대기하는 노드입니다
+        createNode(0, 600, 600, true, false, false, false);
         createNode(-1, 600, 600, true, false, false, false);
         createNode(-2, 600, 600, true, false, false, false);
         createNode(-3, 600, 600, true, false, false, false);
@@ -68,9 +59,7 @@ public class Board4 extends BoardAbstract
 
         createNode(29, 375, 375, false, false, true, false);
 
-
         createNode(30, 500, 500, false, true, false, false);
-        //System.out.println("Board4 initialized with nodes: " + boardShape);
     }
 
 

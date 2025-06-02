@@ -1,4 +1,4 @@
-package GameModel;
+package test.GameModel;
 
 import board.Board6;
 import org.junit.jupiter.api.BeforeEach;

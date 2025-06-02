@@ -35,7 +35,7 @@ yutnori
 ├── src
 │   ├── assets
 │   ├── board
-│   ├── display
+│   ├── fx
 │   ├── GameModel
 │   ├── main
 │   └── play

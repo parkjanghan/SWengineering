@@ -1,5 +1,6 @@
-package GameModel;
+package test.GameModel;
 
+import GameModel.YutnoriSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import play.YutResult;

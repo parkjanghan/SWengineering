@@ -1,13 +1,14 @@
 package main;
 
-import display.Yutnori;
+import fx.Yutnori;
+import javafx.application.Application;
 
 public class Start {
-
-    public static final int SCREEN_WIDTH = 1280;
-    public static final int SCREEN_HEIGHT = 720;
-
     public static void main(String[] args) {
-        new Yutnori();
+        //JavaFX Version
+        Application.launch(Yutnori.class, args);
+
+        //Java Swing Version
+        //new swing.Yutnori();
     }
 }

@@ -1,4 +1,6 @@
-package display;
+package swing;
+
+import GameModel.GameSettings;
 
 import javax.swing.*;
 import java.awt.*;

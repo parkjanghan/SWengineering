@@ -1,6 +1,7 @@
-package display;
+package swing;
 
 import GameModel.YutnoriSet;
+import GameModel.GameSettings;
 import play.YutResult;
 
 import javax.swing.*;
@@ -72,9 +73,16 @@ public class GamePanel extends JPanel {
                 }
                 case "득점" -> {
                     infoPanel.showPlayerScores();
-
                 }
             }
+        });
+
+        //게임 종료 시 알림 추가
+        yutnoriSet.setOnGameEndCallback(playerTurn -> {
+            JOptionPane.showMessageDialog(null,
+                    "🎉 플레이어 " + (playerTurn + 1) + "이(가) 승리했습니다!",
+                    "게임 종료",
+                    JOptionPane.INFORMATION_MESSAGE);
         });
 
         // 모든 말을 시작 위치(예: 노드 0)에 배치

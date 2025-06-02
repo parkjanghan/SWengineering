@@ -17,10 +17,6 @@ public enum YutResult {
         this.name = name;
     }
 
-    public int getMoveCount() {
-        return moveCount;
-    }
-
     public String getName() {
         return name;
     }

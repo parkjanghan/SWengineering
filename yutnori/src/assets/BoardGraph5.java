@@ -1,14 +1,6 @@
 package assets;
 
-import java.awt.*;
-import java.util.*;
-import java.util.List;
-
-public class BoardGraph5 implements BoardGraph {
-
-    private final Map<Integer, Point> nodePositions = new HashMap<>();
-    private final List<int[]> edges = new ArrayList<>();
-    private final Set<Integer> clickableNodes = new HashSet<>();
+public class BoardGraph5 extends AbstractBoardGraph {
 
     public BoardGraph5() {
         setupBoardGraph();
@@ -49,10 +41,12 @@ public class BoardGraph5 implements BoardGraph {
 
         Point center = new Point(middleX, middleY);
         nodePositions.put(36, center);
+
         nodePositions.put(0, new Point(800, 150)); // 0번 사용자 말 대기 위치 (출발 전) ✅
         nodePositions.put(-1, new Point(800, 200));
         nodePositions.put(-2, new Point(800, 250));
         nodePositions.put(-3, new Point(800, 300));
+
         addDiagonalNodes(1, 27, 26);
         addDiagonalNodes(6, 28, 29);
         addDiagonalNodes(11, 30, 31);
@@ -67,8 +61,6 @@ public class BoardGraph5 implements BoardGraph {
 
         nodePositions.put(37, new Point(node1.x - 50, node1.y + 50)); // 37번 노드 추가
 
-        // 출발 전 대기 노드
-        //nodePositions.put(0, new Point(middleX + 240, middleY));
     }
 
     private void addDiagonalNodes(int corner, int mid1Id, int mid2Id) {
@@ -87,13 +79,11 @@ public class BoardGraph5 implements BoardGraph {
         nodePositions.put(mid2Id, new Point(x2, y2));
     }
 
-
-    private void initEdges() {
+    protected void initEdges() {
 
         for (int i =1; i < 25; i++) {
             edges.add(new int[]{i, i + 1});
         }
-
 
         edges.add(new int[]{36, 26});
         edges.add(new int[]{26, 27});
@@ -116,24 +106,5 @@ public class BoardGraph5 implements BoardGraph {
         edges.add(new int[]{35, 21});
 
         edges.add(new int[]{25, 1});
-
-
-
-    }
-
-    @Override
-    public Map<Integer, Point> getNodePositions() {
-        return nodePositions;
-    }
-
-    @Override
-    public List<int[]> getEdges() {
-        if (edges.isEmpty()) initEdges();
-        return edges;
-    }
-
-    @Override
-    public Set<Integer> getClickableNodes() {
-        return clickableNodes;
     }
 }
