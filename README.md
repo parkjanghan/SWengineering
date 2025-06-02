@@ -5,8 +5,9 @@
 ## 🛠 Tech Stack
 - Java
 - Java Swing(GUI)
-- Java FX
+- JavaFX
 - Observer Pattern
+- JUnit
 
 ## 📁 Directory
 ```
