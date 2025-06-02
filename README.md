@@ -5,6 +5,7 @@
 ## 🛠 Tech Stack
 - Java
 - Java Swing(GUI)
+- Java FX
 - Observer Pattern
 
 ## 📁 Directory
@@ -14,9 +15,11 @@ yutnori
 │   ├── assets
 │   ├── board
 │   ├── fx
+│   ├── swing
 │   ├── GameModel
 │   ├── main
-│   └── play
+│   ├── play
+│   └── test
 └── README.md
 ```
 ## 📝 Document
