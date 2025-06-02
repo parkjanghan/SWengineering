@@ -54,4 +54,7 @@ public class Mal {
         stackedMal.clear();
     }
 
+    public Player getOwner() {
+        return owner;
+    }
 }

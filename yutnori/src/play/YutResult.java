@@ -20,4 +20,8 @@ public enum YutResult {
     public String getName() {
         return name;
     }
+
+    public int getMoveCount() {
+        return moveCount;
+    }
 }

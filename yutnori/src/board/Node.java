@@ -77,4 +77,8 @@ public class Node {
     public boolean isEndPoint() {
         return isEndPoint;
     }
+
+    public int getNumOfOccupyingPieces() {
+        return numOfOccupyingPieces;
+    }
 }

@@ -1,4 +1,4 @@
-package test.GameModel;
+package GameModel;
 
 import GameModel.YutnoriSet;
 import org.junit.jupiter.api.Test;
