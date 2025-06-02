@@ -27,7 +27,7 @@
 ## 🛠 Tech Stack
 - Java
 - Java Swing(GUI)
-- JavaFX
+- JavaFX(GUI)
 - Observer Pattern
 
 ## 📁 Directory
