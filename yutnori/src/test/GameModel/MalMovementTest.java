@@ -65,5 +65,40 @@ class MalMovementTest {
         assertEquals(6, yutnoriSet.players.get(0).getMalList().get(0).getPosition());
         assertEquals(6, yutnoriSet.players.get(0).getMalList().get(1).getPosition());
     }
+
+    @Test
+    void testSingleMalConsumesMultipleResults() {
+        // 플레이어 1에게 윷, 걸 결과를 추가
+        yutnoriSet.addPlayerResult(YutResult.YUT);
+        yutnoriSet.addPlayerResult(YutResult.GEOL);
+
+        // 동일한 말로 첫 번째 이동 (걸 사용)
+        yutnoriSet.moveMal(1, 0, 3, YutResult.GEOL);
+        assertEquals(1, yutnoriSet.getPlayerResults().size());
+
+        // 같은 말로 두 번째 이동 (윷 사용)
+        yutnoriSet.setPlayerTurn(1);
+        yutnoriSet.moveMal(1, 0, 7, YutResult.YUT);
+        assertEquals(0, yutnoriSet.getPlayerResults().size());
+
+        assertEquals(7, yutnoriSet.players.get(1).getMalList().get(0).getPosition());
+    }
+
+    @Test
+    void testDifferentMalConsumesEachResult() {
+        // 플레이어 1에게 윷, 걸 결과를 추가
+        yutnoriSet.addPlayerResult(YutResult.YUT);
+        yutnoriSet.addPlayerResult(YutResult.GEOL);
+
+        // 첫 번째 말로 걸 사용
+        yutnoriSet.moveMal(1, 0, 3, YutResult.GEOL);
+        assertEquals(1, yutnoriSet.getPlayerResults().size());
+
+        // 두 번째 말로 윷 사용
+        yutnoriSet.setPlayerTurn(1);
+        assertEquals(1, yutnoriSet.getPlayerTurn());
+        yutnoriSet.moveMal(1, 1, 5, YutResult.YUT);
+        assertEquals(0, yutnoriSet.getPlayerResults().size());
+    }
 }
 
