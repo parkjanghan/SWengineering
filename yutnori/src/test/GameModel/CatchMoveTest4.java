@@ -54,20 +54,19 @@ class CatchMoveTest4
 
 
     @Test
-    void moveMal() {
+    void testMoveMal() {
+        // 플레이어 1에게 여러 개의 윷 결과 추가
         yutnoriSet.addPlayerResult(YutResult.YUT);
         yutnoriSet.addPlayerResult(YutResult.GEOL);
-        yutnoriSet.moveMal(1, 2, 3, YutResult.YUT);
-        yutnoriSet.moveMal(1, 2, 2, YutResult.YUT);
-        yutnoriSet.moveMal(1, 2, 30, YutResult.YUT);
-        //assertEquals(1, yutnoriSet.players.get(1).getScore());
-        System.out.println("Player 1 Score: " + yutnoriSet.players.get(0).getScore());
-        System.out.println("Player 2 Score: " + yutnoriSet.players.get(1).getScore());
-        System.out.println("Player 1 Mal Position: " + yutnoriSet.players.get(0).getMalList().get(0).getPosition());
-        System.out.println("Player 1 Mal Position: " + yutnoriSet.players.get(0).getMalList().get(1).getPosition());
-        System.out.println("Player 2 Mal Position: " + yutnoriSet.players.get(1).getMalList().get(2).getPosition());
-        //assertEquals(2, yutnoriSet.players.get(1).getMalList().getFirst().getPosition());
 
+        // 다양한 말 이동 테스트
+        yutnoriSet.moveMal(1,0,3,YutResult.GEOL);
+        assertEquals(1, yutnoriSet.getPlayerResults().size());
+        //'걸' 하나의 움직임만 소비;
+        yutnoriSet.setPlayerTurn(1);
+        assertEquals(1, yutnoriSet.getPlayerTurn());
+        yutnoriSet.moveMal(1, 1, 5, YutResult.YUT);
+        assertEquals(0, yutnoriSet.getPlayerResults().size());
     }
 
 
