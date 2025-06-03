@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class RollTest {
 
     @Test
-    void rollYut() {
+    void rollYutTest() {
         //2번 굴리면 윷놀이의 결과 2개가 저장이 잘 되도록 저장
         YutnoriSet yutnoriSet = new YutnoriSet(4);
         yutnoriSet.rollYut();

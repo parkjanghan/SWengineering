@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Board6test {
+public class Board6Test {
     private Board6 board;
 
     @BeforeEach
@@ -119,7 +119,7 @@ public class Board6test {
     }
 
     @Test
-    void testNode6B() {
+    void testNode6() {
         ArrayList<Integer> backDoResult = board.getNext_nodes_board(6, YutResult.BACK_DO);
         assertEquals(List.of(5), backDoResult);
 

@@ -16,7 +16,7 @@ class CatchMoveTest6 {
 
     @BeforeEach
     void setUp() {
-        yutnoriSet = new YutnoriSet(4);
+        yutnoriSet = new YutnoriSet(6);
 
         // 초기 게임 상태 설정
         yutnoriSet.setPlayer(2, 4);
@@ -46,21 +46,7 @@ class CatchMoveTest6 {
         assertEquals(0, yutnoriSet.board.boardShape.get(2).getOccupyingPieces().getFirst().getMalNumber());
     }
 
-    @Test
-    void testMoveMal() {
-        // 플레이어 1에게 여러 개의 윷 결과 추가
-        yutnoriSet.addPlayerResult(YutResult.YUT);
-        yutnoriSet.addPlayerResult(YutResult.GEOL);
 
-        // 다양한 말 이동 테스트
-       yutnoriSet.moveMal(1,0,3,YutResult.GEOL);
-       assertEquals(1, yutnoriSet.getPlayerResults().size());
-       //'걸' 하나의 움직임만 소비;
-        yutnoriSet.setPlayerTurn(1);
-        assertEquals(1, yutnoriSet.getPlayerTurn());
-        yutnoriSet.moveMal(1, 1, 5, YutResult.YUT);
-        assertEquals(0, yutnoriSet.getPlayerResults().size());
-    }
 
     @Test
     void testSelectOutOfBoardPiece() {

@@ -20,7 +20,7 @@ class MoveableNodeTest {
         yutnoriSet.setPlayer(4,4);
     }
     @Test
-    void showMoveableMalOutOfBoard() {
+    void showMoveableMalOutOfBoardTest() {
         ArrayList<Mal> outofBoardMal = new ArrayList<>();
 
         for(Player player : yutnoriSet.getPlayers()) {

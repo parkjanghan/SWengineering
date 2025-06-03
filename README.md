@@ -27,7 +27,7 @@
 ## 🛠 Tech Stack
 - Java
 - Java Swing(GUI)
-- JavaFX
+- JavaFX(GUI)
 - Observer Pattern
 
 ## 📁 Directory
@@ -37,15 +37,20 @@ yutnori
 │   ├── assets
 │   ├── board
 │   ├── fx
+│   ├── swing
 │   ├── GameModel
 │   ├── main
-│   └── play
+│   ├── play
+│   └── test
 └── README.md
 ```
 ## 📝 Document
 - Use case diagram
 - Class diagram
-- State diagram
+- Sequence diagram
+- MVC
+- SSD
+- Operation Contract
 
 ## 🙋‍♂️ Created by
 - 20212#63 김재경

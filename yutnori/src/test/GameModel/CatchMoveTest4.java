@@ -54,24 +54,6 @@ class CatchMoveTest4
 
 
     @Test
-    void moveMal() {
-        yutnoriSet.addPlayerResult(YutResult.YUT);
-        yutnoriSet.addPlayerResult(YutResult.GEOL);
-        yutnoriSet.moveMal(1, 2, 3, YutResult.YUT);
-        yutnoriSet.moveMal(1, 2, 2, YutResult.YUT);
-        yutnoriSet.moveMal(1, 2, 30, YutResult.YUT);
-        //assertEquals(1, yutnoriSet.players.get(1).getScore());
-        System.out.println("Player 1 Score: " + yutnoriSet.players.get(0).getScore());
-        System.out.println("Player 2 Score: " + yutnoriSet.players.get(1).getScore());
-        System.out.println("Player 1 Mal Position: " + yutnoriSet.players.get(0).getMalList().get(0).getPosition());
-        System.out.println("Player 1 Mal Position: " + yutnoriSet.players.get(0).getMalList().get(1).getPosition());
-        System.out.println("Player 2 Mal Position: " + yutnoriSet.players.get(1).getMalList().get(2).getPosition());
-        //assertEquals(2, yutnoriSet.players.get(1).getMalList().getFirst().getPosition());
-
-    }
-
-
-    @Test
     void selectBoardPieceTest()
     {
         yutnoriSet.addPlayerResult(YutResult.GAE);
