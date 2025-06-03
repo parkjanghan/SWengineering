@@ -119,7 +119,7 @@ public class Board6Test {
     }
 
     @Test
-    void testNode6B() {
+    void testNode6() {
         ArrayList<Integer> backDoResult = board.getNext_nodes_board(6, YutResult.BACK_DO);
         assertEquals(List.of(5), backDoResult);
 
